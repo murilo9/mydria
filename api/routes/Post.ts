@@ -1,6 +1,6 @@
 import {Request, Response} from "express";
 import User from '../models/User';
-import Post from '../models/Post';
+import Post, {IPost, IPostInput} from '../models/Post';
 
 export default class PostRoutes {
   
@@ -38,6 +38,69 @@ export default class PostRoutes {
         await createdPost.save();
         res.status(201).send(createdPost);    //201 - Created
       }
+    })
+
+    app.route('/post/:postId')
+    .all((req: Request, res: Response, next) => {
+      verifyJWT(req, res, () => { next() })
+    })
+
+    //PUT em /post/:postId - Atualiza um post
+
+    .put(async (req, res: Response) => {
+      console.log('PUT em /post/'+req.params.postId)
+      const postId = req.params.postId;
+      const updatedPost = req.body;
+      let post = await Post.findOne({_id: postId}).exec();
+
+      //Caso o post não exista:
+      if(!post){
+        req.status(404).send("Post doesn't exist");
+        return;
+      }
+
+      //Se o requester não for o dono do post:
+      if(post.author.toString() !== req.requesterId){
+        res.status(403).send('That post is not yours');
+        return;
+      }
+
+      //Atualiza os atributos do post:
+      if(updatedPost.text){
+        post.text = updatedPost.text;
+      }
+      if(updatedPost.img){
+        post.img = updatedPost.pictureSrc;
+      }
+      if(updatedPost.tags){
+        post.tags = updatedPost.tags;
+      }
+      await post.save();
+      res.status(200).send(post);
+    })
+
+    //DELETE em /post/:postId - Deleta um post
+
+    .delete(async (req, res: Response) => {
+      console.log('DELETE em /post/'+req.params.postId)
+      const postId = req.params.postId;
+      let post = await Post.findOne({_id: postId}).exec();
+
+      //Caso o post não exista:
+      if(!post){
+        req.status(404).send("Post doesn't exist");
+        return;
+      }
+
+      //Se o requester não for o dono do post:
+      if(post.author.toString() !== req.requesterId){
+        res.status(403).send('That post is not yours');
+        return;
+      }
+
+      //Deleta o post:
+      await Post.deleteOne({_id: postId}).exec();
+      res.status(200).send('Post deleted successfully');
     })
   }
 }
