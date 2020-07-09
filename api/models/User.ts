@@ -28,6 +28,11 @@ const UserSchema = new Schema({
   profilePicture: {
     type: String,
     default: null
+  },
+  taking: {
+    type: [Schema.Types.ObjectId],
+    ref: 'User',
+    default: []
   }
 })
 
