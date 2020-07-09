@@ -19,79 +19,79 @@ export default class UserRoutes {
       res.status(201).send();   //201 - Created
     });
 
-    //POST em /take/userId - Segue um usuário
+    //POST em /follow/userId - Segue um usuário
 
-    app.route('/take/:userId')
+    app.route('/follow/:userId')
     .all((req: Request, res: Response, next) => {
       verifyJWT(req, res, () => { next() })
     })
 
     .post(async (req, res: Response) => {
-      console.log('POST em /take/'+req.params.userId)
-      const userToTakeId = req.params.userId;
+      console.log('POST em /follow/'+req.params.userId)
+      const userToFollowId = req.params.userId;
       const requester = await User.findOne({_id: req.requesterId}).exec();
       if(!requester){
         res.status(500).send("Requester not found");
         return;
       }
-      const userToTake = await User.findOne({_id: userToTakeId}).exec();
-      if(!userToTake){
+      const userToFollow = await User.findOne({_id: userToFollowId}).exec();
+      if(!userToFollow){
         res.status(404).send("User not found");
         return;
       }
       //Verifica se não é uma request pra seguir a si mesmo:
-      if(userToTakeId === req.requesterId){
-        res.status(202).send("You can't take yourself :c");
+      if(userToFollowId === req.requesterId){
+        res.status(202).send("You can't follow yourself :c");
         return;
       }
       //Verifica se você ja não está seguindo o usuário:
-      let alreadyTook = false;
-      requester.taking.forEach(userTaking => {
-        if(userTaking.toString() === userToTakeId){
-          alreadyTook = true;
+      let alreadyFollowing = false;
+      requester.following.forEach(userFollowed => {
+        if(userFollowed.toString() === userToFollowId){
+          alreadyFollowing = true;
         }
       });
-      if(alreadyTook){
-        res.status(202).send('Already taking');
+      if(alreadyFollowing){
+        res.status(202).send('Already following');
         return;
       }
       else{
-        requester.taking.push(userToTakeId);
+        requester.following.push(userToFollowId);
         await requester.save();
-        res.status(200).send(requester.taking);
+        res.status(200).send(requester.following);
       }
     })
 
-    //DELETE em /take/:userId - Deixa de seguir um usuário
+    //DELETE em /follow/:userId - Deixa de seguir um usuário
 
     .delete(async (req, res: Response) => {
-      console.log('DELETE em /take/'+req.params.userId)
-      const userToUntakeId = req.params.userId;
+      console.log('DELETE em /follow/'+req.params.userId)
+      const userToUnfollowId = req.params.userId;
       const requester = await User.findOne({_id: req.requesterId}).exec();
       if(!requester){
         res.status(500).send("Requester not found");
         return;
       }
-      const userToUntake = await User.findOne({_id: userToUntakeId}).exec();
-      if(!userToUntakeId){
+      const userToUnfollow = await User.findOne({_id: userToUnfollowId}).exec();
+      if(!userToUnfollowId){
         res.status(404).send("User not found");
         return;
       }
       //Verifica se você está seguindo o usuário:
-      let taking = -1;
-      requester.taking.forEach((userTaking, i) => {
-        if(userTaking.toString() === userToUntakeId){
-          taking = i;
+      let following = -1;
+      requester.following.forEach((userFollowing, i) => {
+        if(userFollowing.toString() === userToUnfollowId){
+          following = i;
         }
       });
-      if(taking > -1){
-        requester.taking.splice(taking, 1);
+      if(following > -1){
+        requester.following.splice(following, 1);
         await requester.save();
-        res.status(200).send(requester.taking);
+        res.status(200).send(requester.following);
         return
       }
       else{
-        res.status(202).send('You are currently not taking this person');
+        res.status(202).send('You are currently not following this person');
       }
     })
   }

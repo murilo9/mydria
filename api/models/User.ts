@@ -29,7 +29,7 @@ const UserSchema = new Schema({
     type: String,
     default: null
   },
-  taking: {
+  following: {
     type: [Schema.Types.ObjectId],
     ref: 'User',
     default: []
