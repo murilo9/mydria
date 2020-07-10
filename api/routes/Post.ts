@@ -11,7 +11,7 @@ export default class PostRoutes {
       verifyJWT(req, res, () => { next() })
     })
 
-    //GET em /posts - Retorna alguns posts
+    //GET em /posts - Retorna alguns posts de quem você está seguindo
 
     .get(async (req: Request, res: Response) => {
       console.log('GET em /posts'+req.params.userId);
@@ -88,7 +88,7 @@ export default class PostRoutes {
 
       //Caso o post não exista:
       if(!post){
-        req.status(404).send("Post doesn't exist");
+        res.status(404).send("Post doesn't exist");
         return;
       }
 
@@ -101,6 +101,108 @@ export default class PostRoutes {
       //Deleta o post:
       await Post.deleteOne({_id: postId}).exec();
       res.status(200).send('Post deleted successfully');
+    })
+
+    app.route('/post/:postId/like')
+    .all((req: Request, res: Response, next) => {
+      verifyJWT(req, res, () => { next() })
+    })
+
+    //POST em /post/:postId/like -  Dá like num post
+
+    .post(async (req, res: Response) => {
+      console.log('POST em /post/'+req.params.postId+'/like')
+      const postId = req.params.postId;
+      const requesterId = req.requesterId;
+      let post = await Post.findOne({_id: postId}).exec();
+
+      //Caso o post não exista:
+      if(!post){
+        res.status(404).send('Post not found');
+        return;
+      }
+
+      //Remove o unlike, caso tenha:
+      let unliked = -1;
+      post.unlikedBy.forEach((unlikeUserId, i) => {
+        if(unlikeUserId.toString() === requesterId){
+          unliked = i;
+        }
+      });
+      if(unliked > -1){
+        post.unlikedBy.splice(unliked, 1);
+      }
+
+      //Se ja tem like, remove o like:
+      let alreadyLiked = -1;
+      post.likedBy.forEach((likeUserId, i) => {
+        if(likeUserId.toString() === requesterId){
+          alreadyLiked = i;
+        }
+      });
+      if(alreadyLiked > -1){
+        post.likedBy.splice(alreadyLiked, 1);
+        await post.save();
+        res.status(200).send(post);
+        return;
+      }
+      //Se não tem like, insere o like:
+      else{
+        post.likedBy.push(requesterId);
+        await post.save();
+        res.status(200).send(post);
+      }
+    })
+
+    app.route('/post/:postId/unlike')
+    .all((req: Request, res: Response, next) => {
+      verifyJWT(req, res, () => { next() })
+    })
+
+    //POST em /post/:postId/unlike -  Dá unlike num post
+
+    .post(async (req, res: Response) => {
+      console.log('POST em /post/'+req.params.postId+'/unlike')
+      const postId = req.params.postId;
+      const requesterId = req.requesterId;
+      let post = await Post.findOne({_id: postId}).exec();
+
+      //Caso o post não exista:
+      if(!post){
+        res.status(404).send('Post not found');
+        return;
+      }
+
+      //Remove o like, caso tenha:
+      let liked = -1;
+      post.likedBy.forEach((likeUserId, i) => {
+        if(likeUserId.toString() === requesterId){
+          liked = i;
+        }
+      });
+      if(liked > -1){
+        post.likedBy.splice(liked, 1);
+      }
+
+      //Se ja tem unlike, remove o unlike:
+      let alreadyUnliked = -1;
+      post.unlikedBy.forEach((unlikeUserId, i) => {
+        if(unlikeUserId.toString() === requesterId){
+          alreadyUnliked = i;
+        }
+      });
+      if(alreadyUnliked > -1){
+        post.unlikedBy.splice(alreadyUnliked, 1);
+        await post.save();
+        res.status(200).send(post);
+        return;
+      }
+      //Se não tem unlike, insere o unlike:
+      else{
+        post.unlikedBy.push(requesterId);
+        await post.save();
+        res.status(200).send(post);
+      }
     })
   }
 }
