@@ -1,10 +1,11 @@
 import {Request, Response} from "express";
 import User from '../models/User';
 import validateUserForm from '../middleware/ValidateUserForm';
+const fs = require('fs');
 
 export default class UserRoutes {
 
-  public routes(app, verifyJWT): void {
+  public routes(app, verifyJWT, upload): void {
 
     app.route('/users')
     .all((req: Request, res: Response, next) => {
@@ -93,6 +94,11 @@ export default class UserRoutes {
       else{
         res.status(202).send('You are currently not following this person');
       }
+    })
+
+    app.post('/profile-pic', verifyJWT, upload.single('file'), async (req, res: Response) => {
+      console.log('POST em /profile-pic')
+      res.status(200).send('upload done')
     })
   }
 }
