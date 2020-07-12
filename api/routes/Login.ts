@@ -35,7 +35,7 @@ export default class LoginRoutes {
     })
 
     //GET em /session - Verifica se o token de acesso e o userId correspondem e
-    //a session ainda está ativa.
+    //a session ainda está ativa. Retorna os dados do usuário.
 
     app.route('/session')
     .all((req: Request, res: Response, next) => {
@@ -44,7 +44,13 @@ export default class LoginRoutes {
 
     .get(async (req, res: Response) => {
       console.log('GET em /session')
-      res.status(200).send();
+      const user = await User.findOne({ _id: req.requesterId }).exec();
+      if(user){
+        res.status(200).send(user);
+      }
+      else{
+        res.status(400).send('User with that ID was not found.');
+      }
     })
   }
 }
