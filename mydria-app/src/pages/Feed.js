@@ -3,12 +3,18 @@ import Cookies from 'js-cookie';
 import request from '../services/request.js';
 import { Redirect } from 'react-router-dom';
 
+import Container from 'react-bootstrap/Container';
+import Col from 'react-bootstrap/Col';
+import Row from 'react-bootstrap/Row';
+import Button from 'react-bootstrap/Button';
+
 export default class FeedPage extends Component {
   constructor(props){
     super(props);
     this.state = {
       sessionExpired: false
     }
+    this.logout = this.logout.bind(this);
   }
 
   async componentDidMount() {
@@ -34,7 +40,16 @@ export default class FeedPage extends Component {
       return <Redirect to="/login" />
     }
     else{
-      return <h2>Feed</h2>
+      return (
+        <Container>
+          <Row>
+            <Col>
+              <h2>Feed</h2>
+              <Button variant="primary" onClick={this.logout}>Logout</Button>
+            </Col>
+          </Row>
+        </Container>
+      )
     }
   }
 }

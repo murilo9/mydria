@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import App from './App';
 import * as serviceWorker from './serviceWorker';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 import mydriaApp from './reducers';
 import { createStore } from 'redux';
@@ -15,7 +15,6 @@ const store = createStore(mydriaApp);
 ReactDOM.render(
   <Provider store={store}>
     <BrowserRouter>
-      <h1>Mydria</h1>
       <Route exact path="/login" component={pages.Login}/>
       <Route exact path="/feed" component={pages.Feed}/>
     </BrowserRouter>
