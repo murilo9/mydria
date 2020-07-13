@@ -1,3 +1,16 @@
+.my-view-container {
+  height: 100vh;
+}
+
+.my-full-height {
+  height: 100%;
+}
+
+.my-logo {
+  margin-bottom: 0.5em;
+  text-align: center;
+}
+
 .my-no-padding {
   padding: 0;
 }

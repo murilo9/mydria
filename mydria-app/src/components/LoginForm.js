@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
 
 export default class LoginForm extends Component {
   constructor(props){
@@ -51,12 +53,19 @@ export default class LoginForm extends Component {
           onChange={this.handleChange.bind(this)}
         />
         </Form.Group>
-        <Button variant="primary" onClick={this.handleLogin}>
+        <Button variant="primary" onClick={this.handleLogin} block>
           Login
-        </Button>{' '}
-        <Button variant="dark" onClick={this.handleSignup}>
-          Sign up
         </Button>
+        <Row className="justify-content-md-between">
+          <Col sm="auto" className="justify-content-center">
+            <Button variant="link" block>Privacy Policy</Button>
+          </Col>
+          <Col sm="auto" className="justify-content-center">
+            <Button variant="link" block onClick={this.handleSignup}>
+              Sign up
+            </Button>
+          </Col>
+        </Row>
       </Form>
     )
   }

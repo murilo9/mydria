@@ -63,10 +63,10 @@ export default class LoginPage extends Component {
     }
     else{
       return (
-        <Container>
+        <Container className="my-view-container">
           {this.warningMessage()}
-           <Row className="justify-content-sm-center">
-            <Col sm="6">
+           <Row className="justify-content-sm-center align-items-center my-full-height">
+            <Col md="6" lg="4" xl="3">
               <Logo />
               <LoginForm doLogin={this.doLogin} />
             </Col>
