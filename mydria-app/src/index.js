@@ -6,14 +6,18 @@ import * as serviceWorker from './serviceWorker';
 import mydriaApp from './reducers';
 import { createStore } from 'redux';
 import { Provider } from 'react-redux';
-import { BrowserRouter } from 'react-router-dom';
+import { BrowserRouter, Route } from 'react-router-dom';
+
+import pages from './pages';
 
 const store = createStore(mydriaApp);
 
 ReactDOM.render(
   <Provider store={store}>
     <BrowserRouter>
-      <App />
+      <h1>Mydria</h1>
+      <Route exact path="/login" component={pages.Login}/>
+      <Route exact path="/feed" component={pages.Feed}/>
     </BrowserRouter>
   </Provider>,
   document.getElementById('root')
