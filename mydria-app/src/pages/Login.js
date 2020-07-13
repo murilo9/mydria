@@ -9,15 +9,19 @@ import LoginForm from '../components/LoginForm';
 import Container from 'react-bootstrap/Container';
 import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
+import Alert from 'react-bootstrap/Alert';
 
 export default class LoginPage extends Component {
   constructor(props){
     super(props);
     this.state = {
       //Usado durante o render para redirecionar pra página de feed ou não:
-      sessionActive: false
+      sessionActive: false,
+      //
+      warning: ''
     }
     this.doLogin = this.doLogin.bind(this);
+    this.warningMessage = this.warningMessage.bind(this);
   }
 
   async componentDidMount() {
@@ -36,7 +40,20 @@ export default class LoginPage extends Component {
       this.setState({ sessionActive: true })
     }
     else{
-      //TODO: exibir alerta
+      this.setState({ warningMessage: login.message });
+    }
+  }
+
+  warningMessage() {
+    if(this.state.warningMessage){
+      return (
+        <Alert variant="danger">
+          {this.state.warningMessage}
+        </Alert>
+      )
+    }
+    else{
+      return null;
     }
   }
 
@@ -47,6 +64,7 @@ export default class LoginPage extends Component {
     else{
       return (
         <Container>
+          {this.warningMessage()}
            <Row className="justify-content-sm-center">
             <Col sm="6">
               <Logo />

@@ -59,7 +59,8 @@ const login = async function(email, password) {
   }
   catch (e) {
     response = {
-      success: false
+      success: false,
+      message: e.response.data
     }
   }
   return response;
