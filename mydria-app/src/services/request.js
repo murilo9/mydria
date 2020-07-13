@@ -66,7 +66,30 @@ const login = async function(email, password) {
   return response;
 }
 
+const signup = async function(signupForm) {
+  let response = {};
+  try {
+    const res = await axios({
+      method: 'post',
+      url: 'http://localhost:8888/users',
+      data: signupForm
+    })
+    console.log(res)
+    response = {
+      success: true
+    }
+  }
+  catch (e) {
+    response = {
+      success: false,
+      message: e.response.data
+    }
+  }
+  return response;
+}
+
 export default {
   validateSession,
-  login
+  login,
+  signup
 }

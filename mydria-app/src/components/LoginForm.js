@@ -2,8 +2,6 @@ import React, { Component } from 'react';
 
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
 
 export default class LoginForm extends Component {
   constructor(props){
@@ -14,7 +12,6 @@ export default class LoginForm extends Component {
     }
     this.handleChange = this.handleChange.bind(this);
     this.handleLogin = this.handleLogin.bind(this);
-    this.handleSignup = this.handleSignup.bind(this);
   }
 
   handleChange(e) {
@@ -27,10 +24,6 @@ export default class LoginForm extends Component {
 
   handleLogin() {
     this.props.doLogin(this.state);
-  }
-
-  handleSignup(){
-    console.log('signup')
   }
 
   render() {
@@ -56,16 +49,6 @@ export default class LoginForm extends Component {
         <Button variant="primary" onClick={this.handleLogin} block>
           Login
         </Button>
-        <Row className="justify-content-md-between">
-          <Col sm="auto" className="justify-content-center">
-            <Button variant="link" block>Privacy Policy</Button>
-          </Col>
-          <Col sm="auto" className="justify-content-center">
-            <Button variant="link" block onClick={this.handleSignup}>
-              Sign up
-            </Button>
-          </Col>
-        </Row>
       </Form>
     )
   }
