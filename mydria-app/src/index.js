@@ -2,6 +2,8 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import * as serviceWorker from './serviceWorker';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import './mydria.css';
+import { Redirect } from 'react-router-dom';
 
 import mydriaApp from './reducers';
 import { createStore } from 'redux';
@@ -17,6 +19,7 @@ ReactDOM.render(
     <BrowserRouter>
       <Route exact path="/login" component={pages.Login}/>
       <Route exact path="/feed" component={pages.Feed}/>
+      <Redirect from="*" to="/login" />
     </BrowserRouter>
   </Provider>,
   document.getElementById('root')

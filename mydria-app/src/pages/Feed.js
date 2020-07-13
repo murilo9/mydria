@@ -8,6 +8,8 @@ import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
 import Button from 'react-bootstrap/Button';
 
+import Topbar from '../components/Topbar';
+
 export default class FeedPage extends Component {
   constructor(props){
     super(props);
@@ -41,11 +43,11 @@ export default class FeedPage extends Component {
     }
     else{
       return (
-        <Container>
+        <Container fluid className="my-no-padding">
+          <Topbar logout={this.logout}/>
           <Row>
             <Col>
               <h2>Feed</h2>
-              <Button variant="primary" onClick={this.logout}>Logout</Button>
             </Col>
           </Row>
         </Container>
