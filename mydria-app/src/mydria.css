@@ -11,6 +11,18 @@
   text-align: center;
 }
 
+.my-page-container {
+  margin-top: 64px;
+}
+
 .my-no-padding {
   padding: 0;
+}
+
+.my-navbar a {
+  padding: 0.5em !important;
+}
+
+.my-mobile-search .form-group {
+  margin-bottom: 0;
 }
