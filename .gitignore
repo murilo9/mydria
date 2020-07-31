@@ -1,0 +1,8 @@
+api/node_modules
+api/dist
+.env
+package-lock.json
+mydria-app/node_modules
+mydria-app/public/assets
+tests
+TODO

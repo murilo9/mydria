@@ -7,8 +7,12 @@ import Container from 'react-bootstrap/Container';
 import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
 import Button from 'react-bootstrap/Button';
+import Jumbotron from 'react-bootstrap/Jumbotron';
 
 import Topbar from '../components/Topbar';
+import Post from '../components/Post';
+import PostForm from '../components/PostForm';
+import FollowingFeed from '../components/FollowingFeed';
 
 export default class FeedPage extends Component {
   constructor(props){
@@ -45,11 +49,16 @@ export default class FeedPage extends Component {
       return (
         <Container fluid className="my-no-padding">
           <Topbar logout={this.logout}/>
-          <Row>
-            <Col>
-              <h2>Feed</h2>
-            </Col>
-          </Row>
+          <Container className="my-page-container">
+            <Row>
+              <Col xs={2} className="my-ads">Ads</Col>
+              <Col xs={7}>
+                <PostForm />
+                <Post />
+              </Col>
+              <FollowingFeed />
+            </Row>
+          </Container>
         </Container>
       )
     }

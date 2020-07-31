@@ -26,3 +26,7 @@
 .my-mobile-search .form-group {
   margin-bottom: 0;
 }
+
+.my-ads {
+  border: 1px solid #ccc;
+}

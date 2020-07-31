@@ -8,6 +8,26 @@ Também foi utilizado o Mercury para internacionalização.
 
 ## Front-end
 
+Em toda página, a primeira coisa que ela vai fazer é uma request no servidor pra verificar se a sessão continua ativa, enquanto exibe um status de carregando. Se a sessão estiver ativa, faz outra request pra carregar os dados do usuário, e depois os dados da página em questão. Se a sessão tiver expirado, realiza logout.
+
+- Redux store: 
+{
+  session: {
+    active: Boolean,
+    token: String,
+    userId: String
+  },
+  app: {
+    user: {
+      nickname: String,
+      profilePic: String
+    },
+    page: {
+      ...dados específicos da página
+    }
+  }
+}
+
 ### Páginas 
 
 Login, Feed, Profile
