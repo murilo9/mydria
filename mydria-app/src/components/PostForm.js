@@ -22,11 +22,11 @@ export default class PostForm extends Component {
     return (
       <Form>
         <Form.Group>
-          <Tag text="NiceDay" variant="primary" />
-        </Form.Group>
-        <Form.Group>
           <Form.Control as="textarea" rows="5" 
           placeholder="Whats's your take right now, User?" />
+        </Form.Group>
+        <Form.Group>
+          <Tag text="NiceDay" variant="primary" />
         </Form.Group>
         <Form.Group>
           <Row className="justify-content-end">

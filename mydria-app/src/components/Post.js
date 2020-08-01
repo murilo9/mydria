@@ -12,7 +12,7 @@ export default class Post extends Component {
           width={64}
           height={64}
           className="mr-3"
-          src="assets/user.png"
+          src="assets/user.svg"
           alt="Generic placeholder"
         />
         <Media.Body>

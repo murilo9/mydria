@@ -1,22 +1,15 @@
-const initialState = {
-  session: {
-    active: false,
-    token: null,
-    userId: null
-  },
-  app: {
-    user: {
-      nickname: null,
-      profilePic: null
-    },
-    page: {}
-  }
-}
+import { combineReducers } from 'redux';
 
-export default function mydriaApp(state = initialState, action) {
-  switch(action.type){
+import actions from '../actions';
 
-    default:
-      return state;
-  }
-}
+import session from '../reducers/session.js';
+import user from '../reducers/user.js';
+import page from '../reducers/page';
+
+const mydriaApp = combineReducers({
+  session,
+  user,
+  page
+})
+
+export default mydriaApp;
