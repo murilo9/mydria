@@ -1,4 +1,7 @@
 import axios from 'axios';
+import Cookies from 'js-cookie';
+
+const baseUrl = 'http://localhost:8888';
 
 /**
  * Verifica se a sessão está ativa.
@@ -14,7 +17,7 @@ const validateSession = async function(token) {
   let response = {};
   try {
     const res = await axios({
-      url: 'http://localhost:8888/session',
+      url: baseUrl + '/session',
       method: 'get',
       headers: {
         'x-access-token': token
@@ -48,7 +51,7 @@ const login = async function(email, password) {
   try {
     const res = await axios({
       method: 'post',
-      url: 'http://localhost:8888/login',
+      url: baseUrl + '/login',
       data: loginForm
     })
     response = {
@@ -60,7 +63,8 @@ const login = async function(email, password) {
   catch (e) {
     response = {
       success: false,
-      message: e.response.data
+      message: e.response ? e.response.data : 
+      'An internal error ocurred at our server. Please try again later.'
     }
   }
   return response;
@@ -71,10 +75,9 @@ const signup = async function(signupForm) {
   try {
     const res = await axios({
       method: 'post',
-      url: 'http://localhost:8888/users',
+      url: baseUrl + '/users',
       data: signupForm
     })
-    console.log(res)
     response = {
       success: true
     }
@@ -88,8 +91,58 @@ const signup = async function(signupForm) {
   return response;
 }
 
+const loadSomePosts = async function() {
+  let response = {};
+  try {
+    const token = Cookies.get('token');
+    const res = await axios({
+      method: 'get',
+      url: baseUrl + '/posts',
+      headers: {
+        'x-access-token': token
+      }
+    })
+    response = res.data;
+  }
+  catch (e) {
+    response = {
+      success: false,
+      message: e.response.data
+    }
+  }
+  return response;
+}
+
+const publishPost = async function(post) {
+  let response = {};
+  try {
+    const token = Cookies.get('token');
+    const res = await axios({
+      url: baseUrl + '/posts',
+      method: 'post',
+      headers: {
+        'x-access-token': token
+      },
+      data: post
+    });
+    response = {
+      success: true,
+      post: res.data
+    }
+  }
+  catch (e) {
+    response = {
+      success: false,
+      error: e.response
+    }
+  }
+  return response;
+}
+
 export default {
   validateSession,
   login,
-  signup
+  signup,
+  loadSomePosts,
+  publishPost
 }

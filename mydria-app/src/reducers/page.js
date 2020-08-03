@@ -3,7 +3,7 @@ import actionTypes from '../actions';
 const initialState = {};
 
 export default function(state = initialState, action){
-  switch(clientInformation.type){
+  switch(action.type){
     case actionTypes.SET_PAGE_DATA:
       return {
         ...action.data

@@ -1,15 +1,23 @@
 const types = {
     SET_USER_NICKNAME: 'SET_USER_NICKNAME',
+    SET_USER_EMAIL: 'SET_USER_EMAIL',
     SET_USER_PROFILE_PICTURE: 'SET_USER_PROFILE_PICTURE',
     UNSET_USER: 'UNSET_USER',
     SET_SESSION_TOKEN: 'SET_SESSION_TOKEN',
-    SET_SESSION_ID: 'SET_SESSION_ID',
+    SET_SESSION_USERID: 'SET_SESSION_USERID',
     SET_SESSION_ACTIVE: 'SET_SESSION_ACTIVE',
     SET_PAGE_DATA: 'SET_PAGE_DATA',
     UPDATE_PAGE_DATA: 'UPDATE_PAGE_DATA'
 }
 
-export function setUserNickName(nickname) {
+export function setUserEmail(email) {
+    return {
+        type: types.SET_USER_EMAIL,
+        email
+    }
+}
+
+export function setUserNickname(nickname) {
     return {
         type: types.SET_USER_NICKNAME,
         nickname
@@ -36,10 +44,10 @@ export function setSessionToken(token) {
     }
 }
 
-export function setSessionId(id) {
+export function setSessionUserId(userId) {
     return {
-        type: types.SET_SESSION_ID,
-        id
+        type: types.SET_SESSION_USERID,
+        userId
     }
 }
 

@@ -2,11 +2,17 @@ import actionTypes from '../actions';
 
 const initialState = {
   nickname: null,
-  profilePicture: null
+  profilePicture: null,
+  email: null
 }
 
 export default function(state = initialState, action) {
   switch(action.type){
+    case actionTypes.SET_USER_EMAIL:
+      return {
+        ...state,
+        email: action.email
+      }
     case actionTypes.SET_USER_NICKNAME:
       return {
         ...state,

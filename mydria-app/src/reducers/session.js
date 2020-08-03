@@ -13,10 +13,10 @@ export default function(state = initialState, action) {
         ...state,
         token: action.token,
       }
-    case actionTypes.SET_SESSION_ID:
+    case actionTypes.SET_SESSION_USERID:
       return {
         ...state,
-        id: action.id
+        userId: action.userId
       }
     case actionTypes.SET_SESSION_ACTIVE:
       if(action.active){

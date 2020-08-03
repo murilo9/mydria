@@ -14,8 +14,9 @@ export default class PostRoutes {
     //GET em /posts - Retorna alguns posts de quem você está seguindo
 
     .get(async (req: Request, res: Response) => {
-      console.log('GET em /posts'+req.params.userId);
-      //TODO
+      console.log('GET em /posts');
+      const posts = await Post.find({}).populate('author').exec();
+      res.status(200).send(posts);
     })
 
     //POST em /posts - Cria um novo post
@@ -36,6 +37,8 @@ export default class PostRoutes {
       else{
         let createdPost = new Post(postData);
         await createdPost.save();
+        await createdPost.populate('author').execPopulate();
+        console.log(createdPost)
         res.status(201).send(createdPost);    //201 - Created
       }
     })
