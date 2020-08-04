@@ -25,10 +25,10 @@ class PostForm extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      posting: false,
-      error: false,
-      warning: false,
-      message: false
+      posting: false,   //Exibe um spinner de posting enquanto estiver postando
+      error: false,   //Exibe uma mensagem de erro, caso tenha
+      warning: false, //Exibe uma mensagem de warning, caso tenha
+      message: false  //Exibe uma mensagem de sucesso, caso tenha
     }
     this.publishPost = this.publishPost.bind(this);
     this.renderErrorMessage = this.renderErrorMessage.bind(this);
@@ -36,11 +36,17 @@ class PostForm extends Component {
     this.renderMessage = this.renderMessage.bind(this);
   }
 
+  /**
+   * Faz uma requisição ao servidor para publicar o post.
+   */
   async publishPost(){
+    //Ativa o spinner:
     this.setState({
       posting: true
     })
+    //Constrói o objeto do post:
     let post = this.buildPost();
+    //Faz a requisição pro servidor:
     let req = await request.publishPost(post);
     if(req.success){
       this.appendCreatedPost(req.post);   //Insere o post recém-criado no feed
@@ -49,13 +55,19 @@ class PostForm extends Component {
       });
       document.getElementById('postText').value = '';   //Limpa o postForm
     }
+    //Caso tenha ocorrido algum erro:
     else{
+      //Exibe o erro como mensagem de warning:
       this.setState({
         warning: req.error.data
       })
     }
   }
 
+  /**
+   * Acessa os inputs do form e retorna um objeto de post construído
+   * pronto para ser enviado ao servidor.
+   */
   buildPost(){
     const text = document.getElementById('postText').value;
     const author = this.props.session.userId;
@@ -65,6 +77,10 @@ class PostForm extends Component {
     }
   }
 
+  /**
+   * Insere um post recém-criado no topo do feed do usuário.
+   * @param {*} post Post recém-criado que chegou do servidor
+   */
   appendCreatedPost(post){
     let feedPosts = this.props.page.feedPosts;
     feedPosts.unshift(post);
@@ -74,6 +90,9 @@ class PostForm extends Component {
     console.log(this.props)
   }
 
+  /**
+   * Renderiza a mensagem de erro, caso haja.
+   */
   renderErrorMessage(){
     return (
       this.state.error ?
@@ -85,6 +104,9 @@ class PostForm extends Component {
     )
   }
 
+  /**
+   * Renderiza a mensagem de warning, caso haja.
+   */
   renderWarningMessage(){
     return (
       this.state.warning ?
@@ -96,6 +118,9 @@ class PostForm extends Component {
     )
   }
 
+  /**
+   * Renderiza a mensagem de sucesso, caso haja.
+   */
   renderMessage(){
     return (
       this.state.message ?
