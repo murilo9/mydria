@@ -22,7 +22,8 @@ import actionTypes,
   setSessionToken,
   setUserNickname,
   setUserProfilePicture,
-  setUserEmail
+  setUserEmail,
+  unsetUser
 } from '../actions';
 
 const mapStateToProps = state => ({
@@ -37,14 +38,15 @@ const mapDispatchToProps = dispatch => ({
   setUserEmail: email => dispatch(setUserEmail(email)),
   setUserNickname: nickname => dispatch(setUserNickname(nickname)),
   setUserProfilePicture: profilePic => dispatch(setUserProfilePicture(profilePic)),
+  unsetUser: () => dispatch(unsetUser())
 })
 
 class FeedPage extends Component {
   constructor(props){
     super(props);
     this.state = {
-      sessionExpired: false,
-      loadingPosts: true
+      sessionExpired: false,  //Renderiza um objeto <Redirect> para voltar à página de login
+      loadingPosts: true    //Renderiza um spinner enquanto posts estiverem sendo carregados
     }
     this.logout = this.logout.bind(this);
     this.sessionInit = this.sessionInit.bind(this);
@@ -52,6 +54,10 @@ class FeedPage extends Component {
     this.renderPosts = this.renderPosts.bind(this);
   }
 
+  /**
+   * Quando a view for montada, pega o token dos cookies e verifica se
+   * a session é válida e ainda está ativa.
+   */
   async componentDidMount() {
     let token = Cookies.get('token');
     const session = await request.validateSession(token);
@@ -68,13 +74,13 @@ class FeedPage extends Component {
     }
     //Se a session não é válida ou expirou:
     else{
-      //Faz logout:
-      this.logout();
+      this.logout();    //Faz logout:
     }
   }
 
   /**
-   * @desc Recebe o token e o ID e realiza os dispatches no store pra setar a session.
+   * @desc Recebe o token, o ID e os dados do usuário pra realizar os dispatches 
+   * no store pra setar a session.
    * @param {String} token 
    * @param {String} userId 
    */
@@ -87,16 +93,24 @@ class FeedPage extends Component {
     this.props.setUserProfilePicture(profilePicture);
   }
 
+  /**
+   * Limpa os cookies e a store pra realizar logout.
+   */
   logout(){
     Cookies.remove('token');
     Cookies.remove('userId');
-    //TODO: limpar store
+    this.props.setPageData({});
+    this.props.setSessionActive(false);
+    this.props.unsetUser();
     this.setState({ sessionExpired: true });
   }
 
+  /**
+   * Carrega alguns posts para exibir no feed do usuário.
+   */
   async loadPosts(){
     const feedPosts = await request.loadSomePosts();
-    this.props.setPageData({ feedPosts });    //Salva os posts no store
+    this.props.setPageData({ feedPosts });    //Salva os posts no store (page.feedPosts)
     this.setState({
       loadingPosts: false
     })
