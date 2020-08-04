@@ -19,23 +19,31 @@ export default class LoginPage extends Component {
     this.state = {
       //Usado durante o render para redirecionar pra página de feed ou não:
       sessionActive: false,
-      //
+      //Mensagem de warning a ser exibida, se houver
       warningMessage: '',
+      //Mensagem de success a ser exibida, se houver
       successMessage: '',
+      //Renderiza o form de signup ao invés do form de login
       showSignupForm: false
     }
+    //Faz o bind das funções do component:
     this.doLogin = this.doLogin.bind(this);
     this.doSignup = this.doSignup.bind(this);
-    this.message = this.message.bind(this);
-    this.formFooter = this.formFooter.bind(this);
+    this.renderMessage = this.renderMessage.bind(this);
+    this.renderFormFooter = this.renderFormFooter.bind(this);
     this.showLogin = this.showLogin.bind(this);
     this.showSignup = this.showSignup.bind(this);
+    this.renderForm = this.renderForm.bind(this);
   }
 
+  /**
+   * Quando a view for montada, verifica se ja não existe uma session válida e ativa.
+   */
   async componentDidMount() {
     let token = Cookies.get('token');
     const session = await requestService.validateSession(token);
     if(session.active){
+      //Seta a variável que vai renderizar um <Redirect> pra mudar de página:
       this.setState({ sessionActive: true });
     }
   }
@@ -47,34 +55,44 @@ export default class LoginPage extends Component {
   async doLogin(loginForm) {
     const login = await requestService.login(loginForm.email, loginForm.password);
     if(login.success){
-      Cookies.set('token', login.token);
-      Cookies.set('userId', login.userId);
+      Cookies.set('token', login.token);    //Seta o token nos cookies
+      Cookies.set('userId', login.userId);  //Seta o userId nos cookies
+      //Seta a variável que vai renderizar um <Redirect> pra mudar de página:
       this.setState({ sessionActive: true })
     }
-    else{
+    //Em caso de erro, renderiza a mensagem do servidor:
+    else{   
       this.setState({ warningMessage: login.message });
     }
   }
 
   /**
    * Faz a request no servidor para criar uma nova conta.
-   * @param {*} signupForm Form com os dados do usuário
+   * @param {
+   *  email: String,
+   *  nickname: String,
+   *  password: String,
+   *  passwordAgain: String
+   * } signupForm Form com os dados do usuário
    */
   async doSignup(signupForm) {
     const signup = await requestService.signup(signupForm);
     if(signup.success){
-      this.showLogin();
+      this.showLogin();   //Exibe o form de login novamente
+      //Exibe uma mensagem de conta criada com sucesso:
       this.setState({ successMessage: "Account successfuly created. You may now login." });
     }
-    else{
+    //Em caso de erro, renderiza a mensagem do servidor:
+    else{ 
       this.setState({ warningMessage: signup.message });
     }
   }
 
   /**
-   * Exibe a mensagem de alerta em caso de erro ou sucesso em uma request.
+   * Renderiza a mensagem de alerta em caso de erro ou sucesso em uma request
+   * de acordo com o que está setado no state.
    */
-  message() {
+  renderMessage() {
     if(this.state.warningMessage){
       return (
         <Alert variant="danger">
@@ -95,23 +113,31 @@ export default class LoginPage extends Component {
   }
 
   /**
-   * Exibe o form de Sign up
+   * [comando] Faz exibir o form de Sign up.
    */
   showSignup() {
     this.setState({ showSignupForm: true });
   }
 
   /**
-   * Exibe o form de Login
+   * [comando] Faz exibir o form de Login.
    */
   showLogin() {
     this.setState({ showSignupForm: false });
   }
 
+  renderForm() {
+    return this.state.showSignupForm ? 
+      <SignupForm doSignup={this.doSignup} /> 
+      : 
+      <LoginForm doLogin={this.doLogin} />
+  }
+
   /**
-   * Renderiza o footer do form
+   * Renderiza o footer do form.
    */
-  formFooter() {
+  renderFormFooter() {
+    {/* Botão que alterna entre 'Login' e 'Signup' */}
     const actionButton = this.state.showSignupForm ?
       <Button variant="link" block onClick={this.showLogin}>
         Login
@@ -134,25 +160,18 @@ export default class LoginPage extends Component {
   }
 
   render(){
-    if(this.state.sessionActive){
-      return <Redirect to="/feed" />
-    }
-    else{
-      const form = this.state.showSignupForm ? 
-      <SignupForm doSignup={this.doSignup} /> : <LoginForm doLogin={this.doLogin} />
-
-      return (
-        <Container className="my-view-container">
-           <Row className="justify-content-sm-center align-items-center my-full-height">
-            <Col md="6" lg="4" xl="3">
-              <Logo />
-              { form }
-              {this.formFooter()}
-              {this.message()}
-            </Col>
-          </Row>
-        </Container>
-      )
-    }
+    return this.state.sessionActive ?
+      <Redirect to="/feed" />
+      :
+      <Container className="my-view-container">
+          <Row className="justify-content-sm-center align-items-center my-full-height">
+          <Col md="6" lg="4" xl="3">
+            <Logo />
+            { this.renderForm() }
+            { this.renderFormFooter() }
+            { this.renderMessage() }
+          </Col>
+        </Row>
+      </Container>
   }
 }
