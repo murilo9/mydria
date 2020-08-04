@@ -149,8 +149,8 @@ class FeedPage extends Component {
           <Topbar logout={this.logout}/>
           <Container className="my-page-container">
             <Row>
-              <Col xs={2} className="my-ads">Ads</Col>
-              <Col xs={7}>
+              <Col sm={2} className="my-ads d-none d-sm-flex">Ads</Col>
+              <Col xs={12} sm={7}>
                 <PostForm />
                 { this.renderPosts() }
               </Col>

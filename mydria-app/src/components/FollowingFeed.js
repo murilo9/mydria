@@ -8,7 +8,7 @@ export default class Post extends Component {
   
   render() {
     return (
-      <Col xs={3} className="my-ads">Following Feed</Col>
+      <Col sm={3} className="my-ads d-none d-sm-flex">Following Feed</Col>
     )
   }
 }

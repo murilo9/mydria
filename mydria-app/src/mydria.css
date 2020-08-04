@@ -36,3 +36,9 @@
 .my-ads {
   border: 1px solid #ccc;
 }
+
+@media screen and (min-width: 768px) {
+  .my-publish-button-col {
+    padding-left: 0;
+  }
+}

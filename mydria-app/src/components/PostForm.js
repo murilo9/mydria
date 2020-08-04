@@ -163,10 +163,10 @@ class PostForm extends Component {
           </Form.Group>
           <Form.Group>
             <Row className="justify-content-end">
-              <Col lg={9}>
+              <Col md={9}>
                 <Form.Control type="text" placeholder="Tags" />
               </Col>
-              <Col lg={3}>
+              <Col md={3} className="my-publish-button-col">
                 <Button variant="primary" block onClick={this.publishPost}>Publish</Button>
               </Col>
             </Row>
