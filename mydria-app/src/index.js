@@ -17,9 +17,15 @@ const store = createStore(mydriaApp);
 ReactDOM.render(
   <Provider store={store}>
     <BrowserRouter>
+
+      {/* Todas as páginas existentes são inseridas aqui */}
+
       <Route exact path="/login" component={pages.Login}/>
       <Route exact path="/feed" component={pages.Feed}/>
+
+      {/* A princípio, páginas não-reconhecidas redirecionam pra /login */}
       <Redirect from="*" to="/login" />
+
     </BrowserRouter>
   </Provider>,
   document.getElementById('root')

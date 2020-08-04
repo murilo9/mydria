@@ -1,3 +1,9 @@
+.btn:focus{
+  outline: none;
+  border: none;
+  box-shadow: none;
+}
+
 .my-view-container {
   height: 100vh;
 }
