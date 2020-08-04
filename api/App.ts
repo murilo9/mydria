@@ -26,6 +26,7 @@ const storage = multer.diskStorage({
 
 class App {
   public app: express.Application;
+  //Declara todos os grupos de rotas:
   public userRoutes: UserRoutes = new UserRoutes();
   public loginRoutes: LoginRoutes = new LoginRoutes();
   public postsRoutes: PostRoutes = new PostRoutes();
@@ -34,10 +35,11 @@ class App {
     this.app = express();
     this.config();
     const upload = multer({ storage });
+    //Carrega todos os grupos de rotas:
     this.userRoutes.routes(this.app, verifyJWT, upload);
     this.loginRoutes.routes(this.app, verifyJWT);
     this.postsRoutes.routes(this.app, verifyJWT);
-    mongoose.connect('mongodb://localhost/andorin', {useNewUrlParser: true});
+    mongoose.connect('mongodb://localhost/mydria', {useNewUrlParser: true});
   }
 
   private config(): void{

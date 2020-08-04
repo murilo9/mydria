@@ -96,6 +96,8 @@ export default class UserRoutes {
       }
     })
 
+    //POST em /profile-pic - Faz upload de uma nova foto de perfil
+
     app.post('/profile-pic', verifyJWT, upload.single('file'), async (req, res: Response) => {
       console.log('POST em /profile-pic')
       res.status(200).send('upload done')
