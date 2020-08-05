@@ -139,10 +139,64 @@ const publishPost = async function(post) {
   return response;
 }
 
+const likePost = async function(postId) {
+  let response = {};
+  try {
+    const token = Cookies.get('token');
+    const res = await axios({
+      url: baseUrl + `/post/${postId}/like`,
+      method: 'post',
+      headers: {
+        'x-access-token': token
+      }
+    });
+    console.log('updated post from server')
+    console.log(res.data)
+    response = {
+      success: true,
+      post: res.data
+    }
+  }
+  catch (e) {
+    response = {
+      success: false,
+      error: e.response
+    }
+  }
+  return response;
+}
+
+const unlikePost = async function(postId) {
+  let response = {};
+  try {
+    const token = Cookies.get('token');
+    const res = await axios({
+      url: baseUrl + `/post/${postId}/unlike`,
+      method: 'post',
+      headers: {
+        'x-access-token': token
+      }
+    });
+    response = {
+      success: true,
+      post: res.data
+    }
+  }
+  catch (e) {
+    response = {
+      success: false,
+      error: e.response
+    }
+  }
+  return response;
+}
+
 export default {
   validateSession,
   login,
   signup,
   loadSomePosts,
-  publishPost
+  publishPost,
+  likePost,
+  unlikePost
 }

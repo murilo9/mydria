@@ -52,6 +52,7 @@ class FeedPage extends Component {
     this.sessionInit = this.sessionInit.bind(this);
     this.loadPosts = this.loadPosts.bind(this);
     this.renderPosts = this.renderPosts.bind(this);
+    this.updatePost = this.updatePost.bind(this);
   }
 
   /**
@@ -116,6 +117,25 @@ class FeedPage extends Component {
     })
   }
 
+  /**
+   * Atualiza os dados de um post sendo exibido na página.
+   * @param {*} post Post com os dados atualizados
+   */
+  updatePost(post, callback){
+    let posts = [...this.props.page.feedPosts];
+    //Procura o post na lista de posts do feed:
+    for(let p = 0; p < posts.length; p++){
+      let existingPost = posts[p];
+      if(existingPost._id === post._id){
+        posts.splice(p, 1, post);
+        break;
+      }
+    }
+    //Atualiza a lista de posts do feed:
+    this.props.setPageData({ feedPosts: posts });
+    callback();
+  }
+
   renderPosts(){
     if(this.state.loadingPosts){
       return (
@@ -132,7 +152,7 @@ class FeedPage extends Component {
       let posts = [];
       if(this.props.page.feedPosts){
         this.props.page.feedPosts.forEach(post => {
-          posts.push(<Post data={post} key={post._id} />)
+          posts.push(<Post postData={post} updatePost={this.updatePost} key={post._id} />)
         })
       }
       return posts;

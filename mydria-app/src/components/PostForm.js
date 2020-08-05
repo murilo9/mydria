@@ -87,7 +87,6 @@ class PostForm extends Component {
     this.props.setPageData({
       feedPosts
     })
-    console.log(this.props)
   }
 
   /**
