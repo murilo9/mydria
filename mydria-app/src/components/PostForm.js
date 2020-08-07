@@ -162,7 +162,7 @@ class PostForm extends Component {
           </Form.Group>
           <Form.Group>
             <Row className="justify-content-end">
-              <Col md={9}>
+              <Col md={9} className="my-tags-input">
                 <Form.Control type="text" placeholder="Tags" />
               </Col>
               <Col md={3} className="my-publish-button-col">
