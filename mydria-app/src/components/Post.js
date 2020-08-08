@@ -30,6 +30,7 @@ class Post extends Component {
     this.renderLikesQty = this.renderLikesQty.bind(this);
     this.renderUnlikesQty = this.renderUnlikesQty.bind(this);
     this.clickCallback = this.clickCallback.bind(this);
+    this.renderPostTags = this.renderPostTags.bind(this);
   }
 
   /**
@@ -124,6 +125,19 @@ class Post extends Component {
     return ' ' + (this.props.postData.unlikedBy.length + tempUnlike);
   }
 
+  renderPostTags(){
+    if(this.props.postData.tags.length){
+      let tags = [];
+      this.props.postData.tags.forEach(tagContent => {
+      tags.push(<a href="#" key={tagContent}>#{ tagContent } </a>)
+      })
+      return tags;
+    }
+    else{
+      return null;
+    }
+  }
+
   render() {
     return (
       <Container fluid className="mb-3 my-post">
@@ -144,6 +158,7 @@ class Post extends Component {
                 { this.renderPostDate() }
               </Col>
             </Row>
+            { this.renderPostTags() }
             <p>
               { this.props.postData.text }
             </p>

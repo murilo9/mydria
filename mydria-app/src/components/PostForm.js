@@ -3,6 +3,7 @@ import request from '../services/request.js';
 import { connect } from 'react-redux';
 
 import { setPageData } from '../actions';
+import sanitize from '../helpers/stringSanitizer.js';
 
 import Form from 'react-bootstrap/Form';
 import Row from 'react-bootstrap/esm/Row';
@@ -28,12 +29,16 @@ class PostForm extends Component {
       posting: false,   //Exibe um spinner de posting enquanto estiver postando
       error: false,   //Exibe uma mensagem de erro, caso tenha
       warning: false, //Exibe uma mensagem de warning, caso tenha
-      message: false  //Exibe uma mensagem de sucesso, caso tenha
+      message: false,  //Exibe uma mensagem de sucesso, caso tenha,
+      tags: []
     }
     this.publishPost = this.publishPost.bind(this);
     this.renderErrorMessage = this.renderErrorMessage.bind(this);
     this.renderWarningMessage = this.renderWarningMessage.bind(this);
     this.renderMessage = this.renderMessage.bind(this);
+    this.onTagPush = this.onTagPush.bind(this);
+    this.renderTags = this.renderTags.bind(this);
+    this.removeTag = this.removeTag.bind(this);
   }
 
   /**
@@ -71,9 +76,11 @@ class PostForm extends Component {
   buildPost(){
     const text = document.getElementById('postText').value;
     const author = this.props.session.userId;
+    const tags = this.state.tags;
     return {
       text,
-      author
+      author,
+      tags
     }
   }
 
@@ -131,6 +138,37 @@ class PostForm extends Component {
     )
   }
 
+  onTagPush(target){
+    if(target.charCode === 13){
+      let tagInput = document.getElementById('my-postform-tags-input');
+      let tagContent = tagInput.value;
+      tagContent = sanitize(tagContent);
+      let tagExists = this.state.tags.indexOf(tagContent) >= 0;
+      if(tagContent && !tagExists){
+        let tags = this.state.tags;
+        tags.push(tagContent);
+        this.setState({ tags });
+        tagInput.value = '';
+      }
+    }
+  }
+
+  removeTag(tagContent){
+    let tagIndex = this.state.tags.indexOf(tagContent);
+    this.state.tags.splice(tagIndex, 1);
+  }
+
+  renderTags(){
+    let tags = [];
+    this.state.tags.forEach(tag => {
+      tags.push(<Tag text={tag} key={tag} variant="info" removeTag={this.removeTag}/>)
+    })
+    return tags.length ? 
+      <Form.Group className="my-postform-tags-container">
+        { tags }
+      </Form.Group>
+      : null;
+  }
 
   render() {
     if(this.posting){
@@ -152,18 +190,17 @@ class PostForm extends Component {
         message,
         error,
         warning,
-        <Form key="postForm">
-          <Form.Group>
-            <Tag text="NiceDay" variant="primary" />
-          </Form.Group>
+        <Form key="postForm" onSubmit={(e) => e.preventDefault()}>
+          { this.renderTags() }
           <Form.Group controlId="postText">
-            <Form.Control as="textarea" rows="5" 
+            <Form.Control as="textarea" rows="5"
             placeholder={`Whats's your take right now, ${this.props.user.nickname}?`} />
           </Form.Group>
           <Form.Group>
             <Row className="justify-content-end">
               <Col md={9} className="my-tags-input">
-                <Form.Control type="text" placeholder="Tags" />
+                <Form.Control type="text" placeholder="Tags" 
+                onKeyPress={this.onTagPush} id="my-postform-tags-input"/>
               </Col>
               <Col md={3} className="my-publish-button-col">
                 <Button variant="primary" block onClick={this.publishPost}>Publish</Button>

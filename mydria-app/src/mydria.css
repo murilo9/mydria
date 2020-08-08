@@ -59,3 +59,17 @@
     margin-bottom: 1rem;
   }
 }
+.my-postform-tags-container {
+  margin: 0;
+}
+
+.my-tag {
+  font-size: 0.8rem;
+  padding: 6px;
+  margin-right: 8px;
+  margin-bottom: 16px;
+}
+
+.my-tag a{
+  color: inherit;
+}
