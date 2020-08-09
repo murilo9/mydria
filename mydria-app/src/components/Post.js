@@ -203,22 +203,22 @@ class Post extends Component {
             </Row>
           </Media.Body>
         </Media>
-        <Row className="justify-content-end">
+        <Row className="justify-content-end my-post-buttons">
           <Col xs="auto">
             <Button onClick={ this.likeClick }
             variant={this.liked() ? "dark" : "outline-dark"} >
               <FontAwesomeIcon icon={faThumbsUp} />
               { this.renderLikesQty() }
-            </Button>
+            </Button>{' '}
             <Button onClick={ this.unlikeClick }
             variant={this.unliked() ? "dark" : "outline-dark"} >
               <FontAwesomeIcon icon={faThumbsDown} />
               { this.renderUnlikesQty() }
-            </Button>
+            </Button>{' '}
             <Button variant="outline-dark">
               <FontAwesomeIcon icon={faComment} />
                 { ' ' + '0' /* TODO comments */ }
-            </Button>
+            </Button>{' '}
             <Button variant="outline-dark">
               <FontAwesomeIcon icon={faShare} />
             </Button>

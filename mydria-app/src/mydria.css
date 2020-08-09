@@ -1,3 +1,7 @@
+body {
+  background: #f6f9f6;
+}
+
 .btn:focus{
   outline: none;
   border: none;
@@ -35,6 +39,7 @@
 
 .my-ads {
   border: 1px solid #ccc;
+  background: white;
 }
 
 @media screen and (min-width: 767px) {
@@ -47,6 +52,11 @@
   padding: 8px;
   border: 1px solid #ccc;
   border-radius: .25rem;
+  background: white;
+}
+
+.my-post-buttons .btn{
+  padding: 4px 8px;
 }
 
 @media screen and (max-width: 767px) {
