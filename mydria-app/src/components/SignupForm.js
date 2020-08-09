@@ -81,7 +81,7 @@ export default class SignupForm extends Component {
           <Form.Check type="checkbox" label="I totally agree with the Privacy Policy" />
         </Form.Group>
         
-        <Button variant="primary" onClick={this.handleSignup} block>
+        <Button variant="success" onClick={this.handleSignup} block>
           Sign up
         </Button>
       </Form>

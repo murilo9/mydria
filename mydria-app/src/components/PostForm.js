@@ -203,7 +203,7 @@ class PostForm extends Component {
                 onKeyPress={this.onTagPush} id="my-postform-tags-input"/>
               </Col>
               <Col md={3} className="my-publish-button-col">
-                <Button variant="primary" block onClick={this.publishPost}>Publish</Button>
+                <Button variant="info" block onClick={this.publishPost}>Publish</Button>
               </Col>
             </Row>
           </Form.Group>

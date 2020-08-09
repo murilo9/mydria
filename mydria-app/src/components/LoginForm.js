@@ -46,7 +46,7 @@ export default class LoginForm extends Component {
           onChange={this.handleChange.bind(this)}
         />
         </Form.Group>
-        <Button variant="primary" onClick={this.handleLogin} block>
+        <Button variant="info" onClick={this.handleLogin} block>
           Login
         </Button>
       </Form>
