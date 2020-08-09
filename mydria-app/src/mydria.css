@@ -44,7 +44,9 @@
 }
 
 .my-post {
-  padding: 0;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: .25rem;
 }
 
 @media screen and (max-width: 767px) {
@@ -72,4 +74,37 @@
 
 .my-tag a{
   color: inherit;
+}
+
+.btn.btn-outline-dark {
+  border: none;
+}
+
+.my-post-options {
+  display: inline;
+}
+
+.my-post-author-name {
+  display: flex;
+}
+
+@media screen and (max-width: 767px) {
+  .my-post-author-name {
+    line-height: 1rem;
+  }
+}
+
+.my-post-date {
+  font-size: .8rem;
+  color: #777;
+}
+
+@media screen and (max-width: 1023px) {
+  .my-post-text {
+    font-size: .9rem;
+  }
+}
+
+.my-post-options-button.dropdown-toggle::after {
+  display: none;
 }

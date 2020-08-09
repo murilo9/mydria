@@ -6,8 +6,17 @@ import Container from 'react-bootstrap/Container';
 import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
 import Button from 'react-bootstrap/Button';
+import ButtonGroup from 'react-bootstrap/ButtonGroup';
+import Dropdown from 'react-bootstrap/Dropdown';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faComment, faThumbsDown, faThumbsUp } from '@fortawesome/free-solid-svg-icons';
+import { 
+  faComment, 
+  faThumbsDown, 
+  faThumbsUp, 
+  faTrashAlt,
+  faEllipsisH,
+  faShare
+} from '@fortawesome/free-solid-svg-icons';
 import { connect } from 'react-redux';
 
 const mapStateToProps = state => ({
@@ -31,6 +40,7 @@ class Post extends Component {
     this.renderUnlikesQty = this.renderUnlikesQty.bind(this);
     this.clickCallback = this.clickCallback.bind(this);
     this.renderPostTags = this.renderPostTags.bind(this);
+    this.renderActions = this.renderActions.bind(this);
   }
 
   /**
@@ -138,6 +148,14 @@ class Post extends Component {
     }
   }
 
+  renderActions(){
+    return <Col xs="auto">
+      <Button variant="info" plain>
+        <FontAwesomeIcon icon={faTrashAlt} />
+      </Button>
+    </Col>
+  }
+
   render() {
     return (
       <Container fluid className="mb-3 my-post">
@@ -150,36 +168,59 @@ class Post extends Component {
             alt="User picture"
           />
           <Media.Body>
-            <Row className="justify-content-end">
-              <Col>
-                <strong>{ this.props.postData.author.nickname }</strong>
+            <Row className="justify-content-end mb-1">
+              <Col className="d-flex align-items-start justify-content-center flex-column">
+                <div className="my-post-author-name">
+                  <strong>{ this.props.postData.author.nickname }</strong>
+                </div>
+                <div className="my-post-date">
+                  { this.renderPostDate() }
+                </div>
               </Col>
               <Col xs="auto">
-                { this.renderPostDate() }
+                <Dropdown className="my-post-options">
+                  {' '}
+                  <Dropdown.Toggle variant="outline-dark" 
+                  className="my-post-options-button"
+                  id={"my-post-options-button-" + this.props.postData._id}>
+                    <FontAwesomeIcon icon={faEllipsisH} />
+                  </Dropdown.Toggle>
+                  <Dropdown.Menu>
+                    <Dropdown.Item href="#/action-1">Action</Dropdown.Item>
+                    <Dropdown.Item href="#/action-2">Another action</Dropdown.Item>
+                    <Dropdown.Item href="#/action-3">Something else</Dropdown.Item>
+                  </Dropdown.Menu>
+                </Dropdown>
               </Col>
             </Row>
+            <Row>
+              <Col>
             { this.renderPostTags() }
-            <p>
+            <p className="my-post-text">
               { this.props.postData.text }
             </p>
+            </Col>
+            </Row>
           </Media.Body>
         </Media>
         <Row className="justify-content-end">
           <Col xs="auto">
-            <Button variant={this.liked() ? "dark" : "outline-dark"} onClick={ this.likeClick }>
+            <Button onClick={ this.likeClick }
+            variant={this.liked() ? "dark" : "outline-dark"} >
               <FontAwesomeIcon icon={faThumbsUp} />
               { this.renderLikesQty() }
-            </Button>{' '}
-            <Button variant={this.unliked() ? "dark" : "outline-dark"} onClick={ this.unlikeClick }>
+            </Button>
+            <Button onClick={ this.unlikeClick }
+            variant={this.unliked() ? "dark" : "outline-dark"} >
               <FontAwesomeIcon icon={faThumbsDown} />
               { this.renderUnlikesQty() }
-            </Button>{' '}
+            </Button>
             <Button variant="outline-dark">
               <FontAwesomeIcon icon={faComment} />
                 { ' ' + '0' /* TODO comments */ }
-            </Button>{' '}
+            </Button>
             <Button variant="outline-dark">
-              Share
+              <FontAwesomeIcon icon={faShare} />
             </Button>
           </Col>
         </Row>
