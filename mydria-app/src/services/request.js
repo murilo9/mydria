@@ -103,6 +103,12 @@ const loadSomePosts = async function() {
       }
     })
     response = res.data;
+    response.sort((a, b) => {
+      let dateA = new Date(a.date);
+      let dateB = new Date(b.date);
+      console.log(dateA.getTime())
+      return dateB.getTime() - dateA.getTime();
+    })
   }
   catch (e) {
     response = {
