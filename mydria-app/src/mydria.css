@@ -31,6 +31,16 @@ body {
   opacity: 0.8;
 }
 
+.my-login-phrase {
+  color: white;
+  font-size: 2.5rem;
+  font-weight: bold;
+}
+
+.my-login-container .my-full-height {
+  justify-content: space-evenly;
+}
+
 .my-login-container {
   height: 100vh;
 }

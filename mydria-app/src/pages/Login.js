@@ -166,7 +166,10 @@ export default class LoginPage extends Component {
       <React.Fragment>
         <div class="my-login-background"></div>
         <Container className="my-login-container">
-            <Row className="justify-content-sm-center align-items-center my-full-height">
+            <Row className="align-items-center my-full-height">
+            <Col md="6" lg="7" className="my-login-phrase">
+              Get in touch with your interests, while sharing your thoughts with the world.
+            </Col>
             <Col md="6" lg="4" xl="3" className="my-login-box">
               <Logo />
               { this.renderForm() }
