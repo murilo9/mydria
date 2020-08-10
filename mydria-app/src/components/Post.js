@@ -8,12 +8,15 @@ import Row from 'react-bootstrap/Row';
 import Button from 'react-bootstrap/Button';
 import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import Dropdown from 'react-bootstrap/Dropdown';
+import Alert from 'react-bootstrap/Alert';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { 
   faComment, 
   faThumbsDown, 
   faThumbsUp, 
   faTrashAlt,
+  faMinusSquare,
+  faEdit,
   faEllipsisH,
   faShare
 } from '@fortawesome/free-solid-svg-icons';
@@ -29,7 +32,8 @@ class Post extends Component {
     super(props);
     this.state = {
       tempLike: false,
-      tempUnlike: false
+      tempUnlike: false,
+      error: false
     }
     this.renderPostDate = this.renderPostDate.bind(this);
     this.liked = this.liked.bind(this);
@@ -41,6 +45,17 @@ class Post extends Component {
     this.clickCallback = this.clickCallback.bind(this);
     this.renderPostTags = this.renderPostTags.bind(this);
     this.renderActions = this.renderActions.bind(this);
+    this.renderError = this.renderError.bind(this);
+    this.userIsAuthor = this.userIsAuthor.bind(this);
+    this.hidePost = this.hidePost.bind(this);
+    this.deletePost = this.deletePost.bind(this);
+    this.editPost = this.editPost.bind(this);
+  }
+
+  userIsAuthor(){
+    const userId = this.props.session.userId;
+    const authorId = this.props.postData.author._id;
+    return userId === authorId;
   }
 
   /**
@@ -119,6 +134,28 @@ class Post extends Component {
     })
   }
 
+  hidePost(){
+    //TODO
+  }
+
+  async deletePost(){
+    const postId = this.props.postData._id;
+    let res = await request.deletePost(postId);
+    if(res.success){
+      //Chama a função do pai pra deletar o post do store:
+      this.props.deletePost(postId);
+    }
+    else{
+      this.setState({
+        error: 'Something went wrong at our server. Please try again later.'
+      })
+    }
+  }
+
+  editPost(){
+
+  }
+
   /**
    * Retorna a quantidade de likes do post.
    */
@@ -148,17 +185,33 @@ class Post extends Component {
     }
   }
 
+  renderError(){
+    return this.state.error ?
+    <Alert variant="danger"> {this.state.error} </Alert>
+    :
+    null
+  }
+
   renderActions(){
-    return <Col xs="auto">
-      <Button variant="info" plain>
-        <FontAwesomeIcon icon={faTrashAlt} />
-      </Button>
-    </Col>
+    return this.userIsAuthor() ?
+    <React.Fragment>
+      <Dropdown.Item href="#" onClick={ this.editPost }>
+        <FontAwesomeIcon icon={faEdit} /> Edit
+      </Dropdown.Item>
+      <Dropdown.Item href="#" onClick={ this.deletePost }>
+        <FontAwesomeIcon icon={faTrashAlt} /> Delete
+      </Dropdown.Item>
+    </React.Fragment>
+    :
+    <Dropdown.Item href="#" onclick="event.preventDefault()" onClick={ this.hidePost }>
+      <FontAwesomeIcon icon={faMinusSquare} /> Hide this
+    </Dropdown.Item>
   }
 
   render() {
     return (
       <Container fluid className="mb-3 my-post">
+        { this.renderError() }
         <Media>
           <img
             width={64}
@@ -178,7 +231,7 @@ class Post extends Component {
                 </div>
               </Col>
               <Col xs="auto">
-                <Dropdown className="my-post-options">
+                <Dropdown className="my-post-options" alignRight>
                   {' '}
                   <Dropdown.Toggle variant="outline-dark" 
                   className="my-post-options-button"
@@ -186,9 +239,7 @@ class Post extends Component {
                     <FontAwesomeIcon icon={faEllipsisH} />
                   </Dropdown.Toggle>
                   <Dropdown.Menu>
-                    <Dropdown.Item href="#/action-1">Action</Dropdown.Item>
-                    <Dropdown.Item href="#/action-2">Another action</Dropdown.Item>
-                    <Dropdown.Item href="#/action-3">Something else</Dropdown.Item>
+                    { this.renderActions() }
                   </Dropdown.Menu>
                 </Dropdown>
               </Col>

@@ -164,7 +164,7 @@ export default class LoginPage extends Component {
       <Redirect to="/feed" />
       :
       <React.Fragment>
-        <div class="my-login-background"></div>
+        <div className="my-login-background"></div>
         <Container className="my-login-container">
             <Row className="align-items-center my-full-height">
             <Col md="6" lg="7" className="my-login-phrase">

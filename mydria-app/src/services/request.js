@@ -106,7 +106,6 @@ const loadSomePosts = async function() {
     response.sort((a, b) => {
       let dateA = new Date(a.date);
       let dateB = new Date(b.date);
-      console.log(dateA.getTime())
       return dateB.getTime() - dateA.getTime();
     })
   }
@@ -197,6 +196,31 @@ const unlikePost = async function(postId) {
   return response;
 }
 
+const deletePost = async function(postId) {
+  let response = {};
+  try {
+    const token = Cookies.get('token');
+    const res = await axios({
+      url: baseUrl + `/post/${postId}`,
+      method: 'delete',
+      headers: {
+        'x-access-token': token
+      }
+    });
+    response = {
+      success: true,
+      post: res.data
+    }
+  }
+  catch (e) {
+    response = {
+      success: false,
+      error: e.response
+    }
+  }
+  return response;
+}
+
 export default {
   validateSession,
   login,
@@ -204,5 +228,6 @@ export default {
   loadSomePosts,
   publishPost,
   likePost,
-  unlikePost
+  unlikePost,
+  deletePost
 }

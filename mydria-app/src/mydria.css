@@ -95,6 +95,10 @@ a.navbar-brand {
   background: white;
 }
 
+.my-post-options .dropdown-menu {
+  box-shadow: 2px 2px 4px #aaa;
+}
+
 .my-post-buttons .btn{
   padding: 4px 8px;
 }

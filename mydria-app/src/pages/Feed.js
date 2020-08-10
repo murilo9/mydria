@@ -53,6 +53,7 @@ class FeedPage extends Component {
     this.loadPosts = this.loadPosts.bind(this);
     this.renderPosts = this.renderPosts.bind(this);
     this.updatePost = this.updatePost.bind(this);
+    this.deletePost = this.deletePost.bind(this);
   }
 
   /**
@@ -136,6 +137,20 @@ class FeedPage extends Component {
     callback();
   }
 
+  deletePost(postId){
+    let posts = [...this.props.page.feedPosts];
+    //Procura o post na lista de posts do feed:
+    for(let p = 0; p < posts.length; p++){
+      let existingPost = posts[p];
+      if(existingPost._id === postId){
+        posts.splice(p, 1);
+        break;
+      }
+    }
+    //Atualiza a lista de posts do feed:
+    this.props.setPageData({ feedPosts: posts });
+  }
+
   renderPosts(){
     if(this.state.loadingPosts){
       return (
@@ -152,7 +167,12 @@ class FeedPage extends Component {
       let posts = [];
       if(this.props.page.feedPosts){
         this.props.page.feedPosts.forEach(post => {
-          posts.push(<Post postData={post} updatePost={this.updatePost} key={post._id} />)
+          posts.push(
+          <Post postData={post} 
+          updatePost={this.updatePost} 
+          deletePost={this.deletePost}
+          key={post._id} 
+          />)
         })
       }
       return posts;
