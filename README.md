@@ -11,7 +11,7 @@ Também foi utilizado o Mercury para internacionalização.
 Certifique-se de que possui o Mongodb instalado na sua máquina.
 Após ter baixado o respositório atualizado, rode **npm install** nos diretórios *api* e *mydria-app* para instalar as dependências da API REST e da aplicação React.
 Crie um arquivo *.ENV* na pasta *api* com o conteúdo *SECRET=SENHA*.
-Rode o comando **npm run start** na pasta *api* para iniciar a API. Você deve rodar o comando **npm run build** nela antes caso não tenha feito o build antes.
+Rode o comando **npm run start** na pasta *api* para iniciar a API. Você deve rodar o comando **npm run build** nela antes caso não tenha feito o build nenhuma vez.
 Rode o comando **npm run start** na pasta *mydria-app* para iniciar a aplicação React, que será servida em *localhost:8080*.
 
 ## Front-end
