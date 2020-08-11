@@ -196,6 +196,32 @@ const unlikePost = async function(postId) {
   return response;
 }
 
+const updatePost = async function(updatedPost) {
+  let response = {};
+  try {
+    const token = Cookies.get('token');
+    const res = await axios({
+      url: baseUrl + `/post/${updatedPost._id}`,
+      method: 'put',
+      headers: {
+        'x-access-token': token
+      },
+      data: updatedPost
+    });
+    response = {
+      success: true,
+      post: res.data
+    }
+  }
+  catch (e) {
+    response = {
+      success: false,
+      error: e.response
+    }
+  }
+  return response;
+}
+
 const deletePost = async function(postId) {
   let response = {};
   try {
@@ -229,5 +255,6 @@ export default {
   publishPost,
   likePost,
   unlikePost,
+  updatePost,
   deletePost
 }
