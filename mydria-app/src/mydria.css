@@ -29,6 +29,31 @@ body {
   position: absolute;
   background-size: cover;
   opacity: 0.8;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.my-login-background > .my-logo {
+  font-size: 4rem;
+  color: white;
+}
+
+.my-not-found-page {
+  padding: 0 1rem;
+}
+
+.my-not-found-page p {
+  font-size: 1.5rem;
+  color: #eee;
+}
+
+@media screen and (max-width: 767px) {
+  .my-not-found-page p {
+    font-size: 1rem;
+    font-weight: bold;
+  }
 }
 
 .my-login-phrase {
