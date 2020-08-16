@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import * as serviceWorker from './serviceWorker';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './mydria.css';
-import { Redirect } from 'react-router-dom';
+import { Redirect, Switch } from 'react-router-dom';
 
 import mydriaApp from './reducers';
 import { createStore } from 'redux';
@@ -17,15 +17,16 @@ const store = createStore(mydriaApp);
 ReactDOM.render(
   <Provider store={store}>
     <BrowserRouter>
+      <Switch>
 
       {/* Todas as páginas existentes são inseridas aqui */}
-
-      <Route exact path="/login" component={pages.Login}/>
+      
+      <Route exact path="/" component={pages.Login}/>
+      <Route exact path="/profile" component={pages.Profile}/>
       <Route exact path="/feed" component={pages.Feed}/>
-
-      {/* A princípio, páginas não-reconhecidas redirecionam pra /login */}
-      <Redirect from="*" to="/login" />
-
+      <Route path='*' component={pages.NotFound}/>
+      
+      </Switch>
     </BrowserRouter>
   </Provider>,
   document.getElementById('root')

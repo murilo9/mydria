@@ -1,8 +1,9 @@
-import React, { Component } from 'react';
+import React from 'react';
 import Cookies from 'js-cookie';
 import request from '../services/request.js';
 import { Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
+import MydriaPage from './base';
 
 import Container from 'react-bootstrap/Container';
 import Col from 'react-bootstrap/Col';
@@ -41,7 +42,7 @@ const mapDispatchToProps = dispatch => ({
   unsetUser: () => dispatch(unsetUser())
 })
 
-class FeedPage extends Component {
+class FeedPage extends MydriaPage {
   constructor(props){
     super(props);
     this.state = {
@@ -50,67 +51,16 @@ class FeedPage extends Component {
     }
     this.logout = this.logout.bind(this);
     this.sessionInit = this.sessionInit.bind(this);
-    this.loadPosts = this.loadPosts.bind(this);
+    this.loadPageData = this.loadPageData.bind(this);
     this.renderPosts = this.renderPosts.bind(this);
     this.updatePost = this.updatePost.bind(this);
     this.deletePost = this.deletePost.bind(this);
   }
 
   /**
-   * Quando a view for montada, pega o token dos cookies e verifica se
-   * a session é válida e ainda está ativa.
-   */
-  async componentDidMount() {
-    let token = Cookies.get('token');
-    const session = await request.validateSession(token);
-    //Se a session é válida e está ativa:
-    if(session.active){
-      //Grava os dados da session no store:
-      const token = Cookies.get('token');
-      const email = session.userData.email;
-      const nickname = session.userData.nickname;
-      const profilePicture = session.userData.profilePicture;
-      const userId = session.userData._id;
-      this.sessionInit(token, userId, email, nickname, profilePicture);
-      this.loadPosts();
-    }
-    //Se a session não é válida ou expirou:
-    else{
-      this.logout();    //Faz logout:
-    }
-  }
-
-  /**
-   * @desc Recebe o token, o ID e os dados do usuário pra realizar os dispatches 
-   * no store pra setar a session.
-   * @param {String} token 
-   * @param {String} userId 
-   */
-  sessionInit(token, userId, email, nickname, profilePicture){
-    this.props.setSessionActive(true);
-    this.props.setSessionUserId(userId);
-    this.props.setSessionToken(token);
-    this.props.setUserEmail(email);
-    this.props.setUserNickname(nickname);
-    this.props.setUserProfilePicture(profilePicture);
-  }
-
-  /**
-   * Limpa os cookies e a store pra realizar logout.
-   */
-  logout(){
-    Cookies.remove('token');
-    Cookies.remove('userId');
-    this.props.setPageData({});
-    this.props.setSessionActive(false);
-    this.props.unsetUser();
-    this.setState({ sessionExpired: true });
-  }
-
-  /**
    * Carrega alguns posts para exibir no feed do usuário.
    */
-  async loadPosts(){
+  async loadPageData(){
     const feedPosts = await request.loadSomePosts();
     this.props.setPageData({ feedPosts });    //Salva os posts no store (page.feedPosts)
     this.setState({
@@ -181,7 +131,7 @@ class FeedPage extends Component {
 
   render(){
     if(this.state.sessionExpired){
-      return <Redirect to="/login" />
+      return <Redirect to="/" />
     }
     else{
       return (
