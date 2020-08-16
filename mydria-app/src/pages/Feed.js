@@ -3,7 +3,7 @@ import Cookies from 'js-cookie';
 import request from '../services/request.js';
 import { Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
-import MydriaPage from './base';
+import { MydriaPage, mapStateToProps, mapDispatchToProps } from './base';
 
 import Container from 'react-bootstrap/Container';
 import Col from 'react-bootstrap/Col';
@@ -14,33 +14,6 @@ import Topbar from '../components/Topbar';
 import Post from '../components/Post';
 import PostForm from '../components/PostForm';
 import FollowingFeed from '../components/FollowingFeed';
-
-import actionTypes, 
-{ 
-  setPageData, 
-  setSessionActive, 
-  setSessionUserId, 
-  setSessionToken,
-  setUserNickname,
-  setUserProfilePicture,
-  setUserEmail,
-  unsetUser
-} from '../actions';
-
-const mapStateToProps = state => ({
-  ...state
-})
-
-const mapDispatchToProps = dispatch => ({
-  setPageData: data => dispatch(setPageData(data)),
-  setSessionActive: active => dispatch(setSessionActive(active)),
-  setSessionUserId: userId => dispatch(setSessionUserId(userId)),
-  setSessionToken: token => dispatch(setSessionToken(token)),
-  setUserEmail: email => dispatch(setUserEmail(email)),
-  setUserNickname: nickname => dispatch(setUserNickname(nickname)),
-  setUserProfilePicture: profilePic => dispatch(setUserProfilePicture(profilePic)),
-  unsetUser: () => dispatch(unsetUser())
-})
 
 class FeedPage extends MydriaPage {
   constructor(props){

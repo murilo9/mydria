@@ -3,33 +3,7 @@ import Cookies from 'js-cookie';
 import request from '../services/request.js';
 import { Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
-import MydriaPage from './base';
-import actionTypes, 
-{ 
-  setPageData, 
-  setSessionActive, 
-  setSessionUserId, 
-  setSessionToken,
-  setUserNickname,
-  setUserProfilePicture,
-  setUserEmail,
-  unsetUser
-} from '../actions';
-
-const mapStateToProps = state => ({
-  ...state
-})
-
-const mapDispatchToProps = dispatch => ({
-  setPageData: data => dispatch(setPageData(data)),
-  setSessionActive: active => dispatch(setSessionActive(active)),
-  setSessionUserId: userId => dispatch(setSessionUserId(userId)),
-  setSessionToken: token => dispatch(setSessionToken(token)),
-  setUserEmail: email => dispatch(setUserEmail(email)),
-  setUserNickname: nickname => dispatch(setUserNickname(nickname)),
-  setUserProfilePicture: profilePic => dispatch(setUserProfilePicture(profilePic)),
-  unsetUser: () => dispatch(unsetUser())
-})
+import { MydriaPage, mapDispatchToProps, mapStateToProps } from './base';
 
 class ProfilePage extends MydriaPage {
 

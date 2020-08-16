@@ -1,8 +1,36 @@
 import React, { Component } from 'react';
 import Cookies from 'js-cookie';
 import request from '../services/request.js';
+import 
+{ 
+  setPageData, 
+  setSessionActive, 
+  setSessionUserId, 
+  setSessionToken,
+  setUserNickname,
+  setUserProfilePicture,
+  setUserEmail,
+  unsetUser
+} from '../actions';
 
-export default class MydriaPage extends Component {
+export function mapStateToProps(state){
+  return {...state}
+}
+
+export function mapDispatchToProps(dispatch){
+  return {
+    setPageData: data => dispatch(setPageData(data)),
+    setSessionActive: active => dispatch(setSessionActive(active)),
+    setSessionUserId: userId => dispatch(setSessionUserId(userId)),
+    setSessionToken: token => dispatch(setSessionToken(token)),
+    setUserEmail: email => dispatch(setUserEmail(email)),
+    setUserNickname: nickname => dispatch(setUserNickname(nickname)),
+    setUserProfilePicture: profilePic => dispatch(setUserProfilePicture(profilePic)),
+    unsetUser: () => dispatch(unsetUser())
+  }
+}
+
+export class MydriaPage extends Component {
 
   /**
    * Quando a view for montada, pega o token dos cookies e verifica se
