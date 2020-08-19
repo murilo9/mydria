@@ -3,14 +3,24 @@
   src: url('./font/Kalam-Regular.ttf');
 }
 
+@font-face {
+  font-family: 'Alata';
+  src: url('./font/Alata-Regular.ttf');
+}
+
 body {
   background: #f6f9f6;
+  font-family: 'Alata';
 }
 
 .btn:focus{
   outline: none;
   border: none;
   box-shadow: none;
+}
+
+.btn {
+  font-style: .9rem;
 }
 
 .my-login-box {
@@ -59,7 +69,6 @@ body {
 .my-login-phrase {
   color: white;
   font-size: 2.5rem;
-  font-weight: bold;
 }
 
 .my-login-container .my-full-height {

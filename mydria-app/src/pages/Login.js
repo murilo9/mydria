@@ -167,7 +167,7 @@ export default class LoginPage extends Component {
         <div className="my-login-background"></div>
         <Container className="my-login-container">
             <Row className="align-items-center my-full-height">
-            <Col md="6" lg="7" className="my-login-phrase">
+            <Col md="6" lg="7" className="my-login-phrase d-none d-lg-block">
               Get in touch with your interests, while sharing your thoughts with the world.
             </Col>
             <Col md="6" lg="4" xl="3" className="my-login-box">
