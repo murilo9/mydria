@@ -22,8 +22,6 @@ class FeedPage extends MydriaPage {
       sessionExpired: false,  //Renderiza um objeto <Redirect> para voltar à página de login
       loadingPosts: true    //Renderiza um spinner enquanto posts estiverem sendo carregados
     }
-    this.logout = this.logout.bind(this);
-    this.sessionInit = this.sessionInit.bind(this);
     this.loadPageData = this.loadPageData.bind(this);
     this.renderPosts = this.renderPosts.bind(this);
     this.updatePost = this.updatePost.bind(this);

@@ -32,6 +32,12 @@ export function mapDispatchToProps(dispatch){
 
 export class MydriaPage extends Component {
 
+  constructor(props){
+    super(props);
+    this.logout = this.logout.bind(this);
+    this.sessionInit = this.sessionInit.bind(this);
+  }
+
   /**
    * Quando a view for montada, pega o token dos cookies e verifica se
    * a session é válida e ainda está ativa.
@@ -77,6 +83,7 @@ export class MydriaPage extends Component {
   logout(){
     Cookies.remove('token');
     Cookies.remove('userId');
+    console.log(this)
     this.props.setPageData({});
     this.props.setSessionActive(false);
     this.props.unsetUser();
