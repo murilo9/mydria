@@ -103,9 +103,11 @@ class FeedPage extends MydriaPage {
   }
 
   render(){
+    //Caso a session tenha expirado durante o runtime, redireciona:
     if(this.state.sessionExpired){
       return <Redirect to="/" />
     }
+    //Caso contrário, renderiza a página normalmente:
     else{
       return (
         <Container fluid className="my-no-padding">
