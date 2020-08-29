@@ -13,11 +13,23 @@ export default class UserRoutes {
     })
 
     //POST em /users - Cria um novo usuário
+
     .post(async (req: Request, res: Response) => {
       console.log('POST em /users')
       const user = new User(req.body);
       await user.save();
       res.status(201).send();   //201 - Created
+    });
+
+    //GET em /user/:id - Lê os dados de um usuário
+
+    app.route('/user/:id')
+    .get(async (req: Request, res: Response) => {
+      console.log('POST em /user/'+req.params.id)
+      const userId = req.params.id;
+      const user = await User.findOne({_id: userId}).populate('following').exec();
+      delete user.password;
+      res.status(200).send(user);
     });
 
     //POST em /follow/userId - Segue um usuário
