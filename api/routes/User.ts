@@ -23,11 +23,11 @@ export default class UserRoutes {
 
     //GET em /user/:id - Lê os dados de um usuário
 
-    app.route('/user/:id')
+    app.route('/user/:nickname')
     .get(async (req: Request, res: Response) => {
       console.log('POST em /user/'+req.params.id)
-      const userId = req.params.id;
-      const user = await User.findOne({_id: userId}).populate('following').exec();
+      const nickname = req.params.nickname;
+      const user = await User.findOne({ nickname }).populate('following').exec();
       delete user.password;
       res.status(200).send(user);
     });
