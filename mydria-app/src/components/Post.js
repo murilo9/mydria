@@ -61,6 +61,7 @@ class Post extends Component {
     this.renderEditTags = this.renderEditTags.bind(this);
     this.onTagPush = this.onTagPush.bind(this);
     this.saveChanges = this.saveChanges.bind(this);
+    this.getProfilePageUrl = this.getProfilePageUrl.bind(this);
   }
 
   userIsAuthor(){
@@ -316,6 +317,10 @@ class Post extends Component {
     </Dropdown.Item>
   }
 
+  getProfilePageUrl(){
+    return '/profile/' + this.props.postData.author.nickname;
+  }
+
   render() {
     return (
       <Container fluid className="mb-3 my-post">
@@ -335,9 +340,9 @@ class Post extends Component {
             <Media.Body>
               <Row className="justify-content-end mb-1">
                 <Col className="d-flex align-items-start justify-content-center flex-column">
-                  <div className="my-post-author-name">
+                  <a href={ this.getProfilePageUrl() } className="my-post-author-name">
                     <strong>{ this.props.postData.author.nickname }</strong>
-                  </div>
+                  </a>
                   <div className="my-post-date">
                     { this.renderPostDate() }
                   </div>
