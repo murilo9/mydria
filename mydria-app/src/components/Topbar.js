@@ -40,7 +40,7 @@ export default class Topbar extends React.Component {
         <Container>
           {
             this.state.showMobileSearch ? null :
-            <Navbar.Brand href="feed">Mydria</Navbar.Brand>
+            <Navbar.Brand href="/feed">Mydria</Navbar.Brand>
           }
           <Form inline className={ this.state.showMobileSearch ? 
           "my-mobile-search" : "d-none d-sm-flex" }>
