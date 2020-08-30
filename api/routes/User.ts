@@ -28,8 +28,13 @@ export default class UserRoutes {
       console.log('POST em /user/'+req.params.id)
       const nickname = req.params.nickname;
       const user = await User.findOne({ nickname }).populate('following').exec();
-      delete user.password;
-      res.status(200).send(user);
+      if(user){
+        delete user.password;
+        res.status(200).send(user);
+      }
+      else{
+        res.status(404).send("User not found");
+      }
     });
 
     //POST em /follow/userId - Segue um usuário
