@@ -25,6 +25,18 @@ const UserSchema = new Schema({
     type: String,
     required: [true, 'You must input a nickname'] 
   },
+  bio: {
+    type: String,
+    default: ''
+  },
+  city: {
+    type: String,
+    default: ''
+  },
+  country: {
+    type: String,
+    default: ''
+  },
   profilePicture: {
     type: String,
     default: null
