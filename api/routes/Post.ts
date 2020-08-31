@@ -207,5 +207,16 @@ export default class PostRoutes {
         res.status(200).send(post);
       }
     })
+
+    //GET em /posts/:nickname - Lê os posts de um usuário
+
+    app.route('/posts/:userId')
+
+    .get(async (req: Request, res: Response) => {
+      console.log('GET em /posts/'+req.params.userId);
+      const author = req.params.userId;
+      const posts = await Post.find({ author }).populate('author').exec();
+      res.status(200).send(posts);
+    })
   }
 }
