@@ -19,11 +19,13 @@ class FeedPage extends MydriaPage {
   constructor(props){
     super(props);
     this.state = {
+      posts: [],
       sessionExpired: false,  //Renderiza um objeto <Redirect> para voltar à página de login
       loadingPosts: true    //Renderiza um spinner enquanto posts estiverem sendo carregados
     }
     this.loadPageData = this.loadPageData.bind(this);
     this.renderPosts = this.renderPosts.bind(this);
+    this.appendPost = this.appendPost.bind(this);
     this.updatePost = this.updatePost.bind(this);
     this.deletePost = this.deletePost.bind(this);
   }
@@ -32,10 +34,18 @@ class FeedPage extends MydriaPage {
    * Carrega alguns posts para exibir no feed do usuário.
    */
   async loadPageData(){
-    const feedPosts = await request.loadSomePosts();
-    this.props.setPageData({ feedPosts });    //Salva os posts no store (page.feedPosts)
+    const posts = await request.loadSomePosts();
     this.setState({
-      loadingPosts: false
+      loadingPosts: false,
+      posts
+    })
+  }
+
+  appendPost(post){
+    let posts = this.state.posts;
+    posts.unshift(post);
+    this.setState({
+      posts
     })
   }
 
@@ -44,7 +54,7 @@ class FeedPage extends MydriaPage {
    * @param {*} post Post com os dados atualizados
    */
   updatePost(post, callback){
-    let posts = [...this.props.page.feedPosts];
+    let posts = [...this.state.posts];
     //Procura o post na lista de posts do feed:
     for(let p = 0; p < posts.length; p++){
       let existingPost = posts[p];
@@ -54,12 +64,12 @@ class FeedPage extends MydriaPage {
       }
     }
     //Atualiza a lista de posts do feed:
-    this.props.setPageData({ feedPosts: posts });
+    this.setState({ posts });
     callback();
   }
 
   deletePost(postId){
-    let posts = [...this.props.page.feedPosts];
+    let posts = [...this.state.posts];
     //Procura o post na lista de posts do feed:
     for(let p = 0; p < posts.length; p++){
       let existingPost = posts[p];
@@ -69,7 +79,7 @@ class FeedPage extends MydriaPage {
       }
     }
     //Atualiza a lista de posts do feed:
-    this.props.setPageData({ feedPosts: posts });
+    this.setState({ posts });
   }
 
   renderPosts(){
@@ -86,16 +96,14 @@ class FeedPage extends MydriaPage {
     }
     else{
       let posts = [];
-      if(this.props.page.feedPosts){
-        this.props.page.feedPosts.forEach(post => {
-          posts.push(
-          <Post postData={post} 
-          updatePost={this.updatePost} 
-          deletePost={this.deletePost}
-          key={post._id} 
-          />)
-        })
-      }
+      this.state.posts.forEach(post => {
+        posts.push(
+        <Post postData={post} 
+        updatePost={this.updatePost} 
+        deletePost={this.deletePost}
+        key={post._id} 
+        />)
+      })
       return posts;
     }
   }
@@ -114,7 +122,7 @@ class FeedPage extends MydriaPage {
             <Row>
               <Col sm={2} className="my-ads d-none d-sm-flex">Ads</Col>
               <Col xs={12} sm={7}>
-                <PostForm />
+                <PostForm appendPost={this.appendPost} />
                 { this.renderPosts() }
               </Col>
               <FollowingFeed />

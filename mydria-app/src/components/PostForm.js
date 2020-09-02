@@ -54,7 +54,7 @@ class PostForm extends Component {
     //Faz a requisição pro servidor:
     let req = await request.publishPost(post);
     if(req.success){
-      this.appendCreatedPost(req.post);   //Insere o post recém-criado no feed
+      this.props.appendPost(req.post);   //Insere o post recém-criado no feed
       this.setState({
         message: 'Your post was successfully published.'
       });
@@ -82,18 +82,6 @@ class PostForm extends Component {
       author,
       tags
     }
-  }
-
-  /**
-   * Insere um post recém-criado no topo do feed do usuário.
-   * @param {*} post Post recém-criado que chegou do servidor
-   */
-  appendCreatedPost(post){
-    let feedPosts = this.props.page.feedPosts;
-    feedPosts.unshift(post);
-    this.props.setPageData({
-      feedPosts
-    })
   }
 
   /**

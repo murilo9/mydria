@@ -32,6 +32,7 @@ class ProfilePage extends MydriaPage {
       loadingUserData: true,  //Deixa a tela branca enquanto os dados do usuário estiverem sendo carregados
       loadingPosts: true    //Renderiza um spinner enquanto posts estiverem sendo carregados
     }
+    this.ownProfile = this.ownProfile.bind(this);
     this.loadPageData = this.loadPageData.bind(this);
     this.followClick = this.followClick.bind(this);
     this.unfollowClick = this.unfollowClick.bind(this);
@@ -39,6 +40,11 @@ class ProfilePage extends MydriaPage {
     this.updatePost = this.updatePost.bind(this);
     this.deletePost = this.deletePost.bind(this);
     this.isFollowing = this.isFollowing.bind(this);
+    this.appendPost = this.appendPost.bind(this);
+  }
+
+  ownProfile(){
+    return this.state.userData.nickname === this.props.user.nickname;
   }
 
   isFollowing(){
@@ -160,6 +166,14 @@ class ProfilePage extends MydriaPage {
     this.setState({ posts });
   }
 
+  appendPost(post){
+    let posts = this.state.posts;
+    posts.unshift(post);
+    this.setState({
+      posts
+    })
+  }
+
   renderPosts(){
     if(this.state.loadingPosts){
       return (
@@ -194,6 +208,10 @@ class ProfilePage extends MydriaPage {
     }
   }
 
+  renderPostForm(){
+    return this.ownProfile() ? <PostForm appendPost={this.appendPost} /> : null;
+  }
+
   render(){
     //Caso a session tenha expirado durante o runtime, redireciona:
     if(this.state.sessionExpired){
@@ -222,6 +240,7 @@ class ProfilePage extends MydriaPage {
             unfollowClick={this.unfollowClick} />
           </Col>
           <Col xs={12} sm={8} lg={7}>
+            { this.renderPostForm() }
             { this.renderPosts() }
           </Col>
           <Col lg={2} className="my-ads d-none d-sm-flex">Ads</Col>
