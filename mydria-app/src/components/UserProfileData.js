@@ -21,6 +21,11 @@ export class UserProfileData extends Component {
     this.renderBio = this.renderBio.bind(this);
     this.renderLocation = this.renderLocation.bind(this);
     this.renderFollowButton = this.renderFollowButton.bind(this);
+    this.ownProfile = this.ownProfile.bind(this);
+  }
+
+  ownProfile(){
+    return this.props.userData.nickname === this.props.user.nickname;
   }
 
   renderBio(){
@@ -47,16 +52,21 @@ export class UserProfileData extends Component {
   }
 
   renderFollowButton(){
-    return (
-      this.props.following ? 
-      <Button variant="success" onClick={this.props.unfollowClick} block>
-        Unfollow
-      </Button>
-      :
-      <Button variant="primary" onClick={this.props.followClick} block>
-        Follow
-      </Button>
-    )
+    if(!this.ownProfile()){
+      return (
+        this.props.following ? 
+        <Button variant="success" onClick={this.props.unfollowClick} block>
+          Unfollow
+        </Button>
+        :
+        <Button variant="primary" onClick={this.props.followClick} block>
+          Follow
+        </Button>
+      )
+    }
+    else{
+      return null;
+    }
   }
 
   render(){

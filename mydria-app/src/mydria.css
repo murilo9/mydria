@@ -219,6 +219,14 @@ a.navbar-brand {
   background-position-y: center;
 }
 
+@media screen and (max-width: 425px) {
+  .my-profile-picture {
+    margin: auto;
+    width: 70%;
+    padding-top: 70%;
+  }
+}
+
 .my-profile-data-title {
   text-align: center;
 }
