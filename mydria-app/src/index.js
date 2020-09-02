@@ -22,7 +22,7 @@ ReactDOM.render(
       {/* Todas as páginas existentes são inseridas aqui */}
       
       <Route exact path="/" component={pages.Login}/>
-      <Route exact path="/profile" component={pages.Profile}/>
+      <Route exact path="/profile/:nickname" component={pages.Profile}/>
       <Route exact path="/feed" component={pages.Feed}/>
       <Route path='*' component={pages.NotFound}/>
       

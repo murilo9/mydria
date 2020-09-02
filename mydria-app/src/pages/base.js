@@ -8,6 +8,8 @@ import
   setSessionUserId, 
   setSessionToken,
   setUserNickname,
+  setUserFollowing,
+  setUserFollowedBy,
   setUserProfilePicture,
   setUserEmail,
   unsetUser
@@ -25,6 +27,8 @@ export function mapDispatchToProps(dispatch){
     setSessionToken: token => dispatch(setSessionToken(token)),
     setUserEmail: email => dispatch(setUserEmail(email)),
     setUserNickname: nickname => dispatch(setUserNickname(nickname)),
+    setUserFollowing: following => dispatch(setUserFollowing(following)),
+    setUserFollowedBy: followedBy => dispatch(setUserFollowedBy(followedBy)),
     setUserProfilePicture: profilePic => dispatch(setUserProfilePicture(profilePic)),
     unsetUser: () => dispatch(unsetUser())
   }
@@ -52,8 +56,11 @@ export class MydriaPage extends Component {
       const email = session.userData.email;
       const nickname = session.userData.nickname;
       const profilePicture = session.userData.profilePicture;
+      const following = session.userData.following;
+      const followedBy = session.userData.followedBy;
       const userId = session.userData._id;
-      this.sessionInit(token, userId, email, nickname, profilePicture);
+      this.sessionInit(token, userId, email, nickname, following, followedBy, profilePicture);
+      console.log(this.props)
       this.loadPageData();
     }
     //Se a session não é válida ou expirou:
@@ -68,12 +75,14 @@ export class MydriaPage extends Component {
    * @param {String} token 
    * @param {String} userId 
    */
-  sessionInit(token, userId, email, nickname, profilePicture){
+  sessionInit(token, userId, email, nickname, following, followedBy, profilePicture){
     this.props.setSessionActive(true);
     this.props.setSessionUserId(userId);
     this.props.setSessionToken(token);
     this.props.setUserEmail(email);
     this.props.setUserNickname(nickname);
+    this.props.setUserFollowing(following);
+    this.props.setUserFollowedBy(followedBy);
     this.props.setUserProfilePicture(profilePicture);
   }
 
@@ -83,7 +92,6 @@ export class MydriaPage extends Component {
   logout(){
     Cookies.remove('token');
     Cookies.remove('userId');
-    console.log(this)
     this.props.setPageData({});
     this.props.setSessionActive(false);
     this.props.unsetUser();

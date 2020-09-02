@@ -155,8 +155,6 @@ const likePost = async function(postId) {
         'x-access-token': token
       }
     });
-    console.log('updated post from server')
-    console.log(res.data)
     response = {
       success: true,
       post: res.data
@@ -247,6 +245,96 @@ const deletePost = async function(postId) {
   return response;
 }
 
+const getUserData = async function(nickname) {
+  let response = {};
+  try {
+    const res = await axios({
+      url: baseUrl + `/user/${nickname}`,
+      method: 'get'
+    });
+    response = {
+      success: true,
+      userData: res.data
+    }
+  }
+  catch (e) {
+    response = {
+      success: false,
+      error: e.response
+    }
+  }
+  return response;
+}
+
+const getUserPosts = async function(userId){
+  let response = {};
+  try {
+    const res = await axios({
+      url: baseUrl + `/posts/${userId}`,
+      method: 'get'
+    });
+    response = {
+      success: true,
+      posts: res.data
+    }
+  }
+  catch (e) {
+    response = {
+      success: false,
+      error: e.response
+    }
+  }
+  return response;
+}
+
+const followUser = async function(userId){
+  let response = {};
+  try {
+    const token = Cookies.get('token');
+    const res = await axios({
+      url: baseUrl + `/follow/${userId}`,
+      method: 'post',
+      headers: {
+        'x-access-token': token
+      }
+    });
+    response = {
+      success: true
+    }
+  }
+  catch (e) {
+    response = {
+      success: false,
+      error: e.response
+    }
+  }
+  return response;
+}
+
+const unfollowUser = async function(userId){
+  let response = {};
+  try {
+    const token = Cookies.get('token');
+    const res = await axios({
+      url: baseUrl + `/follow/${userId}`,
+      method: 'delete',
+      headers: {
+        'x-access-token': token
+      }
+    });
+    response = {
+      success: true
+    }
+  }
+  catch (e) {
+    response = {
+      success: false,
+      error: e.response
+    }
+  }
+  return response;
+}
+
 export default {
   validateSession,
   login,
@@ -256,5 +344,9 @@ export default {
   likePost,
   unlikePost,
   updatePost,
-  deletePost
+  deletePost,
+  getUserData,
+  getUserPosts,
+  followUser,
+  unfollowUser
 }

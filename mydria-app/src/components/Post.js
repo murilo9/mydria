@@ -330,13 +330,10 @@ class Post extends Component {
         :
         <React.Fragment>
           <Media>
-            <img
-              width={64}
-              height={64}
-              className="mr-3"
-              src="/assets/user.svg"
-              alt="User picture"
-            />
+            <div className="my-profile-picture-wrapper post mr-3">
+              <div className="my-profile-picture" 
+              style={{backgroundImage: 'url(/assets/user.svg)'}}></div>
+            </div>
             <Media.Body>
               <Row className="justify-content-end mb-1">
                 <Col className="d-flex align-items-start justify-content-center flex-column">

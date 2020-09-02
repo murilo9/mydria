@@ -13,6 +13,10 @@ body {
   font-family: 'Alata';
 }
 
+.ta-center {
+  text-align: center;
+}
+
 .btn:focus{
   outline: none;
   border: none;
@@ -172,8 +176,8 @@ a.navbar-brand {
   display: inline;
 }
 
-.my-post-author-name {
-  display: flex;
+.my-post-author-name, .my-post-author-name:hover {
+  color: inherit;
 }
 
 @media screen and (max-width: 767px) {
@@ -195,4 +199,37 @@ a.navbar-brand {
 
 .my-post-options-button.dropdown-toggle::after {
   display: none;
+}
+
+.my-profile-picture-wrapper {
+  padding: 1rem;
+}
+
+.my-profile-picture-wrapper.post {
+  width: 64px;
+  padding: 0;
+}
+
+.my-profile-picture {
+  width: 100%;
+  padding-top: 100%;
+  border-radius: 50%;
+  background-size: cover;
+  background-position-x: center;
+  background-position-y: center;
+}
+
+.my-profile-data-title {
+  text-align: center;
+}
+
+.my-profile-data-bio {
+  font-size: .9rem;
+  color: #555;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid gray;
+}
+
+.my-profile-data-icon {
+  width: 1.25rem !important;
 }

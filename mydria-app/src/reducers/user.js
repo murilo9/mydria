@@ -3,7 +3,9 @@ import actionTypes from '../actions';
 const initialState = {
   nickname: null,
   profilePicture: null,
-  email: null
+  email: null,
+  following: [],
+  followedBy: []
 }
 
 export default function(state = initialState, action) {
@@ -22,6 +24,16 @@ export default function(state = initialState, action) {
       return {
         ...state,
         profilePicture: action.profilePicture
+      }
+    case actionTypes.SET_USER_FOLLOWING:
+      return {
+        ...state,
+        following: action.following
+      }
+    case actionTypes.SET_USER_FOLLOWEDBY:
+      return {
+        ...state,
+        followedBy: action.followedBy
       }
     case actionTypes.UNSET_USER:
       return initialState;
