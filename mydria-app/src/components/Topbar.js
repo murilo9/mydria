@@ -1,11 +1,15 @@
 import React from 'react';
+import { connect } from 'react-redux';
+import { mapDispatchToProps, mapStateToProps } from '../pages/base';
+
 import Navbar from 'react-bootstrap/Navbar';
+import NavDropdown from 'react-bootstrap/NavDropdown';
 import Nav from 'react-bootstrap/Nav';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import Container from 'react-bootstrap/Container';
 
-export default class Topbar extends React.Component {
+class Topbar extends React.Component {
   constructor(props){
     super(props);
     this.logout = this.logout.bind(this);
@@ -63,17 +67,18 @@ export default class Topbar extends React.Component {
             <Nav.Link href="" onClick={this.toggleMobileSearch}>
               <i className="fas fa-search d-block d-sm-none"></i>
             </Nav.Link>
-            <Nav.Link href="profile">
-              <i className="far fa-user d-block d-sm-none"></i>
-              <span className="d-none d-sm-block">Profile</span>
+            <NavDropdown title={this.props.user.nickname} alignRight
+            className="d-none d-sm-block" id="basic-nav-dropdown">
+              <NavDropdown.Item href={"/profile/" + this.props.user.nickname}>Profile</NavDropdown.Item>
+              <NavDropdown.Item href="#action/3.2">Settings</NavDropdown.Item>
+              <NavDropdown.Divider />
+              <NavDropdown.Item onClick={this.logout}>Logout</NavDropdown.Item>
+            </NavDropdown>
+            <Nav.Link href="settings" className="d-block d-sm-none">
+              <span>Settings</span>
             </Nav.Link>
-            <Nav.Link href="settings">
-              <i className="far fa-list-alt d-block d-sm-none"></i>
-              <span className="d-none d-sm-block">Settings</span>
-            </Nav.Link>
-            <Nav.Link onClick={this.logout}>
-              <i className="fas fa-sign-out-alt d-block d-sm-none"></i>
-              <span className="d-none d-sm-block">Logout</span>
+            <Nav.Link onClick={this.logout} className="d-block d-sm-none">
+              <span>Logout</span>
             </Nav.Link>
           </Nav>
         </Container>
@@ -81,3 +86,5 @@ export default class Topbar extends React.Component {
     )
   }
 }
+
+export default connect(mapStateToProps, mapDispatchToProps)(Topbar);
