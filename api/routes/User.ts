@@ -75,7 +75,9 @@ export default class UserRoutes {
       }
       else{
         requester.following.push(userToFollowId);
+        userToFollow.followedBy.push(req.requesterId);
         await requester.save();
+        await userToFollow.save();
         res.status(200).send(requester.following);
       }
     })
@@ -91,7 +93,7 @@ export default class UserRoutes {
         return;
       }
       const userToUnfollow = await User.findOne({_id: userToUnfollowId}).exec();
-      if(!userToUnfollowId){
+      if(!userToUnfollow){
         res.status(404).send("User not found");
         return;
       }
@@ -105,8 +107,21 @@ export default class UserRoutes {
       if(following > -1){
         requester.following.splice(following, 1);
         await requester.save();
+        //Remove você da lista followedBy do usuário seguido:
+        following = -1;
+        userToUnfollow.followedBy.forEach((userFollowing, i) => {
+          if(userFollowing.toString() === req.requesterId){
+            following = i;
+          }
+        })
+        if(following > -1){
+          userToUnfollow.followedBy.splice(following, 1);
+          userToUnfollow.save();
+        }
+        else{
+          console.log('erro: você não estava na lista followedBy do usuário seguido');
+        }
         res.status(200).send(requester.following);
-        return
       }
       else{
         res.status(202).send('You are currently not following this person');
