@@ -9,6 +9,12 @@ import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import Container from 'react-bootstrap/Container';
 
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { 
+  faSearch,
+  faArrowLeft
+} from '@fortawesome/free-solid-svg-icons';
+
 class Topbar extends React.Component {
   constructor(props){
     super(props);
@@ -32,7 +38,7 @@ class Topbar extends React.Component {
     return this.state.showMobileSearch ?
     <Form.Group controlId="formBasicReturn">
       <Button variant="dark" onClick={this.toggleMobileSearch}>
-        <i className="fas fa-arrow-left"></i>
+        <FontAwesomeIcon icon={faArrowLeft} className="my-profile-data-icon"/>
       </Button>
     </Form.Group>
     : null
@@ -57,7 +63,7 @@ class Topbar extends React.Component {
             </Form.Group>
             <Form.Group controlId="formBasicSearch">
               <Button variant="dark" >
-                <i className="fas fa-search"></i>
+                <FontAwesomeIcon icon={faSearch} className="my-profile-data-icon"/>
               </Button>
             </Form.Group>
           </Form>
@@ -65,7 +71,7 @@ class Topbar extends React.Component {
             this.state.showMobileSearch ? "d-none" : "flex-row ml-auto my-navbar" 
           }>
             <Nav.Link href="" onClick={this.toggleMobileSearch}>
-              <i className="fas fa-search d-block d-sm-none"></i>
+              <FontAwesomeIcon icon={faSearch} className="my-profile-data-icon"/>
             </Nav.Link>
             <NavDropdown title={this.props.user.nickname} alignRight
             className="d-none d-sm-block" id="basic-nav-dropdown">
