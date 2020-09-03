@@ -41,6 +41,7 @@ class ProfilePage extends MydriaPage {
     this.deletePost = this.deletePost.bind(this);
     this.isFollowing = this.isFollowing.bind(this);
     this.appendPost = this.appendPost.bind(this);
+    this.updateUserData = this.updateUserData.bind(this);
   }
 
   ownProfile(){
@@ -129,6 +130,15 @@ class ProfilePage extends MydriaPage {
         userData: {...this.state.userData, followedBy}
       })
     }
+  }
+
+  updateUserData(userData){
+    this.setState({
+      userData: {
+        ...this.state.userData,
+        ...userData
+      }
+    })
   }
 
   /**
@@ -237,7 +247,8 @@ class ProfilePage extends MydriaPage {
             following={this.state.following}
             loading={this.state.loadingUserData} 
             followClick={this.followClick}
-            unfollowClick={this.unfollowClick} />
+            unfollowClick={this.unfollowClick} 
+            updateUserData={this.updateUserData}/>
           </Col>
           <Col xs={12} sm={8} lg={7}>
             { this.renderPostForm() }

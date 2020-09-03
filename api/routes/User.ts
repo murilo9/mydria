@@ -21,11 +21,15 @@ export default class UserRoutes {
       res.status(201).send();   //201 - Created
     });
 
-    //GET em /user/:id - Lê os dados de um usuário
+    //GET em /user/:nickname - Lê os dados de um usuário
 
     app.route('/user/:nickname')
+    .all((req: Request, res: Response, next) => {
+      verifyJWT(req, res, () => { next() })
+    })
+
     .get(async (req: Request, res: Response) => {
-      console.log('POST em /user/'+req.params.id)
+      console.log('POST em /user/'+req.params.nickname)
       const nickname = req.params.nickname;
       const user = await User.findOne({ nickname }).populate('following').exec();
       if(user){
@@ -35,7 +39,31 @@ export default class UserRoutes {
       else{
         res.status(404).send("User not found");
       }
-    });
+    })
+
+    //PUT em /user/:nickname -  Atualiza os dados de perfil de um usuário
+
+    .put(async(req, res: Response) => {
+      console.log('PUT em /user/'+req.params.nickname)
+      const requesterId = req.requesterId;
+      const nickname = req.params.nickname;
+      let user = await User.findOne({ nickname }).exec();
+      console.log(user._id)
+      console.log(requesterId)
+      if(user._id.toString() === requesterId){
+        let bio = req.body.bio;
+        let country = req.body.country;
+        let city = req.body.city;
+        user.bio = bio;
+        user.country = country;
+        user.city = city;
+        await user.save();
+        res.status(200).send(user);
+      }
+      else{
+        res.status(403).send('That account is not yours');
+      }
+    })
 
     //POST em /follow/userId - Segue um usuário
 

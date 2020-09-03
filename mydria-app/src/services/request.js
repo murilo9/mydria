@@ -248,9 +248,13 @@ const deletePost = async function(postId) {
 const getUserData = async function(nickname) {
   let response = {};
   try {
+    const token = Cookies.get('token');
     const res = await axios({
       url: baseUrl + `/user/${nickname}`,
-      method: 'get'
+      method: 'get',
+      headers: {
+        'x-access-token': token
+      }
     });
     response = {
       success: true,
@@ -335,6 +339,32 @@ const unfollowUser = async function(userId){
   return response;
 }
 
+const updateUserData = async function(nickname, userData){
+  let response = {};
+  try {
+    const token = Cookies.get('token');
+    const res = await axios({
+      url: baseUrl + `/user/${nickname}`,
+      method: 'put',
+      headers: {
+        'x-access-token': token
+      },
+      data: userData
+    });
+    response = {
+      success: true,
+      userData: res.data
+    }
+  }
+  catch (e) {
+    response = {
+      success: false,
+      error: e.response
+    }
+  }
+  return response;
+}
+
 export default {
   validateSession,
   login,
@@ -348,5 +378,6 @@ export default {
   getUserData,
   getUserPosts,
   followUser,
-  unfollowUser
+  unfollowUser,
+  updateUserData
 }
