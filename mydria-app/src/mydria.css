@@ -111,8 +111,20 @@ a.navbar-brand {
   padding: 0.5em !important;
 }
 
+.my-mobile-search {
+  width: 100%;
+}
+
 .my-mobile-search .form-group {
   margin-bottom: 0;
+}
+
+.my-mobile-search .my-return-button {
+  width: 14%;
+}
+
+.my-mobile-search .my-search-input {
+  width: 86%;
 }
 
 .my-ads {
