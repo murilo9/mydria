@@ -239,6 +239,36 @@ a.navbar-brand {
   }
 }
 
+.my-profile-picture-button-wall {
+  position: absolute;
+  width: 100%;
+  padding-top: 75%;
+  padding-right: 10%;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.my-profile-picture-change {
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@media screen and (max-width: 425px) {
+  .my-profile-picture-button-wall {
+    padding-top: 50%;
+    padding-right: 15%;
+  }
+
+  .my-profile-picture-change {
+    width: 3.5rem;
+    height: 3.5rem;
+  }
+}
+
 .my-profile-data-title {
   text-align: center;
 }

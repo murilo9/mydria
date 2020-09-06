@@ -12,18 +12,19 @@ import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
 import Alert from 'react-bootstrap/Alert';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { 
+import {
   faMapMarkerAlt,
-  faUsers
+  faUsers,
+  faCamera
 } from '@fortawesome/free-solid-svg-icons';
 
-function mapStateToProps(state){
-  return {...state}
+function mapStateToProps(state) {
+  return { ...state }
 }
 
 export class UserProfileData extends Component {
 
-  constructor(props){
+  constructor(props) {
     super(props);
     this.state = {
       showEditForm: false,
@@ -39,11 +40,11 @@ export class UserProfileData extends Component {
     this.renderErrorMessage = this.renderErrorMessage.bind(this);
   }
 
-  ownProfile(){
+  ownProfile() {
     return this.props.userData.nickname === this.props.user.nickname;
   }
 
-  buildUserData(){
+  buildUserData() {
     const bio = sanitize(document.getElementById('formBasicBio').value);
     const country = sanitize(document.getElementById('formBasicCountry').value);
     const city = sanitize(document.getElementById('formBasicCity').value);
@@ -56,16 +57,16 @@ export class UserProfileData extends Component {
     return userData;
   }
 
-  async saveProfileData(){
+  async saveProfileData() {
     const userData = this.buildUserData();
     let res = await requestService.updateUserData(this.props.user.nickname, userData);
-    if(res.success){
+    if (res.success) {
       this.props.updateUserData(userData);
       this.setState({
         showEditForm: false
       })
     }
-    else{
+    else {
       this.setState({
         showErrorMessage: `There was an error while trying to update your profile data. 
         Please wait a few moments and try again.`
@@ -73,63 +74,63 @@ export class UserProfileData extends Component {
     }
   }
 
-  renderErrorMessage(){
+  renderErrorMessage() {
     return (
       this.state.showErrorMessage ?
-      <Alert variant="danger">
-        { this.state.showErrorMessage }
-      </Alert>
-      : null
+        <Alert variant="danger">
+          {this.state.showErrorMessage}
+        </Alert>
+        : null
     )
   }
 
-  renderBio(){
+  renderBio() {
     return (
       this.props.userData.bio ?
-      <Card.Text className="my-profile-data-bio">
-        { this.props.userData.bio }
-      </Card.Text>
-      : null
+        <Card.Text className="my-profile-data-bio">
+          {this.props.userData.bio}
+        </Card.Text>
+        : null
     )
   }
 
-  renderLocation(){
+  renderLocation() {
     return (
       this.props.userData.country ?
-      <Card.Text>
-        <FontAwesomeIcon icon={faMapMarkerAlt} className="my-profile-data-icon"/>{' '}
-        { this.props.userData.city ? 
-        this.props.userData.city + ', ' : null }
-        { this.props.userData.country }
-      </Card.Text>
-      : null
+        <Card.Text>
+          <FontAwesomeIcon icon={faMapMarkerAlt} className="my-profile-data-icon" />{' '}
+          {this.props.userData.city ?
+            this.props.userData.city + ', ' : null}
+          {this.props.userData.country}
+        </Card.Text>
+        : null
     )
   }
 
-  renderFollowButton(){
-    if(!this.ownProfile()){
+  renderFollowButton() {
+    if (!this.ownProfile()) {
       return (
-        this.props.following ? 
-        <Button variant="success" onClick={this.props.unfollowClick} block>
-          Unfollow
+        this.props.following ?
+          <Button variant="success" onClick={this.props.unfollowClick} block>
+            Unfollow
         </Button>
-        :
-        <Button variant="primary" onClick={this.props.followClick} block>
-          Follow
+          :
+          <Button variant="primary" onClick={this.props.followClick} block>
+            Follow
         </Button>
       )
     }
-    else{
+    else {
       return null;
     }
   }
 
-  toggleEditForm(){
+  toggleEditForm() {
     this.setState({
       showEditForm: !this.state.showEditForm,
       showErrorMessage: false
     })
-    if(!this.state.showEditForm){
+    if (!this.state.showEditForm) {
       //Gambiarra pra preencher os inputs só após eles terem sido renderizados:
       setTimeout(() => {
         document.getElementById('formBasicBio').value = this.props.userData.bio;
@@ -139,11 +140,11 @@ export class UserProfileData extends Component {
     }
   }
 
-  renderEditForm(){
+  renderEditForm() {
     return <React.Fragment>
       <Card.Body>
         <Form>
-          { this.renderErrorMessage() }
+          {this.renderErrorMessage()}
           <Form.Group controlId="formBasicBio">
             <Form.Label>Bio</Form.Label>
             <Form.Control as="textarea" rows="3" />
@@ -169,34 +170,40 @@ export class UserProfileData extends Component {
     </React.Fragment>
   }
 
-  renderInfo(){
+  renderInfo() {
     return <React.Fragment>
       <Card.Body>
         <Card.Title className="my-profile-data-title">
-          { this.props.userData.nickname }
+          {this.props.userData.nickname}
         </Card.Title>
-        { this.renderBio() }
-        { this.renderLocation() }
+        {this.renderBio()}
+        {this.renderLocation()}
         <Card.Text>
-          <FontAwesomeIcon icon={faUsers} className="my-profile-data-icon"/>{' '}
-          { this.props.userData.followedBy.length + ' follower' + 
-          (this.props.userData.followedBy.length === 1 ? '' : 's') }
+          <FontAwesomeIcon icon={faUsers} className="my-profile-data-icon" />{' '}
+          {this.props.userData.followedBy.length + ' follower' +
+            (this.props.userData.followedBy.length === 1 ? '' : 's')}
         </Card.Text>
-        { this.renderFollowButton() }
+        {this.renderFollowButton()}
       </Card.Body>
-      { this.ownProfile() ? 
-      <Button variant="link" onClick={this.toggleEditForm}>Edit</Button> : null }
+      {this.ownProfile() ?
+        <Button variant="link" onClick={this.toggleEditForm}>Edit</Button> : null}
     </React.Fragment>
   }
 
-  render(){
+  render() {
     return (
       <Card className="mb-3">
         <div className="my-profile-picture-wrapper">
-          <div className="my-profile-picture" 
-          style={{backgroundImage: 'url(/assets/user.svg)'}}></div>
+          <div className="my-profile-picture"
+            style={{ backgroundImage: 'url(/assets/user.svg)' }}></div>
+
         </div>
-        { this.state.showEditForm ? this.renderEditForm() : this.renderInfo() }
+        <div className="my-profile-picture-button-wall">
+          <Button variant="success" round className="my-profile-picture-change">
+            <FontAwesomeIcon icon={faCamera} />
+          </Button>
+        </div>
+        {this.state.showEditForm ? this.renderEditForm() : this.renderInfo()}
       </Card>
     )
   }
