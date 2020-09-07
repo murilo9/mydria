@@ -68,3 +68,7 @@ DELETE em /post/:postId - Deleta um post
 POST em /post/:postId/like - Aplica ou remove like em um post
 
 POST em /post/:postId/unlike - Aplica ou remove unlike em um post
+
+GET em /user/:nickname - Coleta os dados de um usuário
+
+PUT em /user/:nickname - Atualiza os dados (bio, country, city) de um usuário

@@ -1,8 +1,9 @@
-import React, { Component } from 'react';
+import React from 'react';
 import Cookies from 'js-cookie';
 import request from '../services/request.js';
 import { Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
+import { MydriaPage, mapStateToProps, mapDispatchToProps } from './base';
 
 import Container from 'react-bootstrap/Container';
 import Col from 'react-bootstrap/Col';
@@ -14,135 +15,96 @@ import Post from '../components/Post';
 import PostForm from '../components/PostForm';
 import FollowingFeed from '../components/FollowingFeed';
 
-import actionTypes, 
-{ 
-  setPageData, 
-  setSessionActive, 
-  setSessionUserId, 
-  setSessionToken,
-  setUserNickname,
-  setUserProfilePicture,
-  setUserEmail,
-  unsetUser
-} from '../actions';
-
-const mapStateToProps = state => ({
-  ...state
-})
-
-const mapDispatchToProps = dispatch => ({
-  setPageData: data => dispatch(setPageData(data)),
-  setSessionActive: active => dispatch(setSessionActive(active)),
-  setSessionUserId: userId => dispatch(setSessionUserId(userId)),
-  setSessionToken: token => dispatch(setSessionToken(token)),
-  setUserEmail: email => dispatch(setUserEmail(email)),
-  setUserNickname: nickname => dispatch(setUserNickname(nickname)),
-  setUserProfilePicture: profilePic => dispatch(setUserProfilePicture(profilePic)),
-  unsetUser: () => dispatch(unsetUser())
-})
-
-class FeedPage extends Component {
+class FeedPage extends MydriaPage {
   constructor(props){
     super(props);
     this.state = {
+      posts: [],
       sessionExpired: false,  //Renderiza um objeto <Redirect> para voltar à página de login
       loadingPosts: true    //Renderiza um spinner enquanto posts estiverem sendo carregados
     }
-    this.logout = this.logout.bind(this);
-    this.sessionInit = this.sessionInit.bind(this);
-    this.loadPosts = this.loadPosts.bind(this);
+    this.loadPageData = this.loadPageData.bind(this);
     this.renderPosts = this.renderPosts.bind(this);
-  }
-
-  /**
-   * Quando a view for montada, pega o token dos cookies e verifica se
-   * a session é válida e ainda está ativa.
-   */
-  async componentDidMount() {
-    let token = Cookies.get('token');
-    const session = await request.validateSession(token);
-    //Se a session é válida e está ativa:
-    if(session.active){
-      //Grava os dados da session no store:
-      const token = Cookies.get('token');
-      const email = session.userData.email;
-      const nickname = session.userData.nickname;
-      const profilePicture = session.userData.profilePicture;
-      const userId = session.userData._id;
-      this.sessionInit(token, userId, email, nickname, profilePicture);
-      this.loadPosts();
-    }
-    //Se a session não é válida ou expirou:
-    else{
-      this.logout();    //Faz logout:
-    }
-  }
-
-  /**
-   * @desc Recebe o token, o ID e os dados do usuário pra realizar os dispatches 
-   * no store pra setar a session.
-   * @param {String} token 
-   * @param {String} userId 
-   */
-  sessionInit(token, userId, email, nickname, profilePicture){
-    this.props.setSessionActive(true);
-    this.props.setSessionUserId(userId);
-    this.props.setSessionToken(token);
-    this.props.setUserEmail(email);
-    this.props.setUserNickname(nickname);
-    this.props.setUserProfilePicture(profilePicture);
-  }
-
-  /**
-   * Limpa os cookies e a store pra realizar logout.
-   */
-  logout(){
-    Cookies.remove('token');
-    Cookies.remove('userId');
-    this.props.setPageData({});
-    this.props.setSessionActive(false);
-    this.props.unsetUser();
-    this.setState({ sessionExpired: true });
+    this.appendPost = this.appendPost.bind(this);
+    this.updatePost = this.updatePost.bind(this);
+    this.deletePost = this.deletePost.bind(this);
   }
 
   /**
    * Carrega alguns posts para exibir no feed do usuário.
    */
-  async loadPosts(){
-    const feedPosts = await request.loadSomePosts();
-    this.props.setPageData({ feedPosts });    //Salva os posts no store (page.feedPosts)
+  async loadPageData(){
+    const posts = await request.loadSomePosts();
     this.setState({
-      loadingPosts: false
+      loadingPosts: false,
+      posts
     })
   }
 
-  renderPosts(){
-    if(this.state.loadingPosts){
-      return (
-        <Row className="justify-content-center">
-          <Col xs="auto">
-            <Spinner animation="border" role="status">
-              <span className="sr-only">Loading...</span>
-            </Spinner>
-          </Col>
-        </Row>
-      )
-    }
-    else{
-      let posts = [];
-      if(this.props.page.feedPosts){
-        this.props.page.feedPosts.forEach(post => {
-          posts.push(<Post data={post} key={post._id} />)
-        })
+  appendPost(post){
+    let posts = this.state.posts;
+    posts.unshift(post);
+    this.setState({
+      posts
+    })
+  }
+
+  /**
+   * Atualiza os dados de um post sendo exibido na página.
+   * @param {*} post Post com os dados atualizados
+   */
+  updatePost(post, callback){
+    let posts = [...this.state.posts];
+    //Procura o post na lista de posts do feed:
+    for(let p = 0; p < posts.length; p++){
+      let existingPost = posts[p];
+      if(existingPost._id === post._id){
+        posts.splice(p, 1, post);
+        break;
       }
-      return posts;
     }
+    //Atualiza a lista de posts do feed:
+    this.setState({ posts });
+    callback();
+  }
+
+  deletePost(postId){
+    let posts = [...this.state.posts];
+    //Procura o post na lista de posts do feed:
+    for(let p = 0; p < posts.length; p++){
+      let existingPost = posts[p];
+      if(existingPost._id === postId){
+        posts.splice(p, 1);
+        break;
+      }
+    }
+    //Atualiza a lista de posts do feed:
+    this.setState({ posts });
+  }
+
+  renderPosts(){
+    let posts = [];
+    this.state.posts.forEach(post => {
+      posts.push(
+      <Post postData={post} 
+      updatePost={this.updatePost} 
+      deletePost={this.deletePost}
+      key={post._id} 
+      />)
+    })
+    return posts;
   }
 
   render(){
+    //Caso a session tenha expirado durante o runtime, redireciona:
     if(this.state.sessionExpired){
-      return <Redirect to="/login" />
+      return <Redirect to="/" />
     }
+    //Caso ainda esteja carregando os dados do usuário do servidor:
+    else if(this.state.loadingPosts){
+      return <span></span>;
+    }
+    //Caso contrário, renderiza a página normalmente:
     else{
       return (
         <Container fluid className="my-no-padding">
@@ -151,7 +113,7 @@ class FeedPage extends Component {
             <Row>
               <Col sm={2} className="my-ads d-none d-sm-flex">Ads</Col>
               <Col xs={12} sm={7}>
-                <PostForm />
+                <PostForm appendPost={this.appendPost} />
                 { this.renderPosts() }
               </Col>
               <FollowingFeed />

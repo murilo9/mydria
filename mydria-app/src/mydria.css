@@ -1,10 +1,85 @@
+@font-face {
+  font-family: 'Kalam';
+  src: url('./font/Kalam-Regular.ttf');
+}
+
+@font-face {
+  font-family: 'Alata';
+  src: url('./font/Alata-Regular.ttf');
+}
+
+body {
+  background: #f6f9f6;
+  font-family: 'Alata';
+}
+
+.ta-center {
+  text-align: center;
+}
+
 .btn:focus{
   outline: none;
   border: none;
   box-shadow: none;
 }
 
-.my-view-container {
+.btn {
+  font-style: .9rem;
+}
+
+.my-login-box {
+  background: white;
+  border: 1px solid #ccc;
+  border-radius: .25rem;
+  padding: 2rem 1rem;
+  margin: 1rem;
+  box-shadow: 2px 2px 4px #444;
+}
+
+.my-login-background {
+  width: 100vw;
+  height: 100vh;
+  background-image: url("./img/login-background.jpg");
+  position: absolute;
+  background-size: cover;
+  opacity: 0.8;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.my-login-background > .my-logo {
+  font-size: 4rem;
+  color: white;
+}
+
+.my-not-found-page {
+  padding: 0 1rem;
+}
+
+.my-not-found-page p {
+  font-size: 1.5rem;
+  color: #eee;
+}
+
+@media screen and (max-width: 767px) {
+  .my-not-found-page p {
+    font-size: 1rem;
+    font-weight: bold;
+  }
+}
+
+.my-login-phrase {
+  color: white;
+  font-size: 2.5rem;
+}
+
+.my-login-container .my-full-height {
+  justify-content: space-evenly;
+}
+
+.my-login-container {
   height: 100vh;
 }
 
@@ -13,8 +88,15 @@
 }
 
 .my-logo {
+  font-family: 'Kalam', sans-serif;
   margin-bottom: 0.5em;
   text-align: center;
+}
+
+a.navbar-brand {
+  font-family: 'Kalam', sans-serif;
+  font-size: 1.5rem;
+  line-height: 30px;
 }
 
 .my-page-container {
@@ -29,16 +111,189 @@
   padding: 0.5em !important;
 }
 
+.my-mobile-search {
+  width: 100%;
+}
+
 .my-mobile-search .form-group {
   margin-bottom: 0;
 }
 
-.my-ads {
-  border: 1px solid #ccc;
+.my-mobile-search .my-return-button {
+  width: 14%;
 }
 
-@media screen and (min-width: 768px) {
+.my-mobile-search .my-search-input {
+  width: 86%;
+}
+
+.my-ads {
+  border: 1px solid #ccc;
+  background: white;
+}
+
+@media screen and (min-width: 767px) {
   .my-publish-button-col {
     padding-left: 0;
   }
+}
+
+.my-post {
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: .25rem;
+  background: white;
+}
+
+.my-post-options .dropdown-menu {
+  box-shadow: 2px 2px 4px #aaa;
+}
+
+.my-post-buttons .btn{
+  padding: 4px 8px;
+}
+
+@media screen and (max-width: 767px) {
+  .my-post .btn {
+    font-size: 13px;
+    padding: 6px 10px;
+  }
+}
+
+@media screen and (max-width: 767px) {
+  .my-tags-input {
+    margin-bottom: 1rem;
+  }
+}
+.my-postform-tags-container {
+  margin: 0;
+}
+
+.my-tag {
+  font-size: 0.8rem;
+  padding: 6px;
+  margin-right: 8px;
+  margin-bottom: 16px;
+}
+
+.my-tag a{
+  color: inherit;
+}
+
+.btn.btn-outline-dark {
+  border: none;
+}
+
+.my-post-options {
+  display: inline;
+}
+
+.my-post-author-name, .my-post-author-name:hover {
+  color: inherit;
+}
+
+@media screen and (max-width: 767px) {
+  .my-post-author-name {
+    line-height: 1rem;
+  }
+}
+
+.my-post-date {
+  font-size: .8rem;
+  color: #777;
+}
+
+@media screen and (max-width: 1023px) {
+  .my-post-text {
+    font-size: .9rem;
+  }
+}
+
+.my-post-options-button.dropdown-toggle::after {
+  display: none;
+}
+
+.my-profile-picture-wrapper {
+  padding: 1rem;
+  overflow: hidden;
+}
+
+.my-profile-picture-wrapper.post {
+  width: 64px;
+  padding: 0;
+}
+
+.my-profile-picture-wrapper input[type=file] {
+  margin: 1rem 0;
+}
+
+.my-profile-picture {
+  width: 100%;
+  padding-top: 100%;
+  border-radius: 50%;
+  background-size: cover;
+  background-position-x: center;
+  background-position-y: center;
+  display: block;
+}
+
+@media screen and (max-width: 425px) {
+  .my-profile-picture {
+    margin: auto;
+    width: 70%;
+    padding-top: 70%;
+  }
+}
+
+.my-navbar .my-profile-picture {
+  width: 40px;
+  height: 40px;
+  padding: 0;
+}
+
+.my-profile-picture-button-wall {
+  position: absolute;
+  width: 100%;
+  padding-top: 75%;
+  padding-right: 10%;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.my-profile-picture-change {
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@media screen and (max-width: 425px) {
+  .my-profile-picture-button-wall {
+    padding-top: 50%;
+    padding-right: 15%;
+  }
+
+  .my-profile-picture-change {
+    width: 3.5rem;
+    height: 3.5rem;
+  }
+}
+
+input[type="file"]
+
+.my-profile-data-title {
+  text-align: center;
+}
+
+.my-profile-data-bio {
+  font-size: .9rem;
+  color: #555;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid gray;
+}
+
+.my-profile-data-icon {
+  width: 1.25rem !important;
 }

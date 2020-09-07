@@ -25,11 +25,29 @@ const UserSchema = new Schema({
     type: String,
     required: [true, 'You must input a nickname'] 
   },
-  profilePicture: {
+  bio: {
     type: String,
+    default: ''
+  },
+  city: {
+    type: String,
+    default: ''
+  },
+  country: {
+    type: String,
+    default: ''
+  },
+  profilePicture: {
+    type: Schema.Types.ObjectId,
+    ref: 'Image',
     default: null
   },
   following: {
+    type: [Schema.Types.ObjectId],
+    ref: 'User',
+    default: []
+  },
+  followedBy: {
     type: [Schema.Types.ObjectId],
     ref: 'User',
     default: []

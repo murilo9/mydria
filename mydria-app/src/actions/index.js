@@ -2,6 +2,8 @@ const types = {
     SET_USER_NICKNAME: 'SET_USER_NICKNAME',
     SET_USER_EMAIL: 'SET_USER_EMAIL',
     SET_USER_PROFILE_PICTURE: 'SET_USER_PROFILE_PICTURE',
+    SET_USER_FOLLOWING: 'SET_USER_FOLLOWING',
+    SET_USER_FOLLOWEDBY: 'SET_USER_FOLLOWEDBY',
     UNSET_USER: 'UNSET_USER',
     SET_SESSION_TOKEN: 'SET_SESSION_TOKEN',
     SET_SESSION_USERID: 'SET_SESSION_USERID',
@@ -28,6 +30,20 @@ export function setUserProfilePicture(profilePicture) {
     return {
         type: types.SET_USER_PROFILE_PICTURE,
         profilePicture
+    }
+}
+
+export function setUserFollowing(following) {
+    return {
+        type: types.SET_USER_FOLLOWING,
+        following
+    }
+}
+
+export function setUserFollowedBy(followedBy) {
+    return {
+        type: types.SET_USER_FOLLOWEDBY,
+        followedBy
     }
 }
 

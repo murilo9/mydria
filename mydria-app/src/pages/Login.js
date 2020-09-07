@@ -163,15 +163,21 @@ export default class LoginPage extends Component {
     return this.state.sessionActive ?
       <Redirect to="/feed" />
       :
-      <Container className="my-view-container">
-          <Row className="justify-content-sm-center align-items-center my-full-height">
-          <Col md="6" lg="4" xl="3">
-            <Logo />
-            { this.renderForm() }
-            { this.renderFormFooter() }
-            { this.renderMessage() }
-          </Col>
-        </Row>
-      </Container>
+      <React.Fragment>
+        <div className="my-login-background"></div>
+        <Container className="my-login-container">
+            <Row className="align-items-center my-full-height">
+            <Col md="6" lg="7" className="my-login-phrase d-none d-lg-block">
+              Get in touch with your interests, while sharing your thoughts with the world.
+            </Col>
+            <Col md="6" lg="4" xl="3" className="my-login-box">
+              <Logo />
+              { this.renderForm() }
+              { this.renderFormFooter() }
+              { this.renderMessage() }
+            </Col>
+          </Row>
+        </Container>
+      </React.Fragment>
   }
 }
