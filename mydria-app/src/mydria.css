@@ -215,11 +215,16 @@ a.navbar-brand {
 
 .my-profile-picture-wrapper {
   padding: 1rem;
+  overflow: hidden;
 }
 
 .my-profile-picture-wrapper.post {
   width: 64px;
   padding: 0;
+}
+
+.my-profile-picture-wrapper input[type=file] {
+  margin: 1rem 0;
 }
 
 .my-profile-picture {
@@ -229,6 +234,7 @@ a.navbar-brand {
   background-size: cover;
   background-position-x: center;
   background-position-y: center;
+  display: block;
 }
 
 @media screen and (max-width: 425px) {
@@ -237,6 +243,12 @@ a.navbar-brand {
     width: 70%;
     padding-top: 70%;
   }
+}
+
+.my-navbar .my-profile-picture {
+  width: 40px;
+  height: 40px;
+  padding: 0;
 }
 
 .my-profile-picture-button-wall {
@@ -268,6 +280,8 @@ a.navbar-brand {
     height: 3.5rem;
   }
 }
+
+input[type="file"]
 
 .my-profile-data-title {
   text-align: center;

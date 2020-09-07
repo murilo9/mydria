@@ -33,6 +33,7 @@ class Post extends Component {
   constructor(props){
     super(props);
     this.state = {
+      userPictureUrl: request.resolveImageUrl(props.postData.author.profilePicture),
       tempLike: false,
       tempUnlike: false,
       error: false,
@@ -331,8 +332,8 @@ class Post extends Component {
         <React.Fragment>
           <Media>
             <div className="my-profile-picture-wrapper post mr-3">
-              <div className="my-profile-picture" 
-              style={{backgroundImage: 'url(/assets/user.svg)'}}></div>
+              <a className="my-profile-picture" href={"/profile/" + this.props.postData.author.nickname}
+              style={{backgroundImage: `url(${this.state.userPictureUrl})`}}></a>
             </div>
             <Media.Body>
               <Row className="justify-content-end mb-1">

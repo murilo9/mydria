@@ -83,35 +83,26 @@ class FeedPage extends MydriaPage {
   }
 
   renderPosts(){
-    if(this.state.loadingPosts){
-      return (
-        <Row className="justify-content-center">
-          <Col xs="auto">
-            <Spinner animation="border" role="status">
-              <span className="sr-only">Loading...</span>
-            </Spinner>
-          </Col>
-        </Row>
-      )
-    }
-    else{
-      let posts = [];
-      this.state.posts.forEach(post => {
-        posts.push(
-        <Post postData={post} 
-        updatePost={this.updatePost} 
-        deletePost={this.deletePost}
-        key={post._id} 
-        />)
-      })
-      return posts;
-    }
+    let posts = [];
+    this.state.posts.forEach(post => {
+      posts.push(
+      <Post postData={post} 
+      updatePost={this.updatePost} 
+      deletePost={this.deletePost}
+      key={post._id} 
+      />)
+    })
+    return posts;
   }
 
   render(){
     //Caso a session tenha expirado durante o runtime, redireciona:
     if(this.state.sessionExpired){
       return <Redirect to="/" />
+    }
+    //Caso ainda esteja carregando os dados do usuário do servidor:
+    else if(this.state.loadingPosts){
+      return <span></span>;
     }
     //Caso contrário, renderiza a página normalmente:
     else{

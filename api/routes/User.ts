@@ -1,6 +1,8 @@
 import {Request, Response} from "express";
 import User from '../models/User';
 import validateUserForm from '../middleware/ValidateUserForm';
+import Image from "../models/Image";
+const path = require('path');
 const fs = require('fs');
 
 export default class UserRoutes {
@@ -156,11 +158,46 @@ export default class UserRoutes {
       }
     })
 
+    //GET em /image/:id - Retorna uma imagem registrada no banco de dados
+
+    app.get('/image/:id', async(req, res: Response) => {
+      console.log('GET em /image/' + req.params.id)
+      const imgId = req.params.id;
+      let image = await Image.findOne({_id: imgId}).exec();
+      let imageName = image._id +  image.extention;
+      if(image){
+        //VAI MUDAR NO AMBIENTE DE PRODUÇÃO:
+        const imagePath = path.resolve(`${__dirname}/../../pictures/${imageName}`);
+        console.log(imagePath)
+        res.sendFile(imagePath);
+      }
+      else{
+        res.status(404).send('Image id not found.');
+      }
+    });
+
     //POST em /profile-pic - Faz upload de uma nova foto de perfil
 
     app.post('/profile-pic', verifyJWT, upload.single('file'), async (req, res: Response) => {
       console.log('POST em /profile-pic')
-      res.status(200).send('upload done')
+      /* 
+        O middleware de upload ja salvou a imagem e instanciou ela no banco 
+        então podemos coletar o id e a extensão de req.
+      */
+      const requesterId = req.requesterId;
+      const imgId = req.imgId;
+      const imgExtention = req.imgExtention;
+      console.log('imagem: ' + imgId + imgExtention)
+      //Atualiza o atributo profilePicture do usuário:
+      const user = await User.findOne({_id: requesterId}).exec();
+      if(user){
+        user.profilePicture = imgId;
+        await user.save();
+        res.status(200).send();
+      }
+      else{
+        res.status(404).send('User id not found');
+      }
     })
   }
 }

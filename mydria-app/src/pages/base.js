@@ -60,7 +60,6 @@ export class MydriaPage extends Component {
       const followedBy = session.userData.followedBy;
       const userId = session.userData._id;
       this.sessionInit(token, userId, email, nickname, following, followedBy, profilePicture);
-      console.log(this.props)
       this.loadPageData();
     }
     //Se a session não é válida ou expirou:

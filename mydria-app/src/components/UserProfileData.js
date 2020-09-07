@@ -18,6 +18,8 @@ import {
   faCamera
 } from '@fortawesome/free-solid-svg-icons';
 
+import { mapDispatchToProps } from '../pages/base.js';
+
 function mapStateToProps(state) {
   return { ...state }
 }
@@ -27,7 +29,9 @@ export class UserProfileData extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      userPictureUrl: requestService.resolveImageUrl(props.userData.profilePicture),
       showEditForm: false,
+      showProfilePictureForm: false,
       showErrorMessage: false
     }
     this.renderBio = this.renderBio.bind(this);
@@ -38,6 +42,8 @@ export class UserProfileData extends Component {
     this.buildUserData = this.buildUserData.bind(this);
     this.saveProfileData = this.saveProfileData.bind(this);
     this.renderErrorMessage = this.renderErrorMessage.bind(this);
+    this.toggleProfilePictureForm = this.toggleProfilePictureForm.bind(this);
+    this.uploadProfilePicture = this.uploadProfilePicture.bind(this);
   }
 
   ownProfile() {
@@ -77,9 +83,11 @@ export class UserProfileData extends Component {
   renderErrorMessage() {
     return (
       this.state.showErrorMessage ?
-        <Alert variant="danger">
-          {this.state.showErrorMessage}
-        </Alert>
+        <Card.Body>
+          <Alert variant="danger">
+            {this.state.showErrorMessage}
+          </Alert>
+        </Card.Body>
         : null
     )
   }
@@ -140,11 +148,49 @@ export class UserProfileData extends Component {
     }
   }
 
+  toggleProfilePictureForm() {
+    this.setState({
+      showProfilePictureForm: !this.state.showProfilePictureForm
+    })
+  }
+
+  async uploadProfilePicture() {
+    let res = await requestService.uploadProfilePicture();
+    if(res.success){
+      window.location.reload();
+    }
+    else{
+      this.setState({
+        showErrorMessage: `There was an error while trying to update your profile picture. 
+        Please wait a few moments and try again.`
+      })
+    }
+  }
+
+  renderProfilePictureForm() {
+    return this.state.showProfilePictureForm ?
+      <React.Fragment>
+        <input type="file" id="file" name="file" />
+        <Row className="justify-content-between">
+          <Col xs={6}>
+            <Button variant="secondary" block onClick={this.toggleProfilePictureForm}>
+              Cancel
+            </Button>
+          </Col>
+          <Col xs={6}>
+            <Button variant="primary" block onClick={this.uploadProfilePicture}>
+              Upload
+            </Button>
+          </Col>
+        </Row>
+      </React.Fragment>
+      : null
+  }
+
   renderEditForm() {
     return <React.Fragment>
       <Card.Body>
         <Form>
-          {this.renderErrorMessage()}
           <Form.Group controlId="formBasicBio">
             <Form.Label>Bio</Form.Label>
             <Form.Control as="textarea" rows="3" />
@@ -195,11 +241,13 @@ export class UserProfileData extends Component {
       <Card className="mb-3">
         <div className="my-profile-picture-wrapper">
           <div className="my-profile-picture"
-            style={{ backgroundImage: 'url(/assets/user.svg)' }}></div>
-
+            style={{ backgroundImage: `url(${this.state.userPictureUrl})` }}></div>
+          {this.renderProfilePictureForm()}
         </div>
+        {this.renderErrorMessage()}
         <div className="my-profile-picture-button-wall">
-          <Button variant="success" round className="my-profile-picture-change">
+          <Button variant="success" onClick={this.toggleProfilePictureForm}
+            className="my-profile-picture-change">
             <FontAwesomeIcon icon={faCamera} />
           </Button>
         </div>
@@ -209,4 +257,4 @@ export class UserProfileData extends Component {
   }
 }
 
-export default connect(mapStateToProps)(UserProfileData);
+export default connect(mapStateToProps, mapDispatchToProps)(UserProfileData);

@@ -38,7 +38,8 @@ const UserSchema = new Schema({
     default: ''
   },
   profilePicture: {
-    type: String,
+    type: Schema.Types.ObjectId,
+    ref: 'Image',
     default: null
   },
   following: {

@@ -8,8 +8,8 @@ const baseUrl = 'http://localhost:8888';
  * @param {String} token Token de acesso
  * @return { active: Boolean, userData: Object }
  */
-const validateSession = async function(token) {
-  if(!token){
+const validateSession = async function (token) {
+  if (!token) {
     return {
       active: false
     }
@@ -42,8 +42,8 @@ const validateSession = async function(token) {
  * @param {String} password 
  * @return {success: Boolen, token: String, userId: String}
  */
-const login = async function(email, password) {
-  if(!email || ! password) {
+const login = async function (email, password) {
+  if (!email || !password) {
     return { success: false };
   }
   let loginForm = { email, password };
@@ -63,14 +63,14 @@ const login = async function(email, password) {
   catch (e) {
     response = {
       success: false,
-      message: e.response ? e.response.data : 
-      'An internal error ocurred at our server. Please try again later.'
+      message: e.response ? e.response.data :
+        'An internal error ocurred at our server. Please try again later.'
     }
   }
   return response;
 }
 
-const signup = async function(signupForm) {
+const signup = async function (signupForm) {
   let response = {};
   try {
     const res = await axios({
@@ -91,7 +91,7 @@ const signup = async function(signupForm) {
   return response;
 }
 
-const loadSomePosts = async function() {
+const loadSomePosts = async function () {
   let response = {};
   try {
     const token = Cookies.get('token');
@@ -118,7 +118,7 @@ const loadSomePosts = async function() {
   return response;
 }
 
-const publishPost = async function(post) {
+const publishPost = async function (post) {
   let response = {};
   try {
     const token = Cookies.get('token');
@@ -144,7 +144,7 @@ const publishPost = async function(post) {
   return response;
 }
 
-const likePost = async function(postId) {
+const likePost = async function (postId) {
   let response = {};
   try {
     const token = Cookies.get('token');
@@ -169,7 +169,7 @@ const likePost = async function(postId) {
   return response;
 }
 
-const unlikePost = async function(postId) {
+const unlikePost = async function (postId) {
   let response = {};
   try {
     const token = Cookies.get('token');
@@ -194,7 +194,7 @@ const unlikePost = async function(postId) {
   return response;
 }
 
-const updatePost = async function(updatedPost) {
+const updatePost = async function (updatedPost) {
   let response = {};
   try {
     const token = Cookies.get('token');
@@ -220,7 +220,7 @@ const updatePost = async function(updatedPost) {
   return response;
 }
 
-const deletePost = async function(postId) {
+const deletePost = async function (postId) {
   let response = {};
   try {
     const token = Cookies.get('token');
@@ -245,7 +245,7 @@ const deletePost = async function(postId) {
   return response;
 }
 
-const getUserData = async function(nickname) {
+const getUserData = async function (nickname) {
   let response = {};
   try {
     const token = Cookies.get('token');
@@ -270,7 +270,7 @@ const getUserData = async function(nickname) {
   return response;
 }
 
-const getUserPosts = async function(userId){
+const getUserPosts = async function (userId) {
   let response = {};
   try {
     const res = await axios({
@@ -291,7 +291,7 @@ const getUserPosts = async function(userId){
   return response;
 }
 
-const followUser = async function(userId){
+const followUser = async function (userId) {
   let response = {};
   try {
     const token = Cookies.get('token');
@@ -315,7 +315,7 @@ const followUser = async function(userId){
   return response;
 }
 
-const unfollowUser = async function(userId){
+const unfollowUser = async function (userId) {
   let response = {};
   try {
     const token = Cookies.get('token');
@@ -339,7 +339,7 @@ const unfollowUser = async function(userId){
   return response;
 }
 
-const updateUserData = async function(nickname, userData){
+const updateUserData = async function (nickname, userData) {
   let response = {};
   try {
     const token = Cookies.get('token');
@@ -365,6 +365,39 @@ const updateUserData = async function(nickname, userData){
   return response;
 }
 
+const uploadProfilePicture = async function () {
+  let response = {};
+  let formData = new FormData();
+  let imageFile = document.getElementById('file');
+  formData.append("file", imageFile.files[0])
+  try {
+    const token = Cookies.get('token');
+    const res = await axios({
+      url: baseUrl + `/profile-pic`,
+      method: 'post',
+      headers: {
+        'x-access-token': token,
+        'Content-Type': `multipart/form-data; ${formData._boundary}`
+      },
+      data: formData
+    });
+    response = {
+      success: true
+    }
+  }
+  catch (e) {
+    response = {
+      success: false,
+      error: e.response
+    }
+  }
+  return response;
+}
+
+const resolveImageUrl = function(imageId) {
+  return imageId ? baseUrl + `/image/${imageId}` : '/assets/user.svg';
+}
+
 export default {
   validateSession,
   login,
@@ -379,5 +412,7 @@ export default {
   getUserPosts,
   followUser,
   unfollowUser,
-  updateUserData
+  updateUserData,
+  uploadProfilePicture,
+  resolveImageUrl
 }
