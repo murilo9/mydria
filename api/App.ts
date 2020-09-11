@@ -14,14 +14,27 @@ const path = require('path');
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-
-      // error first callback
+    //Se for uma imagem temporária (fez upload da foto na criação de um post)
+    if(req.body.tmp){
+      cb(null, 'tmp/');
+    }
+    //Se for pra instanciar a imagem de fato
+    else{
       cb(null, 'pictures/');
+    }
   },
   filename: async function (req, file, cb) {
-      let imgExtention = path.extname(file.originalname);
-      req.imgExtention = imgExtention;
-      // error first callback
+    console.log('file is being uploaded')
+    let imgExtention = path.extname(file.originalname);
+    req.imgExtention = imgExtention;
+    //Se for uma imagem temporária (fez upload da foto na criação de um post)
+    if(req.body.tmp){
+      //O nome da imagem vai ser o id do requester
+      let imgId = req.requesterId;
+      cb(null, imgId + path.extname(file.originalname));
+    }
+    //Se for pra instanciar a imagem de fato
+    else{
       let image = new Image({ 
         date: new Date(), 
         extention: imgExtention, 
@@ -31,6 +44,7 @@ const storage = multer.diskStorage({
       let imgId = image._id.toString();
       req.imgId = imgId;
       cb(null, imgId + path.extname(file.originalname));
+    }
   }
 });
 
@@ -49,7 +63,7 @@ class App {
     //Carrega todos os grupos de rotas:
     this.userRoutes.routes(this.app, verifyJWT, upload);
     this.loginRoutes.routes(this.app, verifyJWT);
-    this.postsRoutes.routes(this.app, verifyJWT);
+    this.postsRoutes.routes(this.app, verifyJWT, upload);
     mongoose.connect('mongodb://localhost/mydria', {useNewUrlParser: true});
   }
 

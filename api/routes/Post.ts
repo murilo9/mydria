@@ -4,7 +4,7 @@ import Post, {IPost, IPostInput} from '../models/Post';
 
 export default class PostRoutes {
   
-  public routes(app, verifyJWT): void {
+  public routes(app, verifyJWT, upload): void {
     
     app.route('/posts')
     .all((req: Request, res: Response, next) => {
@@ -27,11 +27,11 @@ export default class PostRoutes {
       //Instancia o post no banco de dados:
       let postData = {
         text: req.body.text,
-        pictureSrc: req.body.pictureSrc,    //TODO - Upload da foto caso tenha
+        img: req.body.img,    //TODO - Upload da foto caso tenha
         author: requesterId,
         tags: req.body.tags
       }
-      if(!postData.text && !postData.pictureSrc){
+      if(!postData.text && !req.hasPhoto){
         res.status(400).send('Your post must either have text or a picture');
       }
       else{

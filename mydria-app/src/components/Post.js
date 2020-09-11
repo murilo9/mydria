@@ -9,6 +9,7 @@ import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import Dropdown from 'react-bootstrap/Dropdown';
 import Alert from 'react-bootstrap/Alert';
+import Image from 'react-bootstrap/Image';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { 
   faComment, 
@@ -63,6 +64,7 @@ class Post extends Component {
     this.onTagPush = this.onTagPush.bind(this);
     this.saveChanges = this.saveChanges.bind(this);
     this.getProfilePageUrl = this.getProfilePageUrl.bind(this);
+    this.renderPostPhoto = this.renderPostPhoto.bind(this);
   }
 
   userIsAuthor(){
@@ -318,6 +320,12 @@ class Post extends Component {
     </Dropdown.Item>
   }
 
+  renderPostPhoto(){
+    return this.props.postData.img ?
+    <Image src={request.resolveImageUrl(this.props.postData.img)} fluid/>
+    : null;
+  }
+
   getProfilePageUrl(){
     return '/profile/' + this.props.postData.author.nickname;
   }
@@ -331,18 +339,24 @@ class Post extends Component {
         :
         <React.Fragment>
           <Media>
-            <div className="my-profile-picture-wrapper post mr-3">
+            <div className="my-profile-picture-wrapper post mr-3 d-none d-sm-block">
               <a className="my-profile-picture" href={"/profile/" + this.props.postData.author.nickname}
               style={{backgroundImage: `url(${this.state.userPictureUrl})`}}></a>
             </div>
             <Media.Body>
-              <Row className="justify-content-end mb-1">
-                <Col className="d-flex align-items-start justify-content-center flex-column">
-                  <a href={ this.getProfilePageUrl() } className="my-post-author-name">
-                    <strong>{ this.props.postData.author.nickname }</strong>
-                  </a>
-                  <div className="my-post-date">
-                    { this.renderPostDate() }
+              <Row className="justify-content-end mb-2">
+                <Col className="d-flex align-items-start flex-row">
+                  <div className="my-profile-picture-wrapper post mr-3 d-block d-sm-none">
+                    <a className="my-profile-picture" href={"/profile/" + this.props.postData.author.nickname}
+                    style={{backgroundImage: `url(${this.state.userPictureUrl})`}}></a>
+                  </div>
+                  <div>
+                    <a href={ this.getProfilePageUrl() } className="my-post-author-name">
+                      <strong>{ this.props.postData.author.nickname }</strong>
+                    </a>
+                    <div className="my-post-date">
+                      { this.renderPostDate() }
+                    </div>
                   </div>
                 </Col>
                 <Col xs="auto">
@@ -359,13 +373,14 @@ class Post extends Component {
                   </Dropdown>
                 </Col>
               </Row>
-              <Row>
+              <Row className="my-post-content">
                 <Col>
-              { this.renderPostTags() }
-              <p className="my-post-text">
-                { this.props.postData.text }
-              </p>
-              </Col>
+                  { this.renderPostTags() }
+                  <p className="my-post-text">
+                    { this.props.postData.text }
+                  </p>
+                  { this.renderPostPhoto() }
+                </Col>
               </Row>
             </Media.Body>
           </Media>

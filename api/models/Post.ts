@@ -36,7 +36,9 @@ const PostSchema = new Schema({
     type: String
   },
   img: {
-    type: String
+    type: Schema.Types.ObjectId,
+    ref: 'Image',
+    default: null
   },
   likedBy: {
     type: [Schema.Types.ObjectId],

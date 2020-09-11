@@ -138,6 +138,20 @@ a.navbar-brand {
   }
 }
 
+.my-post-form-photo {
+  position: relative;
+}
+
+.my-post-form-photo-wall {
+  position: absolute;
+  width: 100%;
+  top: 0;
+}
+
+.my-post-form-photo-wall .btn {
+  float: right;
+}
+
 .my-post {
   padding: 8px;
   border: 1px solid #ccc;
@@ -145,8 +159,16 @@ a.navbar-brand {
   background: white;
 }
 
+.my-post .my-profile-picture {
+  margin: 0;
+}
+
 .my-post-options .dropdown-menu {
   box-shadow: 2px 2px 4px #aaa;
+}
+
+.my-post-content img {
+  margin-bottom: 1rem;
 }
 
 .my-post-buttons .btn{

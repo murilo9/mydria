@@ -176,6 +176,24 @@ export default class UserRoutes {
       }
     });
 
+    // POST em /images - Posta uma nova imagem
+
+    app.post('/images', verifyJWT, upload.single('file'),  async(req, res: Response) => {
+      console.log('POST em /posts')
+      /* 
+        O middleware de upload ja salvou a imagem e instanciou ela no banco 
+        então podemos coletar o id e a extensão de req.
+      */
+      const requesterId = req.requesterId;
+      const imgId = req.imgId;
+      const imgExtention = req.imgExtention;
+      console.log('imagem: ' + imgId + imgExtention)
+      res.status(200).send({ 
+        id: imgId,
+        ext: imgExtention
+      });
+    });
+
     //POST em /profile-pic - Faz upload de uma nova foto de perfil
 
     app.post('/profile-pic', verifyJWT, upload.single('file'), async (req, res: Response) => {
@@ -198,6 +216,29 @@ export default class UserRoutes {
       else{
         res.status(404).send('User id not found');
       }
-    })
+    });
+
+    //POST em /tmp - Faz upload de uma foto temporária nas pasta /tmp
+
+    app.post('/tmp', verifyJWT, upload.single('file'), async(req, res: Response) => {
+      console.log('POST em /tmp')
+      res.status(200).send({ 
+        name: req.requesterId,
+        ext: req.imgExtention
+      });
+      //TODO - tratamento de erros durante o upload
+    });
+
+    //GET em /tmp/:id?ext - Coleta a imagem salva no diretório tmp do usuário
+
+    app.get('/tmp/:id', async(req, res: Response) => {
+      console.log('GET em /tmp/'+req.params.id+'?ext='+req.query.ext)
+      const image = req.params.id;
+      const imgExtention = req.query.ext;
+      const imageName = image + imgExtention;
+      const imagePath = path.resolve(`${__dirname}/../../tmp/${imageName}`);
+      console.log(imagePath)
+      res.sendFile(imagePath);
+    });
   }
 }
