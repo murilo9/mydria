@@ -1,5 +1,6 @@
 import {Schema, Document, model} from 'mongoose';
 import { IUser } from './User';
+import { IComment, ICommentInput } from './Comment';
 
 export interface IPost extends Document {
   author: IUser,
@@ -8,7 +9,8 @@ export interface IPost extends Document {
   text: String,
   img: String,
   likedBy: Array<IUser>,
-  unlikedBy: Array<IUser>
+  unlikedBy: Array<IUser>,
+  comments: Array<IComment>
 }
 
 export interface IPostInput {
@@ -16,6 +18,7 @@ export interface IPostInput {
   tags: Array<String>,
   date: Date,
   text: String,
+  comments: Array<ICommentInput>
 }
 
 const PostSchema = new Schema({
@@ -48,6 +51,11 @@ const PostSchema = new Schema({
   unlikedBy: {
     type: [Schema.Types.ObjectId],
     ref: 'User',
+    default: []
+  },
+  comments: {
+    type: [Schema.Types.ObjectId],
+    ref: 'Comment',
     default: []
   }
 })
