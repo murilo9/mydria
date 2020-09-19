@@ -458,6 +458,57 @@ const setTmpImage = async function() {
   return response;
 }
 
+const getPostComments = async function(postId) {
+  let response = {};
+  try {
+    const token = Cookies.get('token');
+    const res = await axios({
+      url: baseUrl + `/post/${postId}/comments`,
+      method: 'get',
+      headers: {
+        'x-access-token': token,
+      }
+    });
+    response = {
+      success: true,
+      data: res.data
+    }
+  }
+  catch (e) {
+    response = {
+      success: false,
+      error: e.response
+    }
+  }
+  return response;
+}
+
+const publishComment = async function(comment, postId) {
+  let response = {};
+  try {
+    const token = Cookies.get('token');
+    const res = await axios({
+      url: baseUrl + `/post/${postId}/comments`,
+      method: 'post',
+      headers: {
+        'x-access-token': token,
+      },
+      data: comment
+    });
+    response = {
+      success: true,
+      data: res.data
+    }
+  }
+  catch (e) {
+    response = {
+      success: false,
+      error: e.response
+    }
+  }
+  return response;
+} 
+
 const resolveImageUrl = function(imageId) {
   return imageId ? baseUrl + `/image/${imageId}` : '/assets/user.svg';
 }
@@ -484,5 +535,7 @@ export default {
   uploadProfilePicture,
   resolveImageUrl,
   setTmpImage,
-  getTmpImageUrl
+  getTmpImageUrl,
+  getPostComments,
+  publishComment
 }

@@ -23,7 +23,9 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { connect } from 'react-redux';
 import Tag from './Tag.js';
+import PostComment from './PostComment.js';
 import sanitize from '../helpers/stringSanitizer.js';
+import CommentForm from './CommentForm.js';
 
 const mapStateToProps = state => ({
   ...state
@@ -37,10 +39,12 @@ class Post extends Component {
       userPictureUrl: request.resolveImageUrl(props.postData.author.profilePicture),
       tempLike: false,
       tempUnlike: false,
+      showComments: false,
       error: false,
       editing: false,
       editText: '',
-      editTags: []
+      editTags: [],
+      postComments: []
     }
     this.renderPostDate = this.renderPostDate.bind(this);
     this.liked = this.liked.bind(this);
@@ -65,6 +69,9 @@ class Post extends Component {
     this.saveChanges = this.saveChanges.bind(this);
     this.getProfilePageUrl = this.getProfilePageUrl.bind(this);
     this.renderPostPhoto = this.renderPostPhoto.bind(this);
+    this.showComments = this.showComments.bind(this);
+    this.renderComments = this.renderComments.bind(this);
+    this.publishComment = this.publishComment.bind(this);
   }
 
   userIsAuthor(){
@@ -279,6 +286,29 @@ class Post extends Component {
     }
   }
 
+  async publishComment(){
+    const postId = this.props.postData._id;
+    const commentFormId = 'comment-form-' + postId;
+    const commentText = document.getElementById(commentFormId).value;
+    let comment = {
+      author: this.props.session.userId,
+      text: commentText
+    }
+    let req = await request.publishComment(comment, postId);
+    if(req.success){
+      let comment = req.data;
+      let postComments = this.state.postComments;
+      postComments.push(comment);
+      this.setState({
+        postComments
+      })
+      document.getElementById(commentFormId).value = "";
+    }
+    else{
+      //TODO - Tratamento de erro ao publicar comentário
+    }
+  }
+
   renderError(){
     return this.state.error ?
     <Alert variant="danger"> {this.state.error} </Alert>
@@ -324,6 +354,38 @@ class Post extends Component {
     return this.props.postData.img ?
     <Image src={request.resolveImageUrl(this.props.postData.img)} fluid/>
     : null;
+  }
+
+  renderComments(){
+    if(this.state.showComments){
+      let comments = [];
+      this.state.postComments.forEach(comment => {
+        comments.push(<PostComment commentData={ comment } />);
+      })
+      return <React.Fragment>
+        <Container fluid>
+          { comments.length ? comments : <Alert variant="secondary">No comments yet</Alert> }
+          <CommentForm postId={this.props.postData._id} publishComment={this.publishComment} />
+        </Container>
+      </React.Fragment>
+    }
+    else{
+      return null;
+    }
+  }
+
+  async showComments(){
+    let req = await request.getPostComments(this.props.postData._id);
+    if(req.success){
+      this.setState({
+        postComments: req.data,
+        showComments: true
+      });
+    }
+    else{
+      console.log(req.error)
+      //TODO - Exibir erro de carregamento dos comentários
+    }
   }
 
   getProfilePageUrl(){
@@ -382,6 +444,7 @@ class Post extends Component {
                   { this.renderPostPhoto() }
                 </Col>
               </Row>
+              { this.renderComments() }
             </Media.Body>
           </Media>
           <Row className="justify-content-end my-post-buttons">
@@ -396,7 +459,7 @@ class Post extends Component {
                 <FontAwesomeIcon icon={faThumbsDown} />
                 { this.renderUnlikesQty() }
               </Button>{' '}
-              <Button variant="outline-dark">
+              <Button variant="outline-dark" onClick={ this.showComments }>
                 <FontAwesomeIcon icon={faComment} />
                   { ' ' + '0' /* TODO comments */ }
               </Button>{' '}

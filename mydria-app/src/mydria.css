@@ -245,6 +245,11 @@ a.navbar-brand {
   padding: 0;
 }
 
+.my-profile-picture-wrapper.comment {
+  width: 42px;
+  padding: 0;
+}
+
 .my-profile-picture-wrapper input[type=file] {
   margin: 1rem 0;
 }
