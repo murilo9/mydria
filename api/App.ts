@@ -8,6 +8,7 @@ import UserRoutes from "./routes/User";
 import verifyJWT from './middleware/Auth'; 
 import LoginRoutes from "./routes/Login";
 import PostRoutes from "./routes/Post";
+import CommentRoutes from "./routes/Comment";
 
 const multer = require('multer');
 const path = require('path');
@@ -54,6 +55,7 @@ class App {
   public userRoutes: UserRoutes = new UserRoutes();
   public loginRoutes: LoginRoutes = new LoginRoutes();
   public postsRoutes: PostRoutes = new PostRoutes();
+  public commentRoutes: CommentRoutes = new CommentRoutes();
 
   constructor() {
     this.app = express();
@@ -64,6 +66,7 @@ class App {
     this.userRoutes.routes(this.app, verifyJWT, upload);
     this.loginRoutes.routes(this.app, verifyJWT);
     this.postsRoutes.routes(this.app, verifyJWT, upload);
+    this.commentRoutes.routes(this.app, verifyJWT);
     mongoose.connect('mongodb://localhost/mydria', {useNewUrlParser: true});
   }
 
