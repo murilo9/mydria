@@ -29,9 +29,9 @@ export default class CommentRoutes {
       const post = await Post.findOne({ _id: postId}).exec();
       if(post){
         const commentData = {
-          author: req.author,
+          author: req.body.author,
           post: postId,
-          text: req.text,
+          text: req.body.text,
           date: new Date()
         }
         let comment = new Comment(commentData);
