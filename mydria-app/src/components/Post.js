@@ -461,7 +461,7 @@ class Post extends Component {
               </Button>{' '}
               <Button variant="outline-dark" onClick={ this.showComments }>
                 <FontAwesomeIcon icon={faComment} />
-                  { ' ' + '0' /* TODO comments */ }
+                  { ' ' + this.props.postData.commentsTotal }
               </Button>{' '}
               <Button variant="outline-dark">
                 <FontAwesomeIcon icon={faShare} />

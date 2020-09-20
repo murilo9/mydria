@@ -1,6 +1,7 @@
 import {Request, Response} from "express";
 import User from '../models/User';
 import Post, {IPost, IPostInput} from '../models/Post';
+import Comment from '../models/Comment';
 
 export default class PostRoutes {
   
@@ -15,7 +16,14 @@ export default class PostRoutes {
 
     .get(async (req: Request, res: Response) => {
       console.log('GET em /posts');
-      const posts = await Post.find({}).populate('author').exec();
+      let posts = await Post.find({}).lean().populate('author').exec();
+      //Adiciona o total de comentários do post:
+      for(let i = 0; i < posts.length; i++){
+        let post = posts[i];
+        let comments = await Comment.find({ post: post._id });
+        console.log(comments)
+        post.commentsTotal = comments.length;
+      }
       res.status(200).send(posts);
     })
 
@@ -104,6 +112,8 @@ export default class PostRoutes {
       //Deleta o post:
       await Post.deleteOne({_id: postId}).exec();
       res.status(200).send('Post deleted successfully');
+
+      //TODO - Deletar os comentários do post e a imagem do post, caso tenha
     })
 
     app.route('/post/:postId/like')
@@ -215,7 +225,14 @@ export default class PostRoutes {
     .get(async (req: Request, res: Response) => {
       console.log('GET em /posts/'+req.params.userId);
       const author = req.params.userId;
-      const posts = await Post.find({ author }).populate('author').exec();
+      let posts = await Post.find({ author }).lean().populate('author').exec();
+      //Adiciona o total de comentários do post:
+      for(let i = 0; i < posts.length; i++){
+        let post = posts[i];
+        let comments = await Comment.find({ post: post._id });
+        console.log(comments)
+        post.commentsTotal = comments.length;
+      }
       res.status(200).send(posts);
     })
   }
