@@ -394,7 +394,7 @@ class Post extends Component {
 
   render() {
     return (
-      <Container fluid className="mb-3 my-post">
+      <Container fluid className="mb-3 my-post" key={this.props.postData._id}>
         { this.renderError() }
         { this.state.editing ?
         this.renderEditForm()
