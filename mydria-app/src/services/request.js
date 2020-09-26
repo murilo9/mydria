@@ -509,6 +509,30 @@ const publishComment = async function(comment, postId) {
   return response;
 } 
 
+const deleteComment = async function(commentId) {
+  let response = {};
+  try {
+    const token = Cookies.get('token');
+    const res = await axios({
+      url: baseUrl + `/comment/${commentId}`,
+      method: 'delete',
+      headers: {
+        'x-access-token': token,
+      }
+    });
+    response = {
+      success: true
+    }
+  }
+  catch (e) {
+    response = {
+      success: false,
+      error: e.response
+    }
+  }
+  return response;
+}
+
 const resolveImageUrl = function(imageId) {
   return imageId ? baseUrl + `/image/${imageId}` : '/assets/user.svg';
 }
@@ -537,5 +561,6 @@ export default {
   setTmpImage,
   getTmpImageUrl,
   getPostComments,
-  publishComment
+  publishComment,
+  deleteComment
 }

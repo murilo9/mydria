@@ -23,7 +23,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { connect } from 'react-redux';
 import Tag from './Tag.js';
-import PostComment from './PostComment.js';
+import PostComment from './Comment.js';
 import sanitize from '../helpers/stringSanitizer.js';
 import CommentForm from './CommentForm.js';
 
@@ -72,6 +72,7 @@ class Post extends Component {
     this.showComments = this.showComments.bind(this);
     this.renderComments = this.renderComments.bind(this);
     this.publishComment = this.publishComment.bind(this);
+    this.deleteComment = this.deleteComment.bind(this);
   }
 
   userIsAuthor(){
@@ -309,6 +310,17 @@ class Post extends Component {
     }
   }
 
+  deleteComment(commentId){
+    let postComments = this.state.postComments;
+    for(let c = 0; c < postComments.length; c++){
+      if(postComments[c]._id === commentId){
+        postComments.splice(c, 1);
+        break;
+      }
+    }
+    this.setState({ postComments });
+  }
+
   renderError(){
     return this.state.error ?
     <Alert variant="danger"> {this.state.error} </Alert>
@@ -360,7 +372,7 @@ class Post extends Component {
     if(this.state.showComments){
       let comments = [];
       this.state.postComments.forEach(comment => {
-        comments.push(<PostComment commentData={ comment } />);
+        comments.push(<PostComment commentData={ comment } deleteComment={this.deleteComment}/>);
       })
       return <React.Fragment>
         <Container fluid>
