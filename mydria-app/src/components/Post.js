@@ -73,6 +73,7 @@ class Post extends Component {
     this.renderComments = this.renderComments.bind(this);
     this.publishComment = this.publishComment.bind(this);
     this.deleteComment = this.deleteComment.bind(this);
+    this.updateComment = this.updateComment.bind(this);
   }
 
   userIsAuthor(){
@@ -321,6 +322,18 @@ class Post extends Component {
     this.setState({ postComments });
   }
 
+  updateComment(updatedComment, next){
+    let postComments = this.state.postComments;
+    for(let c = 0; c < postComments.length; c++){
+      if(postComments[c]._id === updatedComment._id){
+        postComments.splice(c, 1, updatedComment);
+        break;
+      }
+    }
+    this.setState({ postComments });
+    next();
+  }
+
   renderError(){
     return this.state.error ?
     <Alert variant="danger"> {this.state.error} </Alert>
@@ -372,7 +385,11 @@ class Post extends Component {
     if(this.state.showComments){
       let comments = [];
       this.state.postComments.forEach(comment => {
-        comments.push(<PostComment commentData={ comment } deleteComment={this.deleteComment}/>);
+        comments.push(
+          <PostComment commentData={ comment } 
+          deleteComment={this.deleteComment}
+          updateComment={this.updateComment}/>
+        );
       })
       return <React.Fragment>
         <Container fluid>

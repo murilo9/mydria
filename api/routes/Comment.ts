@@ -58,6 +58,7 @@ export default class CommentRoutes {
           comment.edited = true;
         }
         await comment.save();
+        comment = await Comment.findOne({_id: comment._id}).populate('author').exec();
         res.status(200).send(comment);
       }
       else{

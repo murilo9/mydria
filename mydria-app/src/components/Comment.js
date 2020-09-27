@@ -4,6 +4,8 @@ import request from '../services/request.js';
 import Media from 'react-bootstrap/Media';
 import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
+import Form from 'react-bootstrap/Form';
+import Button from 'react-bootstrap/Button';
 import Dropdown from 'react-bootstrap/Dropdown';
 import { connect } from 'react-redux';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -18,16 +20,17 @@ class PostComment extends Component {
   constructor(props){
     super(props);
     this.state = {
-      userPictureUrl: request.resolveImageUrl(props.commentData.author.profilePicture)
+      userPictureUrl: request.resolveImageUrl(props.commentData.author.profilePicture),
+      editing: false
     }
     this.getProfilePageUrl = this.getProfilePageUrl.bind(this);
     this.isAuthor = this.isAuthor.bind(this);
-    this.editComment = this.editComment.bind(this);
     this.deleteComment = this.deleteComment.bind(this);
-  }
-
-  editComment(){
-    //TODO
+    this.editComment = this.editComment.bind(this);
+    this.uneditComment = this.uneditComment.bind(this);
+    this.saveChanges = this.saveChanges.bind(this);
+    this.renderEditForm = this.renderEditForm.bind(this);
+    this.getId = this.getId.bind(this);
   }
 
   async deleteComment(){
@@ -66,12 +69,71 @@ class PostComment extends Component {
     </Dropdown.Item>
   }
 
+  editComment(){
+    let commentText = this.props.commentData.text;
+    this.setState({
+      editing: true
+    })
+    setTimeout(() => {
+      let commentTextarea = document.getElementById('edit-comment-form-' + this.getId());
+      commentTextarea.value = commentText;
+    }, 10)
+  }
+
+  uneditComment(){
+    this.setState({
+      editing: false
+    })
+  }
+
+  async saveChanges(){
+    let updatedComment = {...this.props.commentData};
+    const updatedText = document.getElementById('edit-comment-form-' + this.getId()).value;
+    updatedComment.text = updatedText;
+    let res = await request.updateComment(updatedComment);
+    if(res.success){
+      this.props.updateComment(res.data, () => {
+        this.uneditComment();
+      });
+    }
+    else{
+      console.log(res.error)
+      //TODO - Tratamento adequado de erro ao atualizar comentário
+    }
+  }
+
+  getId(){
+    return this.props.commentData._id;
+  }
+
+  renderEditForm(){
+    return <Form>
+      <Form.Group>
+        <Form.Control as="textarea" rows="3" id={'edit-comment-form-'+this.getId()}
+        placeholder="Leave a comment"/>
+      </Form.Group>
+      <Row className="mb-3 justify-content-end">
+        <Col sm="auto">
+          <Button variant="secondary" onClick={this.uneditComment}>
+            Cancel
+          </Button>
+          {' '}
+          <Button variant="info" onClick={this.saveChanges}>
+            Save
+          </Button>
+        </Col>
+      </Row>
+    </Form>
+  }
+
   isAuthor(){
     return this.props.commentData.author._id === this.props.session.userId;
   }
 
   render() {
-    return <React.Fragment>
+    return this.state.editing ?
+      this.renderEditForm()
+      :
       <Media>
         <div className="my-profile-picture-wrapper comment mr-3 d-none d-sm-block">
           <a className="my-profile-picture" 
@@ -113,7 +175,6 @@ class PostComment extends Component {
           </Row>
         </Media.Body>
       </Media>
-    </React.Fragment>
   }
 }
 
