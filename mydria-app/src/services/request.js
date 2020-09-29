@@ -559,6 +559,35 @@ const updateComment = async function(updatedComment) {
   return response;
 }
 
+const sharePost = async function(postId, text = '', tags = []) {
+  let response = {};
+  try {
+    const token = Cookies.get('token');
+    const res = await axios({
+      url: baseUrl + `/post/${postId}/share`,
+      method: 'post',
+      headers: {
+        'x-access-token': token,
+      },
+      data: {
+        text,
+        tags
+      }
+    });
+    response = {
+      success: true,
+      data: res.data
+    }
+  }
+  catch (e) {
+    response = {
+      success: false,
+      error: e.response
+    }
+  }
+  return response;
+}
+
 const resolveImageUrl = function(imageId) {
   return imageId ? baseUrl + `/image/${imageId}` : '/assets/user.svg';
 }
@@ -589,5 +618,6 @@ export default {
   getPostComments,
   publishComment,
   deleteComment,
-  updateComment
+  updateComment,
+  sharePost
 }

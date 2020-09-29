@@ -89,6 +89,7 @@ class FeedPage extends MydriaPage {
       <Post postData={post} 
       updatePost={this.updatePost} 
       deletePost={this.deletePost}
+      appendPost={this.appendPost}
       key={post._id} 
       />)
     })

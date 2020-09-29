@@ -49,6 +49,11 @@ const PostSchema = new Schema({
     type: [Schema.Types.ObjectId],
     ref: 'User',
     default: []
+  },
+  sharedFrom: {
+    type: [Schema.Types.ObjectId],
+    ref: 'Post',
+    default: null
   }
 })
 

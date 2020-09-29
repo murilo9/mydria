@@ -16,13 +16,19 @@ export default class PostRoutes {
 
     .get(async (req: Request, res: Response) => {
       console.log('GET em /posts');
-      let posts = await Post.find({}).lean().populate('author').exec();
+      let posts = await Post.find({}).lean().populate('author').populate('sharedFrom').exec();
       //Adiciona o total de comentários do post:
       for(let i = 0; i < posts.length; i++){
         let post = posts[i];
         let comments = await Comment.find({ post: post._id });
-        console.log(comments)
         post.commentsTotal = comments.length;
+        //Caso o post esteja compartilhado:
+        if(post.sharedFrom){
+          let originalPost = await Post.findOne({_id: post.sharedFrom}).populate('author').exec();
+          if(originalPost){
+            post.sharedFrom = originalPost;
+          }
+        }
       }
       res.status(200).send(posts);
     })
@@ -46,7 +52,6 @@ export default class PostRoutes {
         let createdPost = new Post(postData);
         await createdPost.save();
         await createdPost.populate('author').execPopulate();
-        console.log(createdPost)
         res.status(201).send(createdPost);    //201 - Created
       }
     })
@@ -230,10 +235,46 @@ export default class PostRoutes {
       for(let i = 0; i < posts.length; i++){
         let post = posts[i];
         let comments = await Comment.find({ post: post._id });
-        console.log(comments)
         post.commentsTotal = comments.length;
+        //Caso o post esteja compartilhado:
+        if(post.sharedFrom){
+          let originalPost = await Post.findOne({_id: post.sharedFrom}).populate('author').exec();
+          console.log(originalPost)
+          if(originalPost){
+            post.sharedFrom = originalPost;
+          }
+        }
       }
       res.status(200).send(posts);
+    })
+
+    //POST em /post:postId/share - Compartilha um post
+
+    app.post('/post/:postId/share', verifyJWT, async (req, res: Response) => {
+      console.log('POST em /post/'+req.params.postId+'/share');
+      const requesterId = req.requesterId;
+      const postId = req.params.postId;
+      const shareText = req.body.text;
+      const shareTags = req.body.tags;
+      const originalPost = await Post.findOne({_id: postId}).populate('author').exec();
+      if(originalPost){
+        let sharedPost = new Post({
+          author: requesterId,
+          text: shareText,
+          tags: shareTags,
+          sharedFrom: originalPost._id
+        });
+        await sharedPost.save();
+        //É necessário recarregar o sharedPost para poder popular corretamente:
+        sharedPost = await Post.findOne({_id: sharedPost._id}).lean()
+        .populate('author').populate('sharedFrom').exec();
+        sharedPost.sharedFrom = originalPost;
+        sharedPost.commentsTotal = 0;
+        res.status(200).send(sharedPost);
+      }
+      else {
+        res.status(404).send('Post not found.');
+      }
     })
   }
 }

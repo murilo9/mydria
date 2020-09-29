@@ -10,6 +10,7 @@ import Form from 'react-bootstrap/Form';
 import Dropdown from 'react-bootstrap/Dropdown';
 import Alert from 'react-bootstrap/Alert';
 import Image from 'react-bootstrap/Image';
+import Modal from 'react-bootstrap/Modal';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { 
   faComment, 
@@ -40,9 +41,9 @@ class Post extends Component {
       tempLike: false,
       tempUnlike: false,
       showComments: false,
+      showShareModal: false,
       error: false,
       editing: false,
-      editText: '',
       editTags: [],
       postComments: []
     }
@@ -74,6 +75,10 @@ class Post extends Component {
     this.publishComment = this.publishComment.bind(this);
     this.deleteComment = this.deleteComment.bind(this);
     this.updateComment = this.updateComment.bind(this);
+    this.sharePost = this.sharePost.bind(this);
+    this.renderMiniPost = this.renderMiniPost.bind(this);
+    this.toggleShareModal = this.toggleShareModal.bind(this);
+    this.renderShareModal = this.renderShareModal.bind(this);
   }
 
   userIsAuthor(){
@@ -197,6 +202,23 @@ class Post extends Component {
     })
   }
 
+  async sharePost(){
+    //Verifica se é pra compartilhar este post ou o original:
+    let postId = this.props.postData.sharedFrom ? 
+      this.props.postData.sharedFrom._id : this.props.postData._id;
+    let shareText = document.getElementById('edit-post-form-' + this.props.postData._id).value;
+    let shareTags = this.state.editTags;
+    let res = await request.sharePost(postId, shareText, shareTags);
+    if(res.success){
+      this.props.appendPost(res.data);
+    }
+    else{
+      console.log(res.error);
+      //TODO - Tratamento adequado de erro ao compartilhar o post
+    }
+    this.toggleShareModal();
+  }
+
   /**
    * Retorna a quantidade de likes do post.
    */
@@ -213,11 +235,11 @@ class Post extends Component {
     return ' ' + (this.props.postData.unlikedBy.length + tempUnlike);
   }
 
-  renderPostTags(){
-    if(this.props.postData.tags.length){
+  renderPostTags(postTags){
+    if(postTags.length){
       let tags = [];
-      this.props.postData.tags.forEach(tagContent => {
-      tags.push(<a href="#" key={tagContent}>#{ tagContent } </a>)
+      postTags.forEach(tagContent => {
+        tags.push(<a href="#" key={tagContent}>#{ tagContent } </a>)
       })
       return tags;
     }
@@ -341,14 +363,12 @@ class Post extends Component {
     null
   }
 
-  renderEditForm(){
-    return <React.Fragment>
-      { this.renderEditTags() }
-      <Form.Control type="text" placeholder="Tags" 
-      className="mb-2" onKeyPress={ this.onTagPush } 
-      id={ "edit-postform-tags-input" + this.props.postData._id }/>
-      <Form.Control as="textarea" rows="5" className="mb-2"
-      id={ 'edit-post-form-' + this.props.postData._id } />
+  getProfilePageUrl(){
+    return '/profile/' + this.props.postData.author.nickname;
+  }
+
+  renderEditForm(share = false){
+    const buttonsRow = <React.Fragment>
       <Row className="justify-content-end">
         <Col xs="auto">
           <Button variant="secondary" onClick={ this.uneditPost }>Cancel</Button>
@@ -356,6 +376,22 @@ class Post extends Component {
           <Button variant="info" onClick={ this.saveChanges }>Save</Button>
         </Col>
       </Row>
+    </React.Fragment>
+
+    return <React.Fragment>
+      <h4>Edit post</h4>
+      { this.renderEditTags() }
+      <Form.Control type="text" placeholder="Tags" 
+      className="mb-2" onKeyPress={ this.onTagPush } 
+      id={ "edit-postform-tags-input" + this.props.postData._id }/>
+      <Form.Control as="textarea" rows={share ? "3" : "5"} className="mb-2"
+      id={ 'edit-post-form-' + this.props.postData._id } 
+      placeholder={share ? "Say something about it" : ""}/>
+      { 
+        this.renderMiniPost(this.props.postData.sharedFrom ? 
+        this.props.postData.sharedFrom : this.props.postData) 
+      }
+      { share ? null : buttonsRow }
     </React.Fragment>
   }
 
@@ -375,9 +411,9 @@ class Post extends Component {
     </Dropdown.Item>
   }
 
-  renderPostPhoto(){
-    return this.props.postData.img ?
-    <Image src={request.resolveImageUrl(this.props.postData.img)} fluid/>
+  renderPostPhoto(img){
+    return img ?
+    <Image src={request.resolveImageUrl(img)} fluid/>
     : null;
   }
 
@@ -417,8 +453,48 @@ class Post extends Component {
     }
   }
 
-  getProfilePageUrl(){
-    return '/profile/' + this.props.postData.author.nickname;
+  toggleShareModal(){
+    this.setState({
+      showShareModal: !this.state.showShareModal
+    })
+  }
+
+  renderMiniPost(miniPostData){
+    const pictureUrl = request.resolveImageUrl(miniPostData.author.profilePicture);
+    return <Media className="my-minipost">
+        <div className="my-profile-picture-wrapper post mr-3 d-none d-sm-block">
+          <a className="my-profile-picture" href={"/profile/" + miniPostData.author.nickname}
+          style={{backgroundImage: `url(${pictureUrl})`}}></a>
+        </div>
+        <Media.Body>
+          { this.renderPostTags(miniPostData.tags) }
+          <p className="my-post-text">
+            { miniPostData.text }
+          </p>
+          { this.renderPostPhoto(miniPostData.img) }
+        </Media.Body>
+      </Media>
+  }
+
+  renderShareModal(){
+    return <React.Fragment>
+      <Modal show={this.state.showShareModal} onHide={this.toggleShareModal}>
+        <Modal.Header closeButton>
+          <Modal.Title>Share post</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          { this.renderEditForm(true) }
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={this.toggleShareModal}>
+            Cancel
+          </Button>
+          <Button variant="primary" onClick={this.sharePost}>
+            Share
+          </Button>
+        </Modal.Footer>
+      </Modal>
+    </React.Fragment>
   }
 
   render() {
@@ -445,6 +521,17 @@ class Post extends Component {
                     <a href={ this.getProfilePageUrl() } className="my-post-author-name">
                       <strong>{ this.props.postData.author.nickname }</strong>
                     </a>
+                    { 
+                      this.props.postData.sharedFrom ? 
+                      <React.Fragment>
+                        {' '}shared from{' '} 
+                        <a href={"/profile/" + this.props.postData.author.nickname} 
+                        className="my-post-author-name">
+                          <strong>{ this.props.postData.sharedFrom.author.nickname }</strong>
+                        </a>
+                      </React.Fragment>
+                      : null 
+                    }
                     <div className="my-post-date">
                       { this.renderPostDate() }
                     </div>
@@ -465,13 +552,17 @@ class Post extends Component {
                 </Col>
               </Row>
               <Row className="my-post-content">
-                <Col>
-                  { this.renderPostTags() }
-                  <p className="my-post-text">
-                    { this.props.postData.text }
-                  </p>
-                  { this.renderPostPhoto() }
-                </Col>
+              <Col>
+                { this.renderPostTags(this.props.postData.tags) }
+                <p className="my-post-text">
+                  { this.props.postData.text }
+                </p>
+                { 
+                  this.props.postData.sharedFrom ? 
+                  this.renderMiniPost(this.props.postData.sharedFrom) : 
+                  this.renderPostPhoto(this.props.postData.img) 
+                }
+              </Col>
               </Row>
               { this.renderComments() }
             </Media.Body>
@@ -492,11 +583,14 @@ class Post extends Component {
                 <FontAwesomeIcon icon={faComment} />
                   { ' ' + this.props.postData.commentsTotal }
               </Button>{' '}
-              <Button variant="outline-dark">
+              <Button variant="outline-dark" onClick={ this.toggleShareModal }>
                 <FontAwesomeIcon icon={faShare} />
               </Button>
             </Col>
           </Row>
+          {
+            this.renderShareModal()
+          }
         </React.Fragment>
         }
       </Container>

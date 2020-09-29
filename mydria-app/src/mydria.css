@@ -245,6 +245,10 @@ a.navbar-brand {
   padding: 0;
 }
 
+.my-minipost .my-profile-picture-wrapper.post {
+  width: 48px;
+}
+
 .my-profile-picture-wrapper.comment {
   width: 42px;
   padding: 0;
