@@ -232,11 +232,11 @@ a.navbar-brand {
 }
 
 .my-profile-picture-wrapper {
+  display: inline-block;
   overflow: hidden;
 }
 
 .my-profile-picture-wrapper.tiny {
-  
   width: 40px;
 }
 
@@ -326,4 +326,13 @@ input[type="file"]
   border: 1px solid #ccc;
   border-radius: .25rem;
   background: white;
+}
+
+.my-following-feed p {
+  text-align: center;
+}
+
+.list-group-item {
+  display: flex;
+  align-items: center;
 }
