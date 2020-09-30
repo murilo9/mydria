@@ -53,6 +53,7 @@ export default class PostRoutes {
       //Instancia o post no banco de dados:
       let postData = {
         text: req.body.text,
+        img: req.body.img,
         author: requesterId,
         tags: req.body.tags
       }
