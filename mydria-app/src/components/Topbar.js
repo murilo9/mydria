@@ -8,6 +8,7 @@ import Nav from 'react-bootstrap/Nav';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import Container from 'react-bootstrap/Container';
+import ProfilePicture from './ProfilePicture.js';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
@@ -76,8 +77,8 @@ class Topbar extends React.Component {
             <Nav.Link href="" onClick={this.toggleMobileSearch} className="d-block d-sm-none">
               <FontAwesomeIcon icon={faSearch} className="my-profile-data-icon" />
             </Nav.Link>
-            <a className="my-profile-picture" href={"/profile/" + this.props.user.nickname}
-              style={{backgroundImage: `url(${this.state.userPictureUrl})`}}></a>
+            <ProfilePicture nickname={this.props.user.nickname} noMargin
+              pictureId={this.props.user.profilePicture} size="tiny" />
             <NavDropdown title={this.props.user.nickname}
               alignRight id="basic-nav-dropdown">
               <NavDropdown.Item href={"/profile/" + this.props.user.nickname}>Profile</NavDropdown.Item>

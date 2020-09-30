@@ -107,10 +107,6 @@ a.navbar-brand {
   padding: 0;
 }
 
-.my-navbar a {
-  padding: 0.5em !important;
-}
-
 .my-mobile-search {
   width: 100%;
 }
@@ -236,22 +232,25 @@ a.navbar-brand {
 }
 
 .my-profile-picture-wrapper {
-  padding: 1rem;
   overflow: hidden;
 }
 
-.my-profile-picture-wrapper.post {
-  width: 64px;
-  padding: 0;
+.my-profile-picture-wrapper.tiny {
+  
+  width: 40px;
 }
 
-.my-minipost .my-profile-picture-wrapper.post {
+.my-profile-picture-wrapper.small {
   width: 48px;
 }
 
-.my-profile-picture-wrapper.comment {
-  width: 42px;
-  padding: 0;
+.my-profile-picture-wrapper.medium {
+  width: 64px;
+}
+
+.my-profile-picture-wrapper.max {
+  width: 100%;
+  padding: 1rem;
 }
 
 .my-profile-picture-wrapper input[type=file] {
@@ -269,17 +268,11 @@ a.navbar-brand {
 }
 
 @media screen and (max-width: 425px) {
-  .my-profile-picture {
+  .my-profile-picture-wrapper.tiny .my-profile-picture {
     margin: auto;
-    width: 70%;
-    padding-top: 70%;
+    width: 80%;
+    padding-top: 80%;
   }
-}
-
-.my-navbar .my-profile-picture {
-  width: 40px;
-  height: 40px;
-  padding: 0;
 }
 
 .my-profile-picture-button-wall {
@@ -327,4 +320,10 @@ input[type="file"]
 
 .my-profile-data-icon {
   width: 1.25rem !important;
+}
+
+.my-following-feed {
+  border: 1px solid #ccc;
+  border-radius: .25rem;
+  background: white;
 }

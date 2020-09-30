@@ -27,6 +27,7 @@ import Tag from './Tag.js';
 import PostComment from './Comment.js';
 import sanitize from '../helpers/stringSanitizer.js';
 import CommentForm from './CommentForm.js';
+import ProfilePicture from './ProfilePicture.js';
 
 const mapStateToProps = state => ({
   ...state
@@ -37,7 +38,6 @@ class Post extends Component {
   constructor(props){
     super(props);
     this.state = {
-      userPictureUrl: request.resolveImageUrl(props.postData.author.profilePicture),
       tempLike: false,
       tempUnlike: false,
       showComments: false,
@@ -460,12 +460,10 @@ class Post extends Component {
   }
 
   renderMiniPost(miniPostData){
-    const pictureUrl = request.resolveImageUrl(miniPostData.author.profilePicture);
     return <Media className="my-minipost">
-        <div className="my-profile-picture-wrapper post mr-3 d-none d-sm-block">
-          <a className="my-profile-picture" href={"/profile/" + miniPostData.author.nickname}
-          style={{backgroundImage: `url(${pictureUrl})`}}></a>
-        </div>
+        <ProfilePicture nickname={miniPostData.author.nickname}
+          pictureId={miniPostData.author.profilePicture} 
+          size="small" />
         <Media.Body>
           { this.renderPostTags(miniPostData.tags) }
           <p className="my-post-text">
@@ -506,17 +504,14 @@ class Post extends Component {
         :
         <React.Fragment>
           <Media>
-            <div className="my-profile-picture-wrapper post mr-3 d-none d-sm-block">
-              <a className="my-profile-picture" href={"/profile/" + this.props.postData.author.nickname}
-              style={{backgroundImage: `url(${this.state.userPictureUrl})`}}></a>
-            </div>
+            <ProfilePicture nickname={this.props.postData.author.nickname}
+              pictureId={this.props.postData.author.profilePicture} size="medium" tabletDesktopOnly/>
             <Media.Body>
               <Row className="justify-content-end mb-2">
                 <Col className="d-flex align-items-start flex-row">
-                  <div className="my-profile-picture-wrapper post mr-3 d-block d-sm-none">
-                    <a className="my-profile-picture" href={"/profile/" + this.props.postData.author.nickname}
-                    style={{backgroundImage: `url(${this.state.userPictureUrl})`}}></a>
-                  </div>
+                  <ProfilePicture nickname={this.props.postData.author.nickname}
+                    pictureId={this.props.postData.author.profilePicture}
+                    size="medium" mobileOnly/>
                   <div>
                     <a href={ this.getProfilePageUrl() } className="my-post-author-name">
                       <strong>{ this.props.postData.author.nickname }</strong>

@@ -17,6 +17,7 @@ import {
   faUsers,
   faCamera
 } from '@fortawesome/free-solid-svg-icons';
+import ProfilePicture from './ProfilePicture.js';
 
 import { mapDispatchToProps } from '../pages/base.js';
 
@@ -29,7 +30,6 @@ export class UserProfileData extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      userPictureUrl: requestService.resolveImageUrl(props.userData.profilePicture),
       showEditForm: false,
       showProfilePictureForm: false,
       showErrorMessage: false
@@ -240,8 +240,8 @@ export class UserProfileData extends Component {
     return (
       <Card className="mb-3">
         <div className="my-profile-picture-wrapper">
-          <div className="my-profile-picture"
-            style={{ backgroundImage: `url(${this.state.userPictureUrl})` }}></div>
+          <ProfilePicture nickname={this.props.userData.nickname} noMargin
+            pictureId={this.props.userData.profilePicture} size="max" />
           {this.renderProfilePictureForm()}
         </div>
         {this.renderErrorMessage()}
