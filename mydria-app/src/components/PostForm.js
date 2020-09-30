@@ -68,7 +68,9 @@ class PostForm extends Component {
       this.setState({
         message: 'Your post was successfully published.'
       });
-      this.togglePhotoForm();
+      if(this.state.showPhotoForm){
+        this.togglePhotoForm();
+      }
       document.getElementById('postText').value = '';   //Limpa o postForm
     }
     //Caso tenha ocorrido algum erro:
@@ -276,7 +278,7 @@ class PostForm extends Component {
           { this.renderPhotoForm() }
           <Form.Group>
             <Row className="justify-content-end">
-              <Col md={8} lg={9} className="my-tags-input pr-0">
+              <Col md={8} lg={9} className="my-tags-input pr-sm-0">
                 <Form.Control type="text" placeholder="Tags" 
                 onKeyPress={this.onTagPush} id="my-postform-tags-input"/>
               </Col>
