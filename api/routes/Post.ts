@@ -3,6 +3,25 @@ import User from '../models/User';
 import Post, {IPost, IPostInput} from '../models/Post';
 import Comment from '../models/Comment';
 
+const buildPost = async function(postId) {
+  let post = await Post.findOne({_id: postId}).lean()
+  .populate('author').exec();
+  if(!post){
+    return null
+  }
+  //Adiciona o total de comentários
+  const comments = await Comment.find({ post: post._id });
+  let commentsTotal = comments.length;
+  post.commentsTotal = commentsTotal;
+  //Adiciona o sharedFrom, caso tenha
+  if(post.sharedFrom){
+    const originalPost = await Post.findOne({_id: post.sharedFrom})
+    .populate('author').exec();
+    post.sharedFrom = originalPost;
+  }
+  return post;
+}
+
 export default class PostRoutes {
   
   public routes(app, verifyJWT, upload): void {
@@ -16,19 +35,12 @@ export default class PostRoutes {
 
     .get(async (req: Request, res: Response) => {
       console.log('GET em /posts');
-      let posts = await Post.find({}).lean().populate('author').populate('sharedFrom').exec();
+      let posts = [];
+      let basePosts = await Post.find({}).exec();
       //Adiciona o total de comentários do post:
-      for(let i = 0; i < posts.length; i++){
-        let post = posts[i];
-        let comments = await Comment.find({ post: post._id });
-        post.commentsTotal = comments.length;
-        //Caso o post esteja compartilhado:
-        if(post.sharedFrom){
-          let originalPost = await Post.findOne({_id: post.sharedFrom}).populate('author').exec();
-          if(originalPost){
-            post.sharedFrom = originalPost;
-          }
-        }
+      for(let i = 0; i < basePosts.length; i++){
+        let post = await buildPost(basePosts[i]._id);
+        posts.push(post);
       }
       res.status(200).send(posts);
     })
@@ -41,7 +53,6 @@ export default class PostRoutes {
       //Instancia o post no banco de dados:
       let postData = {
         text: req.body.text,
-        img: req.body.img,    //TODO - Upload da foto caso tenha
         author: requesterId,
         tags: req.body.tags
       }
@@ -51,7 +62,7 @@ export default class PostRoutes {
       else{
         let createdPost = new Post(postData);
         await createdPost.save();
-        await createdPost.populate('author').execPopulate();
+        createdPost = await buildPost(createdPost._id);
         res.status(201).send(createdPost);    //201 - Created
       }
     })
@@ -92,6 +103,7 @@ export default class PostRoutes {
         post.tags = updatedPost.tags;
       }
       await post.save();
+      post = await buildPost(post._id);
       res.status(200).send(post);
     })
 
@@ -161,6 +173,7 @@ export default class PostRoutes {
       if(alreadyLiked > -1){
         post.likedBy.splice(alreadyLiked, 1);
         await post.save();
+        post = await buildPost(post._id);
         res.status(200).send(post);
         return;
       }
@@ -168,6 +181,7 @@ export default class PostRoutes {
       else{
         post.likedBy.push(requesterId);
         await post.save();
+        post = await buildPost(post._id);
         res.status(200).send(post);
       }
     })
@@ -212,6 +226,7 @@ export default class PostRoutes {
       if(alreadyUnliked > -1){
         post.unlikedBy.splice(alreadyUnliked, 1);
         await post.save();
+        post = await buildPost(post._id);
         res.status(200).send(post);
         return;
       }
@@ -219,6 +234,7 @@ export default class PostRoutes {
       else{
         post.unlikedBy.push(requesterId);
         await post.save();
+        post = await buildPost(post._id);
         res.status(200).send(post);
       }
     })
@@ -230,20 +246,13 @@ export default class PostRoutes {
     .get(async (req: Request, res: Response) => {
       console.log('GET em /posts/'+req.params.userId);
       const author = req.params.userId;
-      let posts = await Post.find({ author }).lean().populate('author').exec();
+      let posts = [];
+      let basePosts = await Post.find({ author }).exec();
       //Adiciona o total de comentários do post:
-      for(let i = 0; i < posts.length; i++){
-        let post = posts[i];
-        let comments = await Comment.find({ post: post._id });
-        post.commentsTotal = comments.length;
-        //Caso o post esteja compartilhado:
-        if(post.sharedFrom){
-          let originalPost = await Post.findOne({_id: post.sharedFrom}).populate('author').exec();
-          console.log(originalPost)
-          if(originalPost){
-            post.sharedFrom = originalPost;
-          }
-        }
+      for(let i = 0; i < basePosts.length; i++){
+        let basePost = basePosts[i];
+        const post = await buildPost(basePost._id);
+        posts.push(post);
       }
       res.status(200).send(posts);
     })
@@ -266,10 +275,7 @@ export default class PostRoutes {
         });
         await sharedPost.save();
         //É necessário recarregar o sharedPost para poder popular corretamente:
-        sharedPost = await Post.findOne({_id: sharedPost._id}).lean()
-        .populate('author').populate('sharedFrom').exec();
-        sharedPost.sharedFrom = originalPost;
-        sharedPost.commentsTotal = 0;
+        sharedPost = await buildPost(sharedPost._id);
         res.status(200).send(sharedPost);
       }
       else {
