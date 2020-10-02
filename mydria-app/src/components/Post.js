@@ -42,6 +42,8 @@ class Post extends Component {
       tempUnlike: false,
       showComments: false,
       showShareModal: false,
+      showConfirmModal: false,
+      confirmModalData: {},
       error: false,
       editing: false,
       editTags: [],
@@ -79,6 +81,9 @@ class Post extends Component {
     this.renderMiniPost = this.renderMiniPost.bind(this);
     this.toggleShareModal = this.toggleShareModal.bind(this);
     this.renderShareModal = this.renderShareModal.bind(this);
+    this.closeConfirmModal = this.closeConfirmModal.bind(this);
+    this.showConfirmModal = this.showConfirmModal.bind(this);
+    this.renderConfirmModal = this.renderConfirmModal.bind(this);
   }
 
   userIsAuthor(){
@@ -174,6 +179,7 @@ class Post extends Component {
     let res = await request.deletePost(postId);
     if(res.success){
       //Chama a função do pai pra deletar o post do store:
+      this.setState({ showConfirmModal: false })
       this.props.deletePost(postId);
     }
     else{
@@ -333,15 +339,24 @@ class Post extends Component {
     }
   }
 
-  deleteComment(commentId){
-    let postComments = this.state.postComments;
-    for(let c = 0; c < postComments.length; c++){
-      if(postComments[c]._id === commentId){
-        postComments.splice(c, 1);
-        break;
+  async deleteComment(commentId){
+    let res = await request.deleteComment(commentId);
+    if(res.success){
+      let postComments = this.state.postComments;
+      for(let c = 0; c < postComments.length; c++){
+        if(postComments[c]._id === commentId){
+          console.log('found')
+          postComments.splice(c, 1);
+          break;
+        }
       }
+      this.setState({ postComments });
+      }
+    else{
+      console.log(res.error);
+      //TODO - Tratamento de erro ao deletar comentário
     }
-    this.setState({ postComments });
+    this.setState({ showConfirmModal: false })
   }
 
   updateComment(updatedComment, next){
@@ -401,7 +416,12 @@ class Post extends Component {
       <Dropdown.Item href="#" onClick={ this.editPost }>
         <FontAwesomeIcon icon={faEdit} /> Edit
       </Dropdown.Item>
-      <Dropdown.Item href="#" onClick={ this.deletePost }>
+      <Dropdown.Item href="#" onClick={ () => this.showConfirmModal(
+        'Delete post',
+        'Are you sure you want to delete this post?',
+        'Delete',
+        this.deletePost
+      )}>
         <FontAwesomeIcon icon={faTrashAlt} /> Delete
       </Dropdown.Item>
     </React.Fragment>
@@ -423,7 +443,12 @@ class Post extends Component {
       this.state.postComments.forEach(comment => {
         comments.push(
           <PostComment commentData={ comment } 
-          deleteComment={this.deleteComment}
+          deleteComment={ () => this.showConfirmModal(
+            'Delete comment',
+            'Are you sure you want to delete this comment?',
+            'Delete',
+            () => this.deleteComment(comment._id)
+          )}
           updateComment={this.updateComment}/>
         );
       })
@@ -472,6 +497,45 @@ class Post extends Component {
           { this.renderPostPhoto(miniPostData.img) }
         </Media.Body>
       </Media>
+  }
+
+  closeConfirmModal(){
+    this.setState({
+      showConfirmModal: false
+    })
+  }
+
+  showConfirmModal(title, message, action, funct){
+    this.setState({
+      showConfirmModal: true,
+      confirmModalData: {
+        title,
+        message,
+        action,
+        funct
+      }
+    })
+  }
+
+  renderConfirmModal(title, message, action, funct = this.closeConfirmModal){
+    return <React.Fragment>
+      <Modal show={this.state.showConfirmModal} onHide={this.closeConfirmModal}>
+        <Modal.Header closeButton>
+          <Modal.Title>{title}</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          { message }
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={this.closeConfirmModal}>
+            Cancel
+          </Button>
+          <Button variant="primary" onClick={funct}>
+            {action}
+          </Button>
+        </Modal.Footer>
+      </Modal>
+    </React.Fragment>
   }
 
   renderShareModal(){
@@ -585,6 +649,14 @@ class Post extends Component {
           </Row>
           {
             this.renderShareModal()
+          }
+          {
+            this.renderConfirmModal(
+              this.state.confirmModalData.title,
+              this.state.confirmModalData.message,
+              this.state.confirmModalData.action,
+              this.state.confirmModalData.funct,
+            )
           }
         </React.Fragment>
         }

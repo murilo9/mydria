@@ -25,7 +25,6 @@ class PostComment extends Component {
     }
     this.getProfilePageUrl = this.getProfilePageUrl.bind(this);
     this.isAuthor = this.isAuthor.bind(this);
-    this.deleteComment = this.deleteComment.bind(this);
     this.editComment = this.editComment.bind(this);
     this.uneditComment = this.uneditComment.bind(this);
     this.saveChanges = this.saveChanges.bind(this);
@@ -33,16 +32,6 @@ class PostComment extends Component {
     this.getId = this.getId.bind(this);
   }
 
-  async deleteComment(){
-    let res = await request.deleteComment(this.props.commentData._id);
-    if(res.success){
-      this.props.deleteComment(this.props.commentData._id);
-    }
-    else{
-      console.log(res.error);
-      //TODO - Tratamento de erro ao deletar comentário
-    }
-  }
 
   getProfilePageUrl(){
     return '/profile/' + this.props.commentData.author.nickname;
@@ -59,7 +48,7 @@ class PostComment extends Component {
       <Dropdown.Item href="#" onClick={ this.editComment }>
         <FontAwesomeIcon icon={faEdit} /> Edit
       </Dropdown.Item>
-      <Dropdown.Item href="#" onClick={ this.deleteComment }>
+      <Dropdown.Item href="#" onClick={ this.props.deleteComment }>
         <FontAwesomeIcon icon={faTrashAlt} /> Delete
       </Dropdown.Item>
     </React.Fragment>
