@@ -10,6 +10,7 @@ import Dropdown from 'react-bootstrap/Dropdown';
 import { connect } from 'react-redux';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEllipsisH, faMinusSquare, faEdit, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
+import ProfilePicture from './ProfilePicture.js';
 
 const mapStateToProps = state => ({
   ...state
@@ -20,7 +21,6 @@ class PostComment extends Component {
   constructor(props){
     super(props);
     this.state = {
-      userPictureUrl: request.resolveImageUrl(props.commentData.author.profilePicture),
       editing: false
     }
     this.getProfilePageUrl = this.getProfilePageUrl.bind(this);
@@ -124,11 +124,9 @@ class PostComment extends Component {
       this.renderEditForm()
       :
       <Media>
-        <div className="my-profile-picture-wrapper comment mr-3 d-none d-sm-block">
-          <a className="my-profile-picture" 
-          href={"/profile/" + this.props.commentData.author.nickname}
-          style={{backgroundImage: `url(${this.state.userPictureUrl})`}}></a>
-        </div>
+        <ProfilePicture nickname={this.props.commentData.author.nickname}
+          pictureId={this.props.commentData.author.profilePicture} 
+          size="small" />
         <Media.Body>
           <Row className="justify-content-end mb-2">
             <Col>
