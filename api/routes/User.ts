@@ -164,8 +164,8 @@ export default class UserRoutes {
       console.log('GET em /image/' + req.params.id)
       const imgId = req.params.id;
       let image = await Image.findOne({_id: imgId}).exec();
-      let imageName = image._id +  image.extention;
       if(image){
+        let imageName = image._id +  image.extention;
         //VAI MUDAR NO AMBIENTE DE PRODUÇÃO:
         const imagePath = path.resolve(`${__dirname}/../../pictures/${imageName}`);
         console.log(imagePath)
