@@ -22,7 +22,7 @@ class FollowingFeed extends Component {
     let following = [];
     this.props.user.following.forEach(followedUser => {
       following.push(
-        <ListGroup.Item key={followedUser.nickName}>
+        <ListGroup.Item key={followedUser.nickName} className="pr-1 pr-md-2 pl-r pl-md-2">
           <ProfilePicture nickname={followedUser.nickname}
             pictureId={followedUser.profilePicture} 
             size="small" />
@@ -36,9 +36,8 @@ class FollowingFeed extends Component {
   }
 
   render() {
-    console.log(this.props.user)
     return (
-      <Col sm={3} className="my-following-feed d-none d-sm-block">
+      <div className="my-following-feed">
         <p>
           { this.props.user.following.length ? 
           'People you follow' : "You're not following anybody yet" }
@@ -46,7 +45,7 @@ class FollowingFeed extends Component {
         <ListGroup variant="flush">
           { this.renderFollowedUsers() }
         </ListGroup>
-      </Col>
+      </div>
     )
   }
 }

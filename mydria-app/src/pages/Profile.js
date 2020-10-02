@@ -250,11 +250,13 @@ class ProfilePage extends MydriaPage {
             unfollowClick={this.unfollowClick} 
             updateUserData={this.updateUserData}/>
           </Col>
-          <Col xs={12} sm={8} lg={7}>
+          <Col xs={12} sm={8} lg={7} className="my-content-col pl-sm-0 h-100">
             { this.renderPostForm() }
             { this.renderPosts() }
           </Col>
-          <Col lg={2} className="my-ads d-none d-sm-flex">Ads</Col>
+          <Col lg={2} className="d-none d-sm-flex pr-0">
+            <div className="my-ads pl2">Ads</div>
+          </Col>
         </Row>
       </Container>
     </Container>

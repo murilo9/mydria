@@ -100,7 +100,13 @@ a.navbar-brand {
 }
 
 .my-page-container {
-  margin-top: 64px;
+  padding-top: 64px;
+  height: 100vh;
+}
+
+.my-page-container > .row {
+  height: 100%;
+  padding-bottom: 15px;
 }
 
 .my-no-padding {
@@ -126,6 +132,8 @@ a.navbar-brand {
 .my-ads {
   border: 1px solid #ccc;
   background: white;
+  height: 100%;
+  width: 100%;
 }
 
 @media screen and (min-width: 767px) {
@@ -238,18 +246,22 @@ a.navbar-brand {
 
 .my-profile-picture-wrapper.tiny {
   width: 40px;
+  min-width: 40px;
 }
 
 .my-profile-picture-wrapper.small {
   width: 48px;
+  min-width: 48px;
 }
 
 .my-profile-picture-wrapper.medium {
   width: 64px;
+  min-width: 64px;
 }
 
 .my-profile-picture-wrapper.max {
   width: 100%;
+  min-width: 100%;
   padding: 1rem;
 }
 
@@ -326,6 +338,9 @@ input[type="file"]
   border: 1px solid #ccc;
   border-radius: .25rem;
   background: white;
+  height: 100%;
+  overflow-y: auto;
+  font-size: 14px;
 }
 
 .my-following-feed p {
@@ -335,4 +350,21 @@ input[type="file"]
 .list-group-item {
   display: flex;
   align-items: center;
+}
+
+@media screen and (min-width: 768px){
+  .my-content-col {
+    height: 100%;
+    overflow-y: auto;
+  }
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  width: 10px;
+  border-radius: 10px;
+  background: #ccc;
 }

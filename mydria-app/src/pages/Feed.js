@@ -112,12 +112,16 @@ class FeedPage extends MydriaPage {
           <Topbar logout={this.logout}/>
           <Container className="my-page-container">
             <Row>
-              <Col sm={2} className="my-ads d-none d-sm-flex">Ads</Col>
-              <Col xs={12} sm={7}>
+              <Col lg={2} className="d-none d-lg-flex pr-0 pl-0">
+                <div className="my-ads pl-2">Ads</div>
+              </Col>
+              <Col xs={12} sm={8} lg={7} className="my-content-col order-md-2 order-lg-1">
                 <PostForm appendPost={this.appendPost} />
                 { this.renderPosts() }
               </Col>
-              <FollowingFeed />
+              <Col sm={4} lg={3} className="d-none d-sm-block pr-0 pr-lg-3 h-100 order-md-1 order-lg-2">
+                <FollowingFeed />
+              </Col>
             </Row>
           </Container>
         </Container>
