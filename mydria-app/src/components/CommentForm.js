@@ -32,9 +32,14 @@ class CommentForm extends Component {
         <Form.Control as="textarea" rows="3" 
         placeholder="Leave a comment" id={this.getId()} />
       </Form.Group>
-      <Row className="mb-3">
-        <Col sm="3">
-          <Button variant="info" block onClick={this.props.publishComment}>Comment</Button>
+      <Row className="justify-content-between">
+        <Col md={5} lg={4}>
+          <Button variant="secondary" block 
+          onClick={this.props.hideComments} className="mb-3">Cancel</Button>
+        </Col>
+        <Col md={5} lg={4}>
+          <Button variant="info" block 
+          onClick={this.props.publishComment} className="mb-3">Comment</Button>
         </Col>
       </Row>
     </Form>

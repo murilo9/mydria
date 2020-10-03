@@ -306,11 +306,6 @@ a.navbar-brand {
 }
 
 @media screen and (max-width: 425px) {
-  .my-profile-picture-button-wall {
-    padding-top: 50%;
-    padding-right: 15%;
-  }
-
   .my-profile-picture-change {
     width: 3.5rem;
     height: 3.5rem;
@@ -367,4 +362,12 @@ input[type="file"]
   width: 10px;
   border-radius: 10px;
   background: #ccc;
+}
+
+.navbar-nav .dropdown-menu {
+  position: absolute;
+}
+
+.modal-footer>* {
+  width: 100%;
 }

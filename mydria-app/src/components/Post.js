@@ -72,7 +72,7 @@ class Post extends Component {
     this.saveChanges = this.saveChanges.bind(this);
     this.getProfilePageUrl = this.getProfilePageUrl.bind(this);
     this.renderPostPhoto = this.renderPostPhoto.bind(this);
-    this.showComments = this.showComments.bind(this);
+    this.toggleComments = this.toggleComments.bind(this);
     this.renderComments = this.renderComments.bind(this);
     this.publishComment = this.publishComment.bind(this);
     this.deleteComment = this.deleteComment.bind(this);
@@ -455,7 +455,9 @@ class Post extends Component {
       return <React.Fragment>
         <Container fluid>
           { comments.length ? comments : <Alert variant="secondary">No comments yet</Alert> }
-          <CommentForm postId={this.props.postData._id} publishComment={this.publishComment} />
+          <CommentForm postId={this.props.postData._id} 
+          publishComment={this.publishComment} 
+          hideComments={this.toggleComments}/>
         </Container>
       </React.Fragment>
     }
@@ -464,18 +466,22 @@ class Post extends Component {
     }
   }
 
-  async showComments(){
-    let req = await request.getPostComments(this.props.postData._id);
-    if(req.success){
-      this.setState({
-        postComments: req.data,
-        showComments: true
-      });
+  async toggleComments(){
+    if(!this.state.postComments.length){
+      let req = await request.getPostComments(this.props.postData._id);
+      if(req.success){
+        this.setState({
+          postComments: req.data
+        });
+      }
+      else{
+        console.log(req.error)
+        //TODO - Exibir erro de carregamento dos comentários
+      }
     }
-    else{
-      console.log(req.error)
-      //TODO - Exibir erro de carregamento dos comentários
-    }
+    this.setState({
+      showComments: !this.state.showComments
+    })
   }
 
   toggleShareModal(){
@@ -527,12 +533,18 @@ class Post extends Component {
           { message }
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={this.closeConfirmModal}>
-            Cancel
-          </Button>
-          <Button variant="primary" onClick={funct}>
-            {action}
-          </Button>
+          <Row className="justify-content-between">
+            <Col md={3} className="pl-sm-0 mb-3">
+              <Button variant="secondary" onClick={this.closeConfirmModal} block>
+                Cancel
+              </Button>
+            </Col>
+            <Col md={3} className="pr-sm-0">
+              <Button variant="primary" onClick={funct} block>
+                {action}
+              </Button>
+            </Col>
+          </Row>
         </Modal.Footer>
       </Modal>
     </React.Fragment>
@@ -638,7 +650,7 @@ class Post extends Component {
                 <FontAwesomeIcon icon={faThumbsDown} />
                 { this.renderUnlikesQty() }
               </Button>{' '}
-              <Button variant="outline-dark" onClick={ this.showComments }>
+              <Button variant="outline-dark" onClick={ this.toggleComments }>
                 <FontAwesomeIcon icon={faComment} />
                   { ' ' + this.props.postData.commentsTotal }
               </Button>{' '}

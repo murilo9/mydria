@@ -74,11 +74,12 @@ class Topbar extends React.Component {
           <Nav className={
             this.state.showMobileSearch ? "d-none" : "flex-row ml-auto my-navbar"
           }>
-            <Nav.Link href="" onClick={this.toggleMobileSearch} className="d-block d-sm-none">
+            <Nav.Link href="" onClick={this.toggleMobileSearch} 
+            className="d-block d-sm-none mr-3">
               <FontAwesomeIcon icon={faSearch} className="my-profile-data-icon" />
             </Nav.Link>
             <ProfilePicture nickname={this.props.user.nickname} noMargin
-              pictureId={this.props.user.profilePicture} size="tiny" />
+              pictureId={this.props.user.profilePicture} size="tiny" tabletDesktopOnly/>
             <NavDropdown title={this.props.user.nickname}
               alignRight id="basic-nav-dropdown">
               <NavDropdown.Item href={"/profile/" + this.props.user.nickname}>Profile</NavDropdown.Item>
