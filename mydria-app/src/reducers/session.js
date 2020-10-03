@@ -28,6 +28,11 @@ export default function(state = initialState, action) {
       else{
         return initialState;
       }
+    case actionTypes.SET_DARK_THEME:
+      return {
+        ...state,
+        darkTheme: action.active
+      }
     default:
       return state;
   }

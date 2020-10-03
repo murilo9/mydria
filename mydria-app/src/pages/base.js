@@ -3,7 +3,7 @@ import Cookies from 'js-cookie';
 import request from '../services/request.js';
 import 
 { 
-  setPageData, 
+  setDarkTheme,
   setSessionActive, 
   setSessionUserId, 
   setSessionToken,
@@ -21,7 +21,7 @@ export function mapStateToProps(state){
 
 export function mapDispatchToProps(dispatch){
   return {
-    setPageData: data => dispatch(setPageData(data)),
+    setDarkTheme: active => dispatch(setDarkTheme(active)),
     setSessionActive: active => dispatch(setSessionActive(active)),
     setSessionUserId: userId => dispatch(setSessionUserId(userId)),
     setSessionToken: token => dispatch(setSessionToken(token)),
@@ -40,6 +40,8 @@ export class MydriaPage extends Component {
     super(props);
     this.logout = this.logout.bind(this);
     this.sessionInit = this.sessionInit.bind(this);
+    this.toggleDarkTheme = this.toggleDarkTheme.bind(this);
+    this.getPageClasses = this.getPageClasses.bind(this);
   }
 
   /**
@@ -59,7 +61,9 @@ export class MydriaPage extends Component {
       const following = session.userData.following;
       const followedBy = session.userData.followedBy;
       const userId = session.userData._id;
-      this.sessionInit(token, userId, email, nickname, following, followedBy, profilePicture);
+      const darkTheme = Cookies.get('darkTheme') === 'true' ? true : false;
+      this.sessionInit(token, userId, email, nickname, 
+        following, followedBy, profilePicture, darkTheme);
       this.loadPageData();
     }
     //Se a session não é válida ou expirou:
@@ -74,7 +78,7 @@ export class MydriaPage extends Component {
    * @param {String} token 
    * @param {String} userId 
    */
-  sessionInit(token, userId, email, nickname, following, followedBy, profilePicture){
+  sessionInit(token, userId, email, nickname, following, followedBy, profilePicture, darkTheme){
     this.props.setSessionActive(true);
     this.props.setSessionUserId(userId);
     this.props.setSessionToken(token);
@@ -83,6 +87,7 @@ export class MydriaPage extends Component {
     this.props.setUserFollowing(following);
     this.props.setUserFollowedBy(followedBy);
     this.props.setUserProfilePicture(profilePicture);
+    this.props.setDarkTheme(darkTheme);
   }
 
   /**
@@ -91,9 +96,19 @@ export class MydriaPage extends Component {
   logout(){
     Cookies.remove('token');
     Cookies.remove('userId');
-    this.props.setPageData({});
     this.props.setSessionActive(false);
     this.props.unsetUser();
     this.setState({ sessionExpired: true });
+  }
+
+  getPageClasses(){
+    return "my-page-container" + (this.props.session.darkTheme ? " dark-theme" : "");
+  }
+
+  toggleDarkTheme(){
+    let darkTheme = this.props.session.darkTheme;
+    Cookies.set('darkTheme', !darkTheme);
+    this.props.setDarkTheme(!darkTheme);
+    this.setState({});
   }
 }

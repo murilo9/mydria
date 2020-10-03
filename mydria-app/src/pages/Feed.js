@@ -109,8 +109,8 @@ class FeedPage extends MydriaPage {
     else{
       return (
         <Container fluid className="my-no-padding">
-          <Topbar logout={this.logout}/>
-          <Container className="my-page-container">
+          <Topbar logout={this.logout} toggleDarkTheme={this.toggleDarkTheme}/>
+          <Container className={this.getPageClasses()}>
             <Row>
               <Col lg={2} className="d-none d-lg-flex pr-0 pl-0">
                 <div className="my-ads pl-2">Ads</div>

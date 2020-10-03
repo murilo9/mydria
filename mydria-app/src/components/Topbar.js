@@ -9,6 +9,7 @@ import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import Container from 'react-bootstrap/Container';
 import ProfilePicture from './ProfilePicture.js';
+import ThemeSwitch from './ThemeSwitch.js';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
@@ -28,6 +29,7 @@ class Topbar extends React.Component {
     }
     this.toggleMobileSearch = this.toggleMobileSearch.bind(this);
     this.renderMobileSearchReturnButton = this.renderMobileSearchReturnButton.bind(this);
+    this.toggleDarkTheme = this.toggleDarkTheme.bind(this);
   }
 
   logout() {
@@ -36,6 +38,10 @@ class Topbar extends React.Component {
 
   toggleMobileSearch() {
     this.setState({ showMobileSearch: !this.state.showMobileSearch });
+  }
+
+  toggleDarkTheme(){
+    this.props.toggleDarkTheme();
   }
 
   renderMobileSearchReturnButton() {
@@ -78,6 +84,7 @@ class Topbar extends React.Component {
             className="d-block d-sm-none mr-3">
               <FontAwesomeIcon icon={faSearch} className="my-profile-data-icon" />
             </Nav.Link>
+            <ThemeSwitch toggleDarkTheme={this.toggleDarkTheme} />
             <ProfilePicture nickname={this.props.user.nickname} noMargin
               pictureId={this.props.user.profilePicture} size="tiny" tabletDesktopOnly/>
             <NavDropdown title={this.props.user.nickname}

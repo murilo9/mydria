@@ -238,8 +238,8 @@ class ProfilePage extends MydriaPage {
     //Caso contrário, renderiza a página normalmente:
     else{
       return <Container fluid className="my-no-padding">
-      <Topbar logout={this.logout}/>
-      <Container className="my-page-container">
+      <Topbar logout={this.logout} toggleDarkTheme={this.toggleDarkTheme}/>
+      <Container className={this.getPageClasses()}>
         <Row>
           <Col sm={4} lg={3}>
             <UserProfileData 

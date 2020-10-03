@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import request from '../services/request.js';
 import { connect } from 'react-redux';
 
-import { setPageData } from '../actions';
 import sanitize from '../helpers/stringSanitizer.js';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faImage, faWindowClose, faTimes } from '@fortawesome/free-solid-svg-icons';
@@ -18,10 +17,6 @@ import Tag from '../components/Tag';
 
 const mapStateToProps = state => ({
   ...state
-})
-
-const mapDispatchToProps = dispatch => ({
-  setPageData: data => dispatch(setPageData(data))
 })
 
 class PostForm extends Component {
@@ -298,4 +293,4 @@ class PostForm extends Component {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(PostForm);
+export default connect(mapStateToProps)(PostForm);
