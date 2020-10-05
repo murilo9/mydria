@@ -6,44 +6,38 @@ import Form from 'react-bootstrap/Form';
 export default class LoginForm extends Component {
   constructor(props){
     super(props);
-    this.state = {
-      email: '',
-      password: ''
-    }
-    this.handleChange = this.handleChange.bind(this);
     this.handleLogin = this.handleLogin.bind(this);
+    this.handleKeyPress = this.handleKeyPress.bind(this);
   }
 
-  handleChange(e) {
-    const name = e.target.name;
-    const value = e.target.value;
-    this.setState({
-      [name]: value
-    })
+  handleKeyPress(e) {
+    if(e.charCode === 13){
+      this.handleLogin();
+    }
   }
 
   handleLogin() {
-    this.props.doLogin(this.state);
+    const email = document.getElementById('email-input').value;
+    const password = document.getElementById('password-input').value;
+    this.props.doLogin({ email, password });
   }
 
   render() {
     return (
       <Form>
-        <Form.Group controlId="formBasicEmail">
+        <Form.Group controlId="email-input">
           <Form.Control type="email" 
           name="email"
           placeholder="E-mail" 
-          value={this.state.email} 
-          onChange={this.handleChange.bind(this)}
+          onKeyPress={this.handleKeyPress}
         />
         </Form.Group>
 
-        <Form.Group controlId="formBasicPassword">
+        <Form.Group controlId="password-input">
           <Form.Control type="password" 
           name="password"
           placeholder="Password" 
-          value={this.state.password}
-          onChange={this.handleChange.bind(this)}
+          onKeyPress={this.handleKeyPress}
         />
         </Form.Group>
         <Button variant="info" onClick={this.handleLogin} block>
