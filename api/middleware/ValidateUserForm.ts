@@ -22,9 +22,9 @@ export default async function validateUserForm(req: Request, res: Response, next
   }
 
   //Verifica se o nickname possui ao menos 6 caracteres:
-  if(f.nickname.length < 6){
-    console.log('nickname too short');
-    res.status(400).send('Your nickname must have at least 6 characters');
+  if(f.nickname.length < 6 || f.nickname.length > 24){
+    console.log('nickname length unsuitble');
+    res.status(400).send('Your nickname must have between 6 and 24 characters');
     return;
   }
 
