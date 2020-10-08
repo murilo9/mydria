@@ -285,6 +285,14 @@ a.navbar-brand {
   display: block;
 }
 
+.my-profile-picture.square {
+  border-radius: 0;
+}
+
+.modal-body .my-profile-picture-wrapper {
+  padding: 0;
+}
+
 @media screen and (max-width: 425px) {
   .my-profile-picture-wrapper.tiny .my-profile-picture {
     margin: auto;
@@ -295,9 +303,8 @@ a.navbar-brand {
 
 .my-profile-picture-button-wall {
   position: absolute;
-  width: 100%;
-  padding-top: 75%;
-  padding-right: 10%;
+  margin-top: 75%;
+  right: 10%;
   display: flex;
   justify-content: flex-end;
 }

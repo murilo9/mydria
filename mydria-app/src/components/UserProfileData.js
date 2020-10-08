@@ -11,6 +11,7 @@ import Form from 'react-bootstrap/Form';
 import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
 import Alert from 'react-bootstrap/Alert';
+import Modal from 'react-bootstrap/Modal';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faMapMarkerAlt,
@@ -32,7 +33,8 @@ export class UserProfileData extends Component {
     this.state = {
       showEditForm: false,
       showProfilePictureForm: false,
-      showErrorMessage: false
+      showErrorMessage: false,
+      showProfilePictureModal: false
     }
     this.renderBio = this.renderBio.bind(this);
     this.renderLocation = this.renderLocation.bind(this);
@@ -44,6 +46,9 @@ export class UserProfileData extends Component {
     this.renderErrorMessage = this.renderErrorMessage.bind(this);
     this.toggleProfilePictureForm = this.toggleProfilePictureForm.bind(this);
     this.uploadProfilePicture = this.uploadProfilePicture.bind(this);
+    this.openProfilePictureModal = this.openProfilePictureModal.bind(this);
+    this.closeProfilePictureModal = this.closeProfilePictureModal.bind(this);
+    this.renderProfilePictureModal = this.renderProfilePictureModal.bind(this);
   }
 
   ownProfile() {
@@ -167,6 +172,33 @@ export class UserProfileData extends Component {
     }
   }
 
+  openProfilePictureModal(){
+    this.setState({
+      showProfilePictureModal: true
+    })
+  }
+
+  closeProfilePictureModal(){
+    this.setState({
+      showProfilePictureModal: false
+    })
+  }
+
+  renderProfilePictureModal(){
+    return <React.Fragment>
+      <Modal show={this.state.showProfilePictureModal} onHide={this.closeProfilePictureModal}>
+        <Modal.Header closeButton>
+          <Modal.Title>{' '}</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <ProfilePicture nickname={this.props.userData.nickname} noMargin
+            pictureId={this.props.userData.profilePicture} size="max" 
+            handleClick={()=>{}} square/>
+        </Modal.Body>
+      </Modal>
+    </React.Fragment>
+  }
+
   renderProfilePictureForm() {
     return this.state.showProfilePictureForm ?
       <React.Fragment>
@@ -237,11 +269,12 @@ export class UserProfileData extends Component {
   }
 
   render() {
-    return (
+    return <React.Fragment>
       <Card className="mb-3">
         <div className="my-profile-picture-wrapper">
           <ProfilePicture nickname={this.props.userData.nickname} noMargin
-            pictureId={this.props.userData.profilePicture} size="max" />
+            pictureId={this.props.userData.profilePicture} size="max" 
+            handleClick={this.openProfilePictureModal}/>
           {this.renderProfilePictureForm()}
         </div>
         {this.renderErrorMessage()}
@@ -253,7 +286,8 @@ export class UserProfileData extends Component {
         </div>
         {this.state.showEditForm ? this.renderEditForm() : this.renderInfo()}
       </Card>
-    )
+      { this.renderProfilePictureModal() }
+    </React.Fragment>
   }
 }
 
