@@ -2,6 +2,7 @@ import {Request, Response} from "express";
 import User from '../models/User';
 import Post, {IPost, IPostInput} from '../models/Post';
 import Comment from '../models/Comment';
+import Image from '../models/Image';
 
 const buildPost = async function(postId) {
   let post = await Post.findOne({_id: postId}).lean()
@@ -125,6 +126,14 @@ export default class PostRoutes {
       if(post.author.toString() !== req.requesterId){
         res.status(403).send('That post is not yours');
         return;
+      }
+
+      //Delete os comentários do post, se houver:
+      await Comment.deleteMany({post: postId}).exec();
+
+      //Deleta a imagem do post, se houver:
+      if(post.img){
+        await Image.deleteOne({_id: post.img}).exec();
       }
 
       //Deleta o post:
