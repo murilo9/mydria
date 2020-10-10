@@ -5,11 +5,13 @@ import Comment from '../models/Comment';
 import Image from '../models/Image';
 
 const buildPost = async function(postId) {
-  let post = await Post.findOne({_id: postId}).lean()
-  .populate('author').exec();
+  let post = await Post.findOne({_id: postId}).lean().populate('author')
+  .populate({path: 'likedBy', model: 'User'})
+  .populate({path: 'unlikedBy', model: 'User'}).exec();
   if(!post){
     return null
   }
+  console.log(post)
   //Adiciona o total de comentários
   const comments = await Comment.find({ post: post._id });
   let commentsTotal = comments.length;

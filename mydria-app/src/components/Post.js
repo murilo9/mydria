@@ -11,6 +11,8 @@ import Dropdown from 'react-bootstrap/Dropdown';
 import Alert from 'react-bootstrap/Alert';
 import Image from 'react-bootstrap/Image';
 import Modal from 'react-bootstrap/Modal';
+import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
+import Tooltip from 'react-bootstrap/Tooltip';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { 
   faComment, 
@@ -84,6 +86,8 @@ class Post extends Component {
     this.closeConfirmModal = this.closeConfirmModal.bind(this);
     this.showConfirmModal = this.showConfirmModal.bind(this);
     this.renderConfirmModal = this.renderConfirmModal.bind(this);
+    this.renderLikeds = this.renderLikeds.bind(this);
+    this.renderUnlikeds = this.renderUnlikeds.bind(this);
   }
 
   userIsAuthor(){
@@ -523,6 +527,44 @@ class Post extends Component {
     })
   }
 
+  renderLikeds(props){
+    let likes = [];
+    const likesQty = this.props.postData.likedBy.length;
+    for(let i = 0; i < 20; i++){
+      let user = this.props.postData.likedBy[i];
+      if(i < likesQty){
+        likes.push(
+          <div>{user.nickname}</div>
+        )
+      }
+    }
+    if(likesQty > 20){
+      likes.push(<div>{`...and ${likesQty-20} more`}</div>);
+    }
+    return <Tooltip {...props}>
+      { likes }
+    </Tooltip>
+  }
+
+  renderUnlikeds(props){
+    let unlikes = [];
+    const unlikesQty = this.props.postData.unlikedBy.length;
+    for(let i = 0; i < 20; i++){
+      let user = this.props.postData.unlikedBy[i];
+      if(i < unlikesQty){
+        unlikes.push(
+          <div>{user.nickname}</div>
+        )
+      }
+    }
+    if(unlikesQty > 20){
+      unlikes.push(<div>{`...and ${unlikesQty-20} more`}</div>);
+    }
+    return <Tooltip {...props}>
+      { unlikes }
+    </Tooltip>
+  }
+
   renderConfirmModal(title, message, action, funct = this.closeConfirmModal){
     return <React.Fragment>
       <Modal show={this.state.showConfirmModal} onHide={this.closeConfirmModal}>
@@ -640,16 +682,28 @@ class Post extends Component {
           </Media>
           <Row className="justify-content-end my-post-buttons">
             <Col xs="auto">
-              <Button onClick={ this.likeClick }
-              variant={this.liked() ? "dark" : "outline-dark"} >
-                <FontAwesomeIcon icon={faThumbsUp} />
-                { this.renderLikesQty() }
-              </Button>{' '}
-              <Button onClick={ this.unlikeClick }
-              variant={this.unliked() ? "dark" : "outline-dark"} >
-                <FontAwesomeIcon icon={faThumbsDown} />
-                { this.renderUnlikesQty() }
-              </Button>{' '}
+              <OverlayTrigger
+              placement="right"
+              delay={{ show: 250, hide: 400 }}
+              overlay={this.renderLikeds}>
+                <Button onClick={ this.likeClick }
+                variant={this.liked() ? "dark" : "outline-dark"} >
+                  <FontAwesomeIcon icon={faThumbsUp} />
+                  { this.renderLikesQty() }
+                </Button>
+              </OverlayTrigger>
+              {' '}
+              <OverlayTrigger
+              placement="right"
+              delay={{ show: 250, hide: 400 }}
+              overlay={this.renderUnlikeds}>
+                <Button onClick={ this.unlikeClick }
+                variant={this.unliked() ? "dark" : "outline-dark"} >
+                  <FontAwesomeIcon icon={faThumbsDown} />
+                  { this.renderUnlikesQty() }
+                </Button>
+              </OverlayTrigger>
+              {' '}
               <Button variant="outline-dark" onClick={ this.toggleComments }>
                 <FontAwesomeIcon icon={faComment} />
                   { ' ' + this.props.postData.commentsTotal }
