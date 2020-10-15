@@ -2,8 +2,9 @@ import {Schema, Document, model} from 'mongoose';
 import { IUser } from './User';
 import { IPost } from './Post';
 
-enum NotificationTypes {
-  POST_REACTION = 'POST_REACTION',
+export enum NotificationTypes {
+  POST_LIKED = 'POST_LIKED',
+  POST_UNLIKED = 'POST_UNLIKED',
   POST_SHARED = 'POST_SHARED',
   POST_COMMENTED = 'POST_COMMENTED',
   FOLLOW = 'FOLLOW'
@@ -13,14 +14,17 @@ export interface INotificationInput {
   type: NotificationTypes,
   user: string,
   follower: string,
-  post: string
+  commented: string,
+  post: string,
 }
 
 export interface INotification extends Document {
   type: NotificationTypes,
   user: IUser,
   follower: IUser,
-  post: IPost
+  commented: IUser,
+  post: IPost,
+  date: Date
 }
 
 const NotificationSchema = new Schema({
@@ -33,6 +37,11 @@ const NotificationSchema = new Schema({
     ref: 'User',
     required: [true, 'User id missing']
   },
+  commented: {
+    type: Schema.Types.ObjectId,
+    ref: 'User',
+    default: null
+  },
   follower: {
     type: Schema.Types.ObjectId,
     ref: 'User',
@@ -42,6 +51,10 @@ const NotificationSchema = new Schema({
     type: Schema.Types.ObjectId,
     ref: 'Post',
     default: null
+  },
+  date: {
+    type: Date,
+    default: new Date()
   }
 })
 

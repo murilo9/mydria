@@ -1,6 +1,8 @@
 import {Request, Response} from "express";
 import User from '../models/User';
 import validateUserForm from '../middleware/ValidateUserForm';
+import Notification, { NotificationTypes } from '../models/Notification';
+import {notificate} from './Notification';
 import Image from "../models/Image";
 const path = require('path');
 const fs = require('fs');
@@ -50,8 +52,6 @@ export default class UserRoutes {
       const requesterId = req.requesterId;
       const nickname = req.params.nickname;
       let user = await User.findOne({ nickname }).exec();
-      console.log(user._id)
-      console.log(requesterId)
       if(user._id.toString() === requesterId){
         let bio = req.body.bio;
         let country = req.body.country;
@@ -109,6 +109,8 @@ export default class UserRoutes {
         await requester.save();
         await userToFollow.save();
         res.status(200).send(requester.following);
+        //Envia a notificação pro usuário seguido:
+        await notificate(NotificationTypes.FOLLOW, userToFollow._id, requester._id, null, null);
       }
     })
 

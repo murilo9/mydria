@@ -1,6 +1,8 @@
 import {Request, Response} from "express";
 import User from '../models/User';
 import Post, {IPost, IPostInput} from '../models/Post';
+import { NotificationTypes } from '../models/Notification';
+import {notificate} from './Notification';
 import Comment from '../models/Comment';
 import Image from '../models/Image';
 
@@ -187,7 +189,6 @@ export default class PostRoutes {
         await post.save();
         post = await buildPost(post._id);
         res.status(200).send(post);
-        return;
       }
       //Se não tem like, insere o like:
       else{
@@ -196,6 +197,8 @@ export default class PostRoutes {
         post = await buildPost(post._id);
         res.status(200).send(post);
       }
+      //Envia a notificação pro autor do post:
+      await notificate(NotificationTypes.POST_LIKED, post.author, null, null, postId);
     })
 
     app.route('/post/:postId/unlike')
@@ -249,6 +252,8 @@ export default class PostRoutes {
         post = await buildPost(post._id);
         res.status(200).send(post);
       }
+      //Envia a notificação pro autor do post:
+      await notificate(NotificationTypes.POST_UNLIKED, post.author, null, null, postId);
     })
 
     //GET em /posts/:nickname - Lê os posts de um usuário
@@ -289,6 +294,8 @@ export default class PostRoutes {
         //É necessário recarregar o sharedPost para poder popular corretamente:
         sharedPost = await buildPost(sharedPost._id);
         res.status(200).send(sharedPost);
+        //Envia a notificação pro autor do post:
+        await notificate(NotificationTypes.POST_SHARED, sharedPost.author, null, null, postId);
       }
       else {
         res.status(404).send('Post not found.');

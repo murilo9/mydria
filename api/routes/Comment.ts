@@ -1,5 +1,7 @@
 import {Request, Response} from "express";
 import User from '../models/User';
+import Notification, { NotificationTypes } from '../models/Notification';
+import {notificate} from './Notification';
 import Comment, { IComment, ICommentInput } from '../models/Comment';
 import Post, {IPost, IPostInput} from '../models/Post';
 
@@ -26,6 +28,7 @@ export default class CommentRoutes {
     app.post('/post/:postId/comments', verifyJWT, async(req, res: Response) => {
       console.log('POST em /post/'+req.params.postId+'/comments');
       const postId = req.params.postId;
+      const requesterId = req.requesterId;
       const post = await Post.findOne({ _id: postId}).exec();
       if(post){
         const commentData = {
@@ -36,6 +39,8 @@ export default class CommentRoutes {
         }
         let comment = new Comment(commentData);
         await comment.save();
+        //Envia a notificação pro autor do post:
+        await notificate(NotificationTypes.POST_COMMENTED, post.author, null, requesterId, postId);
         //O comentário precisa ser lido do banco e populado
         comment = await Comment.findOne({_id: comment._id}).populate('author').exec();
         res.status(200).send(comment);

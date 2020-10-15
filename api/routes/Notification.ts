@@ -1,5 +1,5 @@
 import {Request, Response} from "express";
-import Notification from '../models/Notification';
+import Notification, {INotificationInput, NotificationTypes} from '../models/Notification';
 import User from '../models/User';
 import Post, {IPost, IPostInput} from '../models/Post';
 import Comment from '../models/Comment';
@@ -33,3 +33,43 @@ export default class NotificationRoutes {
     })
   }
 }
+
+/**
+ * @desc Cria ou atualiza uma notificação.
+ * @param type Tipo da notificação
+ * @param user Id do usuário que vai receber a notificação
+ * @param follower Id de quem passou a seguir o usuário
+ * @param commented Id de quem fez o comentário
+ * @param post Id do post onde o evento ocorreu
+ */
+const notificate = async function(type: NotificationTypes, user: string, follower: string,
+  commented: string, post: string){
+  //Atualiza a notificação sobre o comentário no post, se ja existir
+  let notificationExists = null;
+  //Se a notificação envolve algum post
+  if(type !== NotificationTypes.FOLLOW){
+    //Verifica se ja existe uma notificação deste tipo, neste post, para este usuário
+    notificationExists = await Notification
+    .findOne({type, post, user}).exec();
+  }
+  //Se a notificação ja existe
+  if(notificationExists){
+    //Atualiza os dados dela
+    notificationExists.commented = commented;
+    notificationExists.date = new Date();
+    await notificationExists.save();
+  }
+  //Se a notificação não existir, cria
+  else{
+    let notification = new Notification({
+      type,
+      user,
+      commented,
+      post,
+      follower
+    });
+    await notification.save();
+  }
+}
+
+export {notificate};
