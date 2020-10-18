@@ -10,15 +10,17 @@ export default class NotificationRoutes {
 
     //GET em /notifications - Lê todas as netoficações do usuário
 
-    app.get('/notifications', async(req, res: Response) => {
+    app.get('/notifications', verifyJWT, async(req, res: Response) => {
       console.log('GET em /notifications');
       const requesterId = req.requesterId;
+      console.log('requesterId: '+requesterId)
       const notifications = await Notification.find({user: requesterId})
       .populate('follower').populate('post').exec();
+      console.log(notifications)
       res.status(200).send(notifications);
     })
 
-    app.delete('/notifications/:notifId', async(req, res: Response) => {
+    app.delete('/notifications/:notifId', verifyJWT, async(req, res: Response) => {
       console.log('GET em /notifications/'+req.params.notifId);
       const requesterId = req.requesterId;
       const notifId = req.params.notifId;
