@@ -84,7 +84,7 @@ class Topbar extends React.Component {
         let notifications = [];
         this.state.notifications.forEach(notification => {
           notifications.push(
-            <Notification data={notification} />
+            <Notification data={notification} key={notification._id} />
           )
         })
         return notifications;
