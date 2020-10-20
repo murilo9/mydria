@@ -13,16 +13,14 @@ export enum NotificationTypes {
 export interface INotificationInput {
   type: NotificationTypes,
   user: string,
-  follower: string,
-  commented: string,
+  from: string,
   post: string,
 }
 
 export interface INotification extends Document {
   type: NotificationTypes,
   user: IUser,
-  follower: IUser,
-  commented: IUser,
+  from: IUser,
   post: IPost,
   date: Date
 }
@@ -37,12 +35,7 @@ const NotificationSchema = new Schema({
     ref: 'User',
     required: [true, 'User id missing']
   },
-  commented: {
-    type: Schema.Types.ObjectId,
-    ref: 'User',
-    default: null
-  },
-  follower: {
+  from: {
     type: Schema.Types.ObjectId,
     ref: 'User',
     default: null

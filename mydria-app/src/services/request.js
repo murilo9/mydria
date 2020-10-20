@@ -156,7 +156,6 @@ const publishPost = async function (post, hasPicture) {
       post.img = response.data.id;
     }
     //Faz a requisição pra instanciar o post
-    console.log(post)
     const res = await axios({
       url: baseUrl + '/posts',
       method: 'post',
@@ -588,6 +587,31 @@ const sharePost = async function(postId, text = '', tags = []) {
   return response;
 }
 
+const getNotifications = async function(){
+  let response = {};
+  try {
+    const token = Cookies.get('token');
+    const res = await axios({
+      url: baseUrl + `/notifications`,
+      method: 'get',
+      headers: {
+        'x-access-token': token,
+      },
+    });
+    response = {
+      success: true,
+      data: res.data
+    }
+  }
+  catch (e) {
+    response = {
+      success: false,
+      error: e.response
+    }
+  }
+  return response;
+}
+
 const resolveImageUrl = function(imageId) {
   return imageId ? baseUrl + `/image/${imageId}` : '/assets/user.svg';
 }
@@ -619,5 +643,6 @@ export default {
   publishComment,
   deleteComment,
   updateComment,
-  sharePost
+  sharePost,
+  getNotifications
 }

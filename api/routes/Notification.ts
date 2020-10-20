@@ -15,7 +15,7 @@ export default class NotificationRoutes {
       const requesterId = req.requesterId;
       console.log('requesterId: '+requesterId)
       const notifications = await Notification.find({user: requesterId})
-      .populate('follower').populate('post').exec();
+      .populate('from').populate('post').exec();
       console.log(notifications)
       res.status(200).send(notifications);
     })
@@ -40,15 +40,14 @@ export default class NotificationRoutes {
  * @desc Cria ou atualiza uma notificação.
  * @param type Tipo da notificação
  * @param user Id do usuário que vai receber a notificação
- * @param follower Id de quem passou a seguir o usuário
- * @param commented Id de quem fez o comentário
+ * @param from Id de quem gerou a ação
  * @param post Id do post onde o evento ocorreu
  */
-const notificate = async function(type: NotificationTypes, user: string, follower: string,
-  commented: string, post: string){
+const notificate = async function(type: NotificationTypes, user: string, 
+  from: string, post: string){
   //Atualiza a notificação sobre o comentário no post, se ja existir
   let notificationExists = null;
-  //Se a notificação envolve algum post
+  //Se a notificação envolve algum post (i.e. se NÃO é de follow)
   if(type !== NotificationTypes.FOLLOW){
     //Verifica se ja existe uma notificação deste tipo, neste post, para este usuário
     notificationExists = await Notification
@@ -57,7 +56,7 @@ const notificate = async function(type: NotificationTypes, user: string, followe
   //Se a notificação ja existe
   if(notificationExists){
     //Atualiza os dados dela
-    notificationExists.commented = commented;
+    if(from) notificationExists.from = from;
     notificationExists.date = new Date();
     await notificationExists.save();
   }
@@ -66,9 +65,8 @@ const notificate = async function(type: NotificationTypes, user: string, followe
     let notification = new Notification({
       type,
       user,
-      commented,
-      post,
-      follower
+      from,
+      post
     });
     await notification.save();
   }

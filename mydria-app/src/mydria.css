@@ -455,3 +455,18 @@ input[type="file"]
   color: #ddd;
   border: none;
 }
+
+.my-notifications .dropdown-menu.show {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+}
+
+.my-notifications .dropdown-item {
+  align-items: center;
+}
+
+.my-notification-date {
+  font-size: .85rem;
+  color: #777;
+}

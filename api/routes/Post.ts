@@ -198,7 +198,7 @@ export default class PostRoutes {
         res.status(200).send(post);
       }
       //Envia a notificação pro autor do post:
-      await notificate(NotificationTypes.POST_LIKED, post.author, null, null, postId);
+      await notificate(NotificationTypes.POST_LIKED, post.author, requesterId, postId);
     })
 
     app.route('/post/:postId/unlike')
@@ -253,7 +253,7 @@ export default class PostRoutes {
         res.status(200).send(post);
       }
       //Envia a notificação pro autor do post:
-      await notificate(NotificationTypes.POST_UNLIKED, post.author, null, null, postId);
+      await notificate(NotificationTypes.POST_UNLIKED, post.author, requesterId, postId);
     })
 
     //GET em /posts/:nickname - Lê os posts de um usuário
@@ -295,7 +295,7 @@ export default class PostRoutes {
         sharedPost = await buildPost(sharedPost._id);
         res.status(200).send(sharedPost);
         //Envia a notificação pro autor do post:
-        await notificate(NotificationTypes.POST_SHARED, sharedPost.author, null, null, postId);
+        await notificate(NotificationTypes.POST_SHARED, sharedPost.author, requesterId, postId);
       }
       else {
         res.status(404).send('Post not found.');

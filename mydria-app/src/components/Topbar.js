@@ -8,13 +8,16 @@ import Nav from 'react-bootstrap/Nav';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import Container from 'react-bootstrap/Container';
+import Spinner from 'react-bootstrap/Spinner';
 import ProfilePicture from './ProfilePicture.js';
 import ThemeSwitch from './ThemeSwitch.js';
+import Notification from './Notification.js';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faSearch,
-  faArrowLeft
+  faArrowLeft,
+  faBell
 } from '@fortawesome/free-solid-svg-icons';
 
 import request from '../services/request.js';
@@ -25,11 +28,15 @@ class Topbar extends React.Component {
     this.logout = this.logout.bind(this);
     this.state = {
       userPictureUrl: request.resolveImageUrl(props.user.profilePicture),
-      showMobileSearch: false
+      showMobileSearch: false,
+      notifications: [],
+      notificationsLoaded: false
     }
     this.toggleMobileSearch = this.toggleMobileSearch.bind(this);
     this.renderMobileSearchReturnButton = this.renderMobileSearchReturnButton.bind(this);
     this.toggleDarkTheme = this.toggleDarkTheme.bind(this);
+    this.loadNotifications = this.loadNotifications.bind(this);
+    this.renderNotifications = this.renderNotifications.bind(this);
   }
 
   logout() {
@@ -44,6 +51,23 @@ class Topbar extends React.Component {
     this.props.toggleDarkTheme();
   }
 
+  async loadNotifications(){
+    if(!this.state.notificationsLoaded){
+      const req = await request.getNotifications();
+      let notifications = [];
+      if(req.success){
+        notifications = req.data;
+        this.setState({
+          notifications,
+          notificationsLoaded: true
+        })
+      }
+      else{
+        //TODO - Tratamento de erro ao carregar as notificações
+      }
+    }
+  }
+
   renderMobileSearchReturnButton() {
     return this.state.showMobileSearch ?
       <Form.Group controlId="formBasicReturn" className="my-return-button">
@@ -52,6 +76,29 @@ class Topbar extends React.Component {
         </Button>
       </Form.Group>
       : null
+  }
+
+  renderNotifications(){
+    if(this.state.notificationsLoaded){
+      if(this.state.notifications.length){
+        let notifications = [];
+        this.state.notifications.forEach(notification => {
+          notifications.push(
+            <Notification data={notification} />
+          )
+        })
+        return notifications;
+      }
+      else{
+        return <span className="ml-3">No notifications to show.</span>
+      }
+    }
+    else{
+      return <React.Fragment>
+        <Spinner animation="border" role="status" className="ml-2"></Spinner>
+        <span className="ml-2">Loading...</span>
+      </React.Fragment>
+    }
   }
 
   render() {
@@ -85,6 +132,10 @@ class Topbar extends React.Component {
               <FontAwesomeIcon icon={faSearch} className="my-profile-data-icon" />
             </Nav.Link>
             <ThemeSwitch toggleDarkTheme={this.toggleDarkTheme} />
+            <NavDropdown className="my-notifications mr-2" alignRight
+            title={ <FontAwesomeIcon icon={faBell} /> } onClick={this.loadNotifications}>
+              { this.renderNotifications() }
+            </NavDropdown>
             <ProfilePicture nickname={this.props.user.nickname} noMargin
               pictureId={this.props.user.profilePicture} size="tiny" tabletDesktopOnly/>
             <NavDropdown title={this.props.user.nickname}

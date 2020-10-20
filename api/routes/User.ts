@@ -110,7 +110,7 @@ export default class UserRoutes {
         await userToFollow.save();
         res.status(200).send(requester.following);
         //Envia a notificação pro usuário seguido:
-        await notificate(NotificationTypes.FOLLOW, userToFollow._id, requester._id, null, null);
+        await notificate(NotificationTypes.FOLLOW, userToFollow._id, requester._id, null);
       }
     })
 

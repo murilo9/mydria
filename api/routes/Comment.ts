@@ -40,7 +40,7 @@ export default class CommentRoutes {
         let comment = new Comment(commentData);
         await comment.save();
         //Envia a notificação pro autor do post:
-        await notificate(NotificationTypes.POST_COMMENTED, post.author, null, requesterId, postId);
+        await notificate(NotificationTypes.POST_COMMENTED, post.author, requesterId, postId);
         //O comentário precisa ser lido do banco e populado
         comment = await Comment.findOne({_id: comment._id}).populate('author').exec();
         res.status(200).send(comment);

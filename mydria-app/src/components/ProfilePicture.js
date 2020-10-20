@@ -13,6 +13,8 @@ export default class ProfilePicture extends Component {
 
   /**
    * Props:
+   *  nickname - Nickname de quem a foto vai ser exibida (usado pra gerar o link pro perfil)
+   *  pictureId - Id da picture que vai ser exibida
    *  size: String - tiny || small || medium || max
    *  noMargin: Boolean - Aplica ou remove a classe mr-3 do bootstrap
    *  mobileOnly: Boolean - Oculta a foto em tablet/desktop
