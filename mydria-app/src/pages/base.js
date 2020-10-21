@@ -100,6 +100,10 @@ export class MydriaPage extends Component {
     this.props.unsetUser();
     this.setState({ sessionExpired: true });
   }
+  
+  getDarkTheme(){
+    return this.props.session.darkTheme ? " my-dark-theme" : "";
+  }
 
   getPageClasses(){
     return "my-page-container" + (this.props.session.darkTheme ? " dark-theme" : "");

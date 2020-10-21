@@ -83,10 +83,6 @@ class FeedPage extends MydriaPage {
     this.setState({ posts });
   }
 
-  getDarkTheme(){
-    return this.props.session.darkTheme ? " my-dark-theme" : "";
-  }
-
   renderPosts(){
     let posts = [];
     this.state.posts.forEach(post => {

@@ -185,10 +185,6 @@ class ProfilePage extends MydriaPage {
     })
   }
 
-  getDarkTheme(){
-    return this.props.session.darkTheme ? " my-dark-theme" : "";
-  }
-
   renderPosts(){
     if(this.state.loadingPosts){
       return (
