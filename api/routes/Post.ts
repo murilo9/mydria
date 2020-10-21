@@ -13,7 +13,6 @@ const buildPost = async function(postId) {
   if(!post){
     return null
   }
-  console.log(post)
   //Adiciona o total de comentários
   const comments = await Comment.find({ post: post._id });
   let commentsTotal = comments.length;
@@ -76,6 +75,24 @@ export default class PostRoutes {
     app.route('/post/:postId')
     .all((req: Request, res: Response, next) => {
       verifyJWT(req, res, () => { next() })
+    })
+
+    //GET em /post/:postId - Coleta os dados de um post
+
+    .get(async (req, res: Response) => {
+      console.log('GET em /post/'+req.params.postId)
+      const postId = req.params.postId;
+      let postExists = await Post.findOne({_id: postId}).exec();
+
+      //Caso o post não exista:
+      if(!postExists){
+        req.status(404).send("Post doesn't exist");
+        return;
+      }
+      else{
+        let post = await buildPost(postId);
+        res.status(200).send(post);
+      }
     })
 
     //PUT em /post/:postId - Atualiza um post
