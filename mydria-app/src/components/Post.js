@@ -109,7 +109,7 @@ class Post extends Component {
    */
   liked(){
     return this.props.postData.likedBy
-    .filter(userLiked => userLiked === this.props.session.userId).length;
+    .filter(userLiked => userLiked._id === this.props.session.userId).length;
   }
 
   /**
@@ -117,7 +117,7 @@ class Post extends Component {
    */
   unliked(){
     return this.props.postData.unlikedBy
-    .filter(userUnliked => userUnliked === this.props.session.userId).length;
+    .filter(userUnliked => userUnliked._id === this.props.session.userId).length;
   }
 
   /**
