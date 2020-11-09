@@ -137,10 +137,13 @@ class Topbar extends React.Component {
               <FontAwesomeIcon icon={faSearch} className="my-profile-data-icon" />
             </Nav.Link>
             <ThemeSwitch toggleDarkTheme={this.toggleDarkTheme} />
-            <NavDropdown className="my-notifications mr-2" alignRight
+            <NavDropdown className="d-none d-sm-block my-notifications mr-2" alignRight
             title={ <FontAwesomeIcon icon={faBell} /> } onClick={this.loadNotifications}>
               { this.renderNotifications() }
             </NavDropdown>
+            <Nav.Link href="/notifications" className="d-block d-sm-none mr-2">
+              <FontAwesomeIcon icon={faBell} />
+            </Nav.Link>
             <ProfilePicture nickname={this.props.user.nickname} noMargin
               pictureId={this.props.user.profilePicture} size="tiny" tabletDesktopOnly/>
             <NavDropdown title={this.props.user.nickname}

@@ -102,17 +102,12 @@ a.navbar-brand {
 .my-page-container {
   padding-top: 64px;
   height: 100vh;
+  overflow-y: auto;
 }
 
 .my-page-container > .row {
   height: 100%;
   padding-bottom: 15px;
-}
-
-@media only screen and (max-width: 425px) {
-  .my-page-container {
-    height: auto;
-  }
 }
 
 .my-no-padding {
@@ -503,4 +498,8 @@ input[type="file"]
 
 .my-dark-theme .dropdown-item {
   color: white;
+}
+
+.my-dark-theme .dropdown-divider {
+  border-top: 1px solid #111;
 }
