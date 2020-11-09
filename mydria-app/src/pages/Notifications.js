@@ -64,7 +64,7 @@ class NotificationPage extends MydriaPage {
               <Col lg={2} className="d-none d-lg-flex pr-0 pl-0">
                 <div className="my-ads pl-2">Ads</div>
               </Col>
-              <Col xs={12} sm={8} lg={7} className="my-content-col order-md-2 order-lg-1 pt-1">
+              <Col xs={12} sm={8} lg={7} className="my-content-col order-md-2 order-lg-1">
                 { this.renderNotifications() }
               </Col>
               <Col sm={4} lg={3} className="d-none d-sm-block pr-0 pr-lg-3 h-100 order-md-1 order-lg-2">
