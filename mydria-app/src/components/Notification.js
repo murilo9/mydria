@@ -11,6 +11,11 @@ class Notification extends React.Component {
   constructor(props){
     super(props);
     this.getLabel = this.getLabel.bind(this);
+    this.state = {
+      months: [
+        'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
+      ]
+    }
   }
 
   getLabel(){
@@ -49,7 +54,11 @@ class Notification extends React.Component {
       return mins + ' min';
     }
     else {
-      return event.toDateString();
+      let day = event.getDate();
+      let month = this.state.months[event.getMonth()];
+      let hours = event.getHours();
+      let mins = event.getMinutes();
+      return `${month} ${day} - ${hours > 9 ? hours : '0'+hours}:${mins > 9 ? mins : '0'+mins}`;
     }
   }
 
@@ -60,7 +69,7 @@ class Notification extends React.Component {
   }
 
   render(){
-    return <NavDropdown.Item href={this.getHref()} className="d-flex align-center w-100">
+    return <NavDropdown.Item href={this.getHref()} className="my-notification d-flex align-center w-100">
       <ProfilePicture 
         nickname={this.props.data.from.nickname} 
         pictureId={this.props.data.from.profilePicture}

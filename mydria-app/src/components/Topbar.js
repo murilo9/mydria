@@ -87,6 +87,11 @@ class Topbar extends React.Component {
             <Notification data={notification} key={notification._id} />
           )
         })
+        notifications.push(
+          <NavDropdown.Item href='/notifications' className="d-flex align-center w-100 my-see-all">
+            <span>See all</span>
+          </NavDropdown.Item>
+        )
         return notifications;
       }
       else{

@@ -466,7 +466,19 @@ input[type="file"]
   align-items: center;
 }
 
+.my-see-all {
+  justify-content: center;
+}
+
 .my-notification-date {
   font-size: .85rem;
   color: #777;
+}
+
+.my-content-col .my-notification {
+  margin-bottom: 1rem;
+}
+
+.my-content-col .my-notification:hover {
+  background: #eee;
 }
