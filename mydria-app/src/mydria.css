@@ -424,9 +424,7 @@ input[type="file"]
   background: #eee;
 }
 
-.my-notification-label {
-  color: #eee;
-}
+
 
 .my-dark-theme {
   background: #000;
@@ -463,6 +461,10 @@ input[type="file"]
 
 .my-dark-theme .my-following-feed > p {
   color: #fff;
+}
+
+.my-dark-theme .my-notification-label {
+  color: #eee;
 }
 
 .my-dark-theme .my-following-feed .list-group-item {

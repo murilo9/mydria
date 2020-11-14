@@ -39,9 +39,13 @@ class NotificationPage extends MydriaPage {
 
   renderNotifications(){
     let notifications = [];
-    this.state.notifications.forEach(notification => {
-      notifications.push(<Notification data={notification} key={notification._id} />)
-    })
+    //Insere até 8 notificações na lista
+    for(let n = 0; n < 8; n++){
+      if(this.state.notifications[n]){
+        let notification = this.state.notifications[n];
+        notifications.push(<Notification data={notification} key={notification._id} />)
+      }
+    }
     return notifications.length ? notifications : 'No notifications to show.';
   }
 
