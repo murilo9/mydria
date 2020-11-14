@@ -38,13 +38,14 @@ class FollowingFeed extends Component {
   render() {
     return (
       <div className="my-following-feed">
-        <p>
+        <h6 className="text-center mt-1">
           { this.props.user.following.length ? 
-          'People you follow' : "You're not following anybody yet" }
-        </p>
+          'People you follow ' : "You're not following anybody yet " }
+        </h6>
         <ListGroup variant="flush">
           { this.renderFollowedUsers() }
         </ListGroup>
+        <a href="/follows" className="see-all w-100 text-center mb-1">See all</a>
       </div>
     )
   }

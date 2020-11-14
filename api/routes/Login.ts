@@ -44,7 +44,8 @@ export default class LoginRoutes {
 
     .get(async (req, res: Response) => {
       console.log('GET em /session')
-      const user = await User.findOne({ _id: req.requesterId }).populate('following').exec();
+      const user = await User.findOne({ _id: req.requesterId })
+      .populate('following').populate('followedBy').exec();
       if(user){
         res.status(200).send(user);
       }

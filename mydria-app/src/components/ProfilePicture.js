@@ -30,7 +30,6 @@ export default class ProfilePicture extends Component {
 
   getClasses(){
     let classes = "my-profile-picture-wrapper";
-    console.log(this.props)
     classes += this.props.noMargin ? '' : ' mr-3';
     classes += ` ${this.props.size}`;   // tiny || small || medium || max
     if(this.props.mobileOnly){

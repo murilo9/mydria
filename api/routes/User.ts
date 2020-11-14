@@ -35,7 +35,7 @@ export default class UserRoutes {
     .get(async (req: Request, res: Response) => {
       console.log('POST em /user/'+req.params.nickname)
       const nickname = req.params.nickname;
-      const user = await User.findOne({ nickname }).populate('following').exec();
+      const user = await User.findOne({ nickname }).lean().populate('following').exec();
       if(user){
         delete user.password;
         res.status(200).send(user);

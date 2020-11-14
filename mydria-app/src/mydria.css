@@ -344,10 +344,16 @@ input[type="file"]
   height: 100%;
   overflow-y: auto;
   font-size: 14px;
+  position: relative;
 }
 
 .my-following-feed p {
   text-align: center;
+}
+
+.my-following-feed .see-all {
+  position: absolute;
+  bottom: 0;
 }
 
 .list-group-item {

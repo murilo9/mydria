@@ -26,6 +26,7 @@ ReactDOM.render(
       <Route exact path="/post/:postId" component={pages.Post}/>
       <Route exact path="/feed" component={pages.Feed}/>
       <Route exact path="/notifications" component={pages.Notifications}/>
+      <Route exact path="/follows" component={pages.Follows}/>
       <Route path='*' component={pages.NotFound}/>
       
       </Switch>

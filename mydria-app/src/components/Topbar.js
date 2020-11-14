@@ -146,6 +146,7 @@ class Topbar extends React.Component {
             <NavDropdown title={this.props.user.nickname}
               alignRight id="basic-nav-dropdown">
               <NavDropdown.Item href="/notifications" className="d-sm-none">Notifications</NavDropdown.Item>
+              <NavDropdown.Item href="/follows" className="d-sm-none">People you follow</NavDropdown.Item>
               <NavDropdown.Item href={"/profile/" + this.props.user.nickname}>Profile</NavDropdown.Item>
               <NavDropdown.Item href="#action/3.2">Settings</NavDropdown.Item>
               <NavDropdown.Divider />
