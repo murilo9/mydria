@@ -137,7 +137,7 @@ class Topbar extends React.Component {
               <FontAwesomeIcon icon={faSearch} className="my-profile-data-icon" />
             </Nav.Link>
             <ThemeSwitch toggleDarkTheme={this.toggleDarkTheme} />
-            <NavDropdown className="d-none d-sm-block my-notifications mr-2" alignRight
+            <NavDropdown className="d-none d-sm-flex align-itens-middle my-notifications mr-2" alignRight
             title={ <FontAwesomeIcon icon={faBell} /> } onClick={this.loadNotifications}>
               { this.renderNotifications() }
             </NavDropdown>

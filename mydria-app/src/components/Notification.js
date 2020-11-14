@@ -72,20 +72,15 @@ class Notification extends React.Component {
   render(){
     return <NavDropdown.Item href={this.getHref()} 
     className="my-notification d-flex align-center w-100">
-      <Row noGutters className="w-100">
-        <Col xs={2}>
-          <ProfilePicture 
-            nickname={this.props.data.from.nickname} 
-            pictureId={this.props.data.from.profilePicture}
-            size="tiny"
-            noMargin={true}
-          />
-        </Col>
-        <Col xs={10}>
-          <div className="my-notification-label">{ this.getLabel() }</div>
-          <div className="my-notification-date">{ this.getDateLabel() }</div>
-        </Col>
-      </Row>
+      <ProfilePicture 
+        nickname={this.props.data.from.nickname} 
+        pictureId={this.props.data.from.profilePicture}
+        size="tiny"
+      />
+      <div className="d-flex flex-column">
+        <div className="my-notification-label">{ this.getLabel() }</div>
+        <div className="my-notification-date">{ this.getDateLabel() }</div>
+      </div>
     </NavDropdown.Item>
   }
 }

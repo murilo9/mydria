@@ -402,10 +402,12 @@ input[type="file"]
   }
 }
 
+.my-notification {
+  white-space: normal;
+}
+
 .my-notifications .dropdown-menu.show {
-  align-items: center;
-  display: flex;
-  flex-direction: column;
+  width: 340px;
 }
 
 .my-notifications .dropdown-item {
@@ -418,6 +420,7 @@ input[type="file"]
 
 .my-notification-date {
   color: #777;
+  font-size: 13px;
 }
 
 .my-content-col .my-notification {
