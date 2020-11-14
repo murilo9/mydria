@@ -418,7 +418,7 @@ class Post extends Component {
     return this.userIsAuthor() ?
     <React.Fragment>
       <Dropdown.Item href="#" onClick={ this.editPost }>
-        <FontAwesomeIcon icon={faEdit} /> Edit
+        <FontAwesomeIcon icon={faEdit} className="mr-2" /> Edit
       </Dropdown.Item>
       <Dropdown.Item href="#" onClick={ () => this.showConfirmModal(
         'Delete post',
@@ -426,12 +426,12 @@ class Post extends Component {
         'Delete',
         this.deletePost
       )}>
-        <FontAwesomeIcon icon={faTrashAlt} /> Delete
+        <FontAwesomeIcon icon={faTrashAlt} className="mr-2" /> Delete
       </Dropdown.Item>
     </React.Fragment>
     :
     <Dropdown.Item href="#" onclick="event.preventDefault()" onClick={ this.hidePost }>
-      <FontAwesomeIcon icon={faMinusSquare} /> Hide this
+      <FontAwesomeIcon icon={faMinusSquare} className="mr-2" /> Hide this
     </Dropdown.Item>
   }
 
