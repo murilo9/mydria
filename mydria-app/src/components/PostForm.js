@@ -259,11 +259,11 @@ class PostForm extends Component {
       const message = this.renderMessage();
       const error = this.renderErrorMessage();
       const warning = this.renderWarningMessage();
-      return [
-        message,
-        error,
-        warning,
-        <Form key="postForm" onSubmit={(e) => e.preventDefault()}>
+      return <React.Fragment>
+        {message}
+        {error}
+        {warning}
+        <Form className="my-postform" onSubmit={(e) => e.preventDefault()}>
           { this.renderTags() }
           <Form.Group controlId="postText">
             <Form.Control as="textarea" rows="5"
@@ -288,7 +288,7 @@ class PostForm extends Component {
             </Button>
           </Form.Group>
         </Form>
-      ]
+      </React.Fragment>
     }
   }
 }

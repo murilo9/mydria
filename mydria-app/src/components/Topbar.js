@@ -141,13 +141,11 @@ class Topbar extends React.Component {
             title={ <FontAwesomeIcon icon={faBell} /> } onClick={this.loadNotifications}>
               { this.renderNotifications() }
             </NavDropdown>
-            <Nav.Link href="/notifications" className="d-block d-sm-none mr-2">
-              <FontAwesomeIcon icon={faBell} />
-            </Nav.Link>
             <ProfilePicture nickname={this.props.user.nickname} noMargin
               pictureId={this.props.user.profilePicture} size="tiny" tabletDesktopOnly/>
             <NavDropdown title={this.props.user.nickname}
               alignRight id="basic-nav-dropdown">
+              <NavDropdown.Item href="/notifications" className="d-sm-none">Notifications</NavDropdown.Item>
               <NavDropdown.Item href={"/profile/" + this.props.user.nickname}>Profile</NavDropdown.Item>
               <NavDropdown.Item href="#action/3.2">Settings</NavDropdown.Item>
               <NavDropdown.Divider />

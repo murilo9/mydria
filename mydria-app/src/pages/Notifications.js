@@ -19,6 +19,7 @@ class NotificationPage extends MydriaPage {
     super(props);
     this.state = {
       notifications: [],
+      loadingNotifs: true,
       sessionExpired: false,  //Renderiza um objeto <Redirect> para voltar à página de login
     }
     this.loadPageData = this.loadPageData.bind(this);
@@ -29,6 +30,7 @@ class NotificationPage extends MydriaPage {
     let req = await request.getNotifications();
     if(req.success){
       this.setState({
+        loadingNotifs: false,
         notifications: req.data
       })
     }
@@ -54,8 +56,8 @@ class NotificationPage extends MydriaPage {
     if(this.state.sessionExpired){
       return <Redirect to="/" />
     }
-    //Caso ainda esteja carregando os dados do post do servidor:
-    else if(this.state.loadingPost){
+    //Caso ainda esteja carregando os dados do servidor:
+    else if(this.state.loadingNotifs){
       return <span></span>;
     }
     //Caso contrário, renderiza a página normalmente:

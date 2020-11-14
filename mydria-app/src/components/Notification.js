@@ -4,7 +4,8 @@ import {  mapStateToProps } from '../pages/base';
 
 import NavDropdown from 'react-bootstrap/NavDropdown';
 import ProfilePicture from './ProfilePicture.js';
-
+import Col from 'react-bootstrap/Col';
+import Row from 'react-bootstrap/Row';
 
 class Notification extends React.Component {
 
@@ -71,15 +72,20 @@ class Notification extends React.Component {
   render(){
     return <NavDropdown.Item href={this.getHref()} 
     className="my-notification d-flex align-center w-100">
-      <ProfilePicture 
-        nickname={this.props.data.from.nickname} 
-        pictureId={this.props.data.from.profilePicture}
-        size="tiny"
-      />
-      <div className="h-1rem d-flex flex-column">
-        <span className="my-notification-label">{ this.getLabel() }</span>
-        <span className="my-notification-date">{ this.getDateLabel() }</span>
-      </div>
+      <Row noGutters className="w-100">
+        <Col xs={2}>
+          <ProfilePicture 
+            nickname={this.props.data.from.nickname} 
+            pictureId={this.props.data.from.profilePicture}
+            size="tiny"
+            noMargin={true}
+          />
+        </Col>
+        <Col xs={10}>
+          <div className="my-notification-label">{ this.getLabel() }</div>
+          <div className="my-notification-date">{ this.getDateLabel() }</div>
+        </Col>
+      </Row>
     </NavDropdown.Item>
   }
 }

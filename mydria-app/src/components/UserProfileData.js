@@ -270,7 +270,7 @@ export class UserProfileData extends Component {
 
   render() {
     return <React.Fragment>
-      <Card className="mb-3">
+      <Card className="mb-3 my-profile-data">
         <div className="my-profile-picture-wrapper">
           <ProfilePicture nickname={this.props.userData.nickname} noMargin
             pictureId={this.props.userData.profilePicture} size="max" 

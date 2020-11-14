@@ -411,7 +411,6 @@ input[type="file"]
 }
 
 .my-notification-date {
-  font-size: .85rem;
   color: #777;
 }
 
@@ -423,8 +422,6 @@ input[type="file"]
 .my-content-col .my-notification:hover {
   background: #eee;
 }
-
-
 
 .my-dark-theme {
   background: #000;
@@ -465,6 +462,7 @@ input[type="file"]
 
 .my-dark-theme .my-notification-label {
   color: #eee;
+  white-space: normal;
 }
 
 .my-dark-theme .my-following-feed .list-group-item {
@@ -504,4 +502,11 @@ input[type="file"]
 
 .my-dark-theme .dropdown-divider {
   border-top: 1px solid #111;
+}
+
+@media only screen and (max-width: 425px){
+  .my-notification, .my-post, textarea, input, button, .dropdown-menu,
+  .my-profile-data, .my-navbar-container, .my-post-text {
+    font-size: 10pt !important;
+  }
 }
