@@ -29,24 +29,10 @@ const buildPost = async function(postId) {
 export default class PostRoutes {
   
   public routes(app, verifyJWT, upload): void {
-    
+
     app.route('/posts')
     .all((req: Request, res: Response, next) => {
       verifyJWT(req, res, () => { next() })
-    })
-
-    //GET em /posts - Retorna alguns posts de quem você está seguindo
-
-    .get(async (req: Request, res: Response) => {
-      console.log('GET em /posts');
-      let posts = [];
-      let basePosts = await Post.find({}).exec();
-      //Adiciona o total de comentários do post:
-      for(let i = 0; i < basePosts.length; i++){
-        let post = await buildPost(basePosts[i]._id);
-        posts.push(post);
-      }
-      res.status(200).send(posts);
     })
 
     //POST em /posts - Cria um novo post
@@ -162,6 +148,22 @@ export default class PostRoutes {
       res.status(200).send('Post deleted successfully');
 
       //TODO - Deletar os comentários do post e a imagem do post, caso tenha
+    })
+
+    app.route('/posts/users')
+
+    //GET em /posts/users - Retorna alguns posts de quem você está seguindo
+
+    .get(async (req: Request, res: Response) => {
+      console.log('GET em /posts/users');
+      let posts = [];
+      let basePosts = await Post.find({}).exec();
+      //Adiciona o total de comentários do post:
+      for(let i = 0; i < basePosts.length; i++){
+        let post = await buildPost(basePosts[i]._id);
+        posts.push(post);
+      }
+      res.status(200).send(posts);
     })
 
     app.route('/post/:postId/like')

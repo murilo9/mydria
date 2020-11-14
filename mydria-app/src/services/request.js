@@ -97,7 +97,7 @@ const loadSomePosts = async function () {
     const token = Cookies.get('token');
     const res = await axios({
       method: 'get',
-      url: baseUrl + '/posts',
+      url: baseUrl + '/posts/users',
       headers: {
         'x-access-token': token
       }
