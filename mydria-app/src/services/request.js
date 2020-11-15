@@ -97,7 +97,7 @@ const loadSomePosts = async function () {
     const token = Cookies.get('token');
     const res = await axios({
       method: 'get',
-      url: baseUrl + '/posts',
+      url: baseUrl + '/posts/users',
       headers: {
         'x-access-token': token
       }
@@ -118,16 +118,48 @@ const loadSomePosts = async function () {
   return response;
 }
 
-const publishPost = async function (post) {
+const publishPost = async function (post, hasPicture) {
   let response = {};
   try {
     const token = Cookies.get('token');
+    let headers = {
+      'x-access-token': token,
+    }
+    if(hasPicture){
+      //Cria o form com o file input
+      let formData = new FormData();
+      let imageFile = document.getElementById('post-file');
+      formData.append("file", imageFile.files[0]);
+      //Faz a request de upload da foto pro servidor
+      try {
+        const res = await axios({
+          url: baseUrl + `/images`,
+          method: 'post',
+          headers: {
+            'x-access-token': token,
+            'Content-Type': `multipart/form-data; ${formData._boundary}`
+          },
+          data: formData
+        });
+        response = {
+          success: true,
+          data: res.data
+        }
+      }
+      catch (e) {
+        response = {
+          success: false,
+          error: e.response
+        }
+      }
+      //Coleta o id da imagem instanciada
+      post.img = response.data.id;
+    }
+    //Faz a requisição pra instanciar o post
     const res = await axios({
       url: baseUrl + '/posts',
       method: 'post',
-      headers: {
-        'x-access-token': token
-      },
+      headers,
       data: post
     });
     response = {
@@ -394,8 +426,248 @@ const uploadProfilePicture = async function () {
   return response;
 }
 
+const setTmpImage = async function() {
+  let response = {};
+  let formData = new FormData();
+  formData.append("tmp", true);
+  let imageFile = document.getElementById('post-file');
+  formData.append("file", imageFile.files[0])
+  try {
+    const token = Cookies.get('token');
+    const res = await axios({
+      url: baseUrl + `/tmp`,
+      method: 'post',
+      headers: {
+        'x-access-token': token,
+        'Content-Type': `multipart/form-data; ${formData._boundary}`
+      },
+      data: formData
+    });
+    response = {
+      success: true,
+      data: res.data
+    }
+  }
+  catch (e) {
+    response = {
+      success: false,
+      error: e.response
+    }
+  }
+  return response;
+}
+
+const getPostComments = async function(postId) {
+  let response = {};
+  try {
+    const token = Cookies.get('token');
+    const res = await axios({
+      url: baseUrl + `/post/${postId}/comments`,
+      method: 'get',
+      headers: {
+        'x-access-token': token,
+      }
+    });
+    response = {
+      success: true,
+      data: res.data
+    }
+  }
+  catch (e) {
+    response = {
+      success: false,
+      error: e.response
+    }
+  }
+  return response;
+}
+
+const publishComment = async function(comment, postId) {
+  let response = {};
+  try {
+    const token = Cookies.get('token');
+    const res = await axios({
+      url: baseUrl + `/post/${postId}/comments`,
+      method: 'post',
+      headers: {
+        'x-access-token': token,
+      },
+      data: comment
+    });
+    response = {
+      success: true,
+      data: res.data
+    }
+  }
+  catch (e) {
+    response = {
+      success: false,
+      error: e.response
+    }
+  }
+  return response;
+} 
+
+const deleteComment = async function(commentId) {
+  let response = {};
+  try {
+    const token = Cookies.get('token');
+    const res = await axios({
+      url: baseUrl + `/comment/${commentId}`,
+      method: 'delete',
+      headers: {
+        'x-access-token': token,
+      }
+    });
+    response = {
+      success: true
+    }
+  }
+  catch (e) {
+    response = {
+      success: false,
+      error: e.response
+    }
+  }
+  return response;
+}
+
+const updateComment = async function(updatedComment) {
+  let response = {};
+  try {
+    const token = Cookies.get('token');
+    const res = await axios({
+      url: baseUrl + `/comment/${updatedComment._id}`,
+      method: 'put',
+      headers: {
+        'x-access-token': token,
+      },
+      data: updatedComment
+    });
+    response = {
+      success: true,
+      data: res.data
+    }
+  }
+  catch (e) {
+    response = {
+      success: false,
+      error: e.response
+    }
+  }
+  return response;
+}
+
+const sharePost = async function(postId, text = '', tags = []) {
+  let response = {};
+  try {
+    const token = Cookies.get('token');
+    const res = await axios({
+      url: baseUrl + `/post/${postId}/share`,
+      method: 'post',
+      headers: {
+        'x-access-token': token,
+      },
+      data: {
+        text,
+        tags
+      }
+    });
+    response = {
+      success: true,
+      data: res.data
+    }
+  }
+  catch (e) {
+    response = {
+      success: false,
+      error: e.response
+    }
+  }
+  return response;
+}
+
+const getNotifications = async function(){
+  let response = {};
+  try {
+    const token = Cookies.get('token');
+    const res = await axios({
+      url: baseUrl + `/notifications`,
+      method: 'get',
+      headers: {
+        'x-access-token': token,
+      },
+    });
+    response = {
+      success: true,
+      data: res.data
+    }
+  }
+  catch (e) {
+    response = {
+      success: false,
+      error: e.response
+    }
+  }
+  return response;
+}
+
+const loadPostData = async function(postId){
+  let response = {};
+  try {
+    const token = Cookies.get('token');
+    const res = await axios({
+      url: baseUrl + `/post/${postId}`,
+      method: 'get',
+      headers: {
+        'x-access-token': token,
+      },
+    });
+    response = {
+      success: true,
+      data: res.data
+    }
+  }
+  catch (e) {
+    response = {
+      success: false,
+      error: e.response
+    }
+  }
+  return response;
+}
+
+const search = async function(query){
+  let response = {}
+  try {
+    const token = Cookies.get('token');
+    const res = await axios({
+      url: baseUrl + `/posts${query}`,
+      method: 'get',
+      headers: {
+        'x-access-token': token,
+      },
+    });
+    response = {
+      success: true,
+      data: res.data
+    }
+  }
+  catch (e) {
+    response = {
+      success: false,
+      error: e.response
+    }
+  }
+  return response;
+}
+
 const resolveImageUrl = function(imageId) {
   return imageId ? baseUrl + `/image/${imageId}` : '/assets/user.svg';
+}
+
+const getTmpImageUrl = function(name, ext) {
+  return baseUrl + `/tmp/${name}?ext=${ext}`;
 }
 
 export default {
@@ -414,5 +686,15 @@ export default {
   unfollowUser,
   updateUserData,
   uploadProfilePicture,
-  resolveImageUrl
+  resolveImageUrl,
+  setTmpImage,
+  getTmpImageUrl,
+  getPostComments,
+  publishComment,
+  deleteComment,
+  updateComment,
+  sharePost,
+  getNotifications,
+  loadPostData,
+  search
 }

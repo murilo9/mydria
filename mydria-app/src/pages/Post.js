@@ -8,71 +8,38 @@ import { MydriaPage, mapStateToProps, mapDispatchToProps } from './base';
 import Container from 'react-bootstrap/Container';
 import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
-import Spinner from 'react-bootstrap/Spinner';
 
 import Topbar from '../components/Topbar';
 import Post from '../components/Post';
 import PostForm from '../components/PostForm';
 import FollowingFeed from '../components/FollowingFeed';
 
-class FeedPage extends MydriaPage {
+class PostPage extends MydriaPage {
+
   constructor(props){
     super(props);
     this.state = {
-      posts: [],
-      searchString: '',
-      searchResult: false,    //Indica se está sendo exibido o resultado de uma busca
+      post: null,
+      loadingPost: true,
       sessionExpired: false,  //Renderiza um objeto <Redirect> para voltar à página de login
-      loadingPosts: true    //Renderiza um spinner enquanto posts estiverem sendo carregados
     }
     this.loadPageData = this.loadPageData.bind(this);
-    this.renderPosts = this.renderPosts.bind(this);
-    this.appendPost = this.appendPost.bind(this);
     this.updatePost = this.updatePost.bind(this);
     this.deletePost = this.deletePost.bind(this);
-    this.getDarkTheme = this.getDarkTheme.bind(this);
   }
 
-  /**
-   * Carrega alguns posts para exibir no feed do usuário.
-   */
   async loadPageData(){
-    let searchQuery = this.props.location.search;
-    if(searchQuery){
-      let params = (new URL(document.location)).searchParams;
-      let searchText = params.get("search");
-      let req = await request.search(searchQuery);
-      if(req.success){
-        this.setState({
-          searchString: searchText,
-          searchResult: true,
-          loadingPosts: false,
-          posts: req.data
-        })
-      }
-      else {
-        //TODO - Melhor tratamento de erro durante a request de busca
-        this.setState({
-          loadingPosts: false
-        })
-      }
-      
-    }
-    else {
-      const posts = await request.loadSomePosts();
+    const { postId } = this.props.match.params;
+    const req = await request.loadPostData(postId);
+    if(req.success){
       this.setState({
-        loadingPosts: false,
-        posts
+        postData: req.data,
+        loadingPost: false
       })
     }
-  }
-
-  appendPost(post){
-    let posts = this.state.posts;
-    posts.unshift(post);
-    this.setState({
-      posts
-    })
+    else{
+      //TODO - Tratamento de erro ao carregar o post
+    }
   }
 
   /**
@@ -91,7 +58,9 @@ class FeedPage extends MydriaPage {
     }
     //Atualiza a lista de posts do feed:
     this.setState({ posts });
-    callback();
+    if(typeof callback === 'function'){
+      callback();
+    }
   }
 
   deletePost(postId){
@@ -108,32 +77,13 @@ class FeedPage extends MydriaPage {
     this.setState({ posts });
   }
 
-  renderPosts(){
-    let posts = [];
-    if(this.state.posts.length){
-      this.state.posts.forEach(post => {
-        posts.push(
-        <Post postData={post} 
-        updatePost={this.updatePost} 
-        deletePost={this.deletePost}
-        appendPost={this.appendPost}
-        key={post._id} 
-        />)
-      })
-    }
-    else{
-      posts = <h6>No results found.</h6>
-    }
-    return posts;
-  }
-
   render(){
     //Caso a session tenha expirado durante o runtime, redireciona:
     if(this.state.sessionExpired){
       return <Redirect to="/" />
     }
-    //Caso ainda esteja carregando os dados do usuário do servidor:
-    else if(this.state.loadingPosts){
+    //Caso ainda esteja carregando os dados do post do servidor:
+    else if(this.state.loadingPost){
       return <span></span>;
     }
     //Caso contrário, renderiza a página normalmente:
@@ -147,10 +97,9 @@ class FeedPage extends MydriaPage {
                 <div className="my-ads pl-2">Ads</div>
               </Col>
               <Col xs={12} sm={8} lg={7} className="my-content-col order-md-2 order-lg-1 pt-1">
-                { this.state.searchResult ? 
-                <h4 className="mb-3">Search results for '{this.state.searchString}':</h4>
-                : <PostForm appendPost={this.appendPost} />}
-                { this.renderPosts() }
+                <Post postData={this.state.postData}
+                updatePost={this.updatePost} 
+                deletePost={this.deletePost} />
               </Col>
               <Col sm={4} lg={3} className="d-none d-sm-block pr-0 pr-lg-3 h-100 order-md-1 order-lg-2">
                 <FollowingFeed />
@@ -163,4 +112,4 @@ class FeedPage extends MydriaPage {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(FeedPage);
+export default connect(mapStateToProps, mapDispatchToProps)(PostPage)

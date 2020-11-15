@@ -100,15 +100,18 @@ a.navbar-brand {
 }
 
 .my-page-container {
-  margin-top: 64px;
+  padding-top: 64px;
+  height: 100vh;
+  overflow-y: auto;
+}
+
+.my-page-container > .row {
+  height: 100%;
+  padding-bottom: 15px;
 }
 
 .my-no-padding {
   padding: 0;
-}
-
-.my-navbar a {
-  padding: 0.5em !important;
 }
 
 .my-mobile-search {
@@ -130,12 +133,28 @@ a.navbar-brand {
 .my-ads {
   border: 1px solid #ccc;
   background: white;
+  height: 100%;
+  width: 100%;
 }
 
 @media screen and (min-width: 767px) {
   .my-publish-button-col {
     padding-left: 0;
   }
+}
+
+.my-post-form-photo {
+  position: relative;
+}
+
+.my-post-form-photo-wall {
+  position: absolute;
+  width: 100%;
+  top: 0;
+}
+
+.my-post-form-photo-wall .btn {
+  float: right;
 }
 
 .my-post {
@@ -145,8 +164,16 @@ a.navbar-brand {
   background: white;
 }
 
+.my-post .my-profile-picture {
+  margin: 0;
+}
+
 .my-post-options .dropdown-menu {
   box-shadow: 2px 2px 4px #aaa;
+}
+
+.my-post-content img {
+  margin-bottom: 1rem;
 }
 
 .my-post-buttons .btn{
@@ -214,13 +241,29 @@ a.navbar-brand {
 }
 
 .my-profile-picture-wrapper {
-  padding: 1rem;
+  display: inline-block;
   overflow: hidden;
 }
 
-.my-profile-picture-wrapper.post {
+.my-profile-picture-wrapper.tiny {
+  width: 40px;
+  min-width: 40px;
+}
+
+.my-profile-picture-wrapper.small {
+  width: 48px;
+  min-width: 48px;
+}
+
+.my-profile-picture-wrapper.medium {
   width: 64px;
-  padding: 0;
+  min-width: 64px;
+}
+
+.my-profile-picture-wrapper.max {
+  width: 100%;
+  min-width: 100%;
+  padding: 1rem;
 }
 
 .my-profile-picture-wrapper input[type=file] {
@@ -237,25 +280,26 @@ a.navbar-brand {
   display: block;
 }
 
-@media screen and (max-width: 425px) {
-  .my-profile-picture {
-    margin: auto;
-    width: 70%;
-    padding-top: 70%;
-  }
+.my-profile-picture.square {
+  border-radius: 0;
 }
 
-.my-navbar .my-profile-picture {
-  width: 40px;
-  height: 40px;
+.modal-body .my-profile-picture-wrapper {
   padding: 0;
+}
+
+@media screen and (max-width: 425px) {
+  .my-profile-picture-wrapper.tiny .my-profile-picture {
+    margin: auto;
+    width: 80%;
+    padding-top: 80%;
+  }
 }
 
 .my-profile-picture-button-wall {
   position: absolute;
-  width: 100%;
-  padding-top: 75%;
-  padding-right: 10%;
+  margin-top: 75%;
+  right: 10%;
   display: flex;
   justify-content: flex-end;
 }
@@ -270,11 +314,6 @@ a.navbar-brand {
 }
 
 @media screen and (max-width: 425px) {
-  .my-profile-picture-button-wall {
-    padding-top: 50%;
-    padding-right: 15%;
-  }
-
   .my-profile-picture-change {
     width: 3.5rem;
     height: 3.5rem;
@@ -296,4 +335,187 @@ input[type="file"]
 
 .my-profile-data-icon {
   width: 1.25rem !important;
+}
+
+.my-following-feed {
+  border: 1px solid #ccc;
+  border-radius: .25rem;
+  background: white;
+  height: 100%;
+  overflow-y: auto;
+  font-size: 14px;
+  position: relative;
+}
+
+.my-following-feed p {
+  text-align: center;
+}
+
+.my-following-feed .see-all {
+  position: absolute;
+  bottom: 0;
+}
+
+.list-group-item {
+  display: flex;
+  align-items: center;
+}
+
+@media screen and (min-width: 768px){
+  .my-content-col {
+    height: 100%;
+    overflow-y: auto;
+  }
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  width: 10px;
+  border-radius: 10px;
+  background: #ccc;
+}
+
+.navbar-nav .dropdown-menu {
+  position: absolute;
+}
+
+.modal-footer>* {
+  width: 100%;
+}
+
+.my-sun-icon {
+  font-size: 22px;
+  color: yellow;
+}
+
+.my-moon-icon {
+  font-size: 20px;
+  color: white;
+}
+
+@media only screen and (max-width: 425px){
+  .my-moon-icon, .my-sun-icon {
+    width: 26px;
+  }
+}
+
+.my-notification {
+  white-space: normal;
+}
+
+.my-notifications .dropdown-menu.show {
+  width: 340px;
+}
+
+.my-notifications .dropdown-item {
+  align-items: center;
+}
+
+.my-see-all {
+  justify-content: center;
+}
+
+.my-notification-date {
+  color: #777;
+  font-size: 13px;
+}
+
+.my-content-col .my-notification {
+  margin-bottom: .5rem;
+  padding: .5rem;
+}
+
+.my-content-col .my-notification:hover {
+  background: #eee;
+}
+
+.my-dark-theme {
+  background: #000;
+}
+
+.my-dark-theme .my-following-feed, .my-dark-theme .my-post, 
+.my-dark-theme .form-control, .my-dark-theme .my-ads,
+.my-dark-theme .card {
+  background: #111;
+  color: #ddd;
+  border: none;
+}
+
+.my-dark-theme .my-notification {
+  background: #111;
+  border-radius: 4px;
+}
+
+.my-dark-theme .dropdown-menu, .my-dark-theme .dropdown-item {
+  background: #222;
+}
+
+.my-dark-theme .my-navbar-container {
+  background-color: #222 !important;
+}
+
+.my-dark-theme .form-control {
+  background: #090909;
+}
+
+.my-dark-theme .form-control::placeholder {
+  color: #888;
+}
+
+.my-dark-theme .my-following-feed > p {
+  color: #fff;
+}
+
+.my-dark-theme .my-notification-label {
+  color: #eee;
+  white-space: normal;
+}
+
+.my-dark-theme .my-following-feed .list-group-item {
+  background: #111;
+}
+
+.my-dark-theme .my-post .my-post-author-name, .my-dark-theme .btn-outline-dark {
+  color: #fff;
+}
+
+.my-dark-theme ::-webkit-scrollbar-thumb {
+  background: #777;
+}
+
+.my-dark-theme .btn-dark {
+  background-color: transparent;
+  border: none;
+}
+
+.my-dark-theme .my-profile-data-bio {
+  color: #aaa;
+}
+
+.my-dark-theme .my-post .alert-secondary {
+  background: transparent;
+  color: #ddd;
+  border: none;
+}
+
+.my-dark-theme .dropdown-item:hover {
+  background: #444;
+}
+
+.my-dark-theme .dropdown-item {
+  color: white;
+}
+
+.my-dark-theme .dropdown-divider {
+  border-top: 1px solid #111;
+}
+
+@media only screen and (max-width: 425px){
+  .my-notification, .my-post, textarea, input, button, .dropdown-menu,
+  .my-profile-data, .my-navbar-container, .my-post-text {
+    font-size: 10pt !important;
+  }
 }

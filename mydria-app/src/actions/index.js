@@ -8,8 +8,7 @@ const types = {
     SET_SESSION_TOKEN: 'SET_SESSION_TOKEN',
     SET_SESSION_USERID: 'SET_SESSION_USERID',
     SET_SESSION_ACTIVE: 'SET_SESSION_ACTIVE',
-    SET_PAGE_DATA: 'SET_PAGE_DATA',
-    UPDATE_PAGE_DATA: 'UPDATE_PAGE_DATA'
+    SET_DARK_THEME: 'SET_DARK_THEME'
 }
 
 export function setUserEmail(email) {
@@ -74,17 +73,10 @@ export function setSessionActive(active = false) {
     }
 }
 
-export function setPageData(data) {
+export function setDarkTheme(active = false) {
     return {
-        type: types.SET_PAGE_DATA,
-        data
-    }
-}
-
-export function updatePageData(data) {
-    return {
-        type: types.UPDATE_PAGE_DATA,
-        data
+        type: types.SET_DARK_THEME,
+        active
     }
 }
 

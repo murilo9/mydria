@@ -23,7 +23,10 @@ ReactDOM.render(
       
       <Route exact path="/" component={pages.Login}/>
       <Route exact path="/profile/:nickname" component={pages.Profile}/>
+      <Route exact path="/post/:postId" component={pages.Post}/>
       <Route exact path="/feed" component={pages.Feed}/>
+      <Route exact path="/notifications" component={pages.Notifications}/>
+      <Route exact path="/follows" component={pages.Follows}/>
       <Route path='*' component={pages.NotFound}/>
       
       </Switch>

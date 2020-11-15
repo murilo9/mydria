@@ -9,6 +9,10 @@ import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import Dropdown from 'react-bootstrap/Dropdown';
 import Alert from 'react-bootstrap/Alert';
+import Image from 'react-bootstrap/Image';
+import Modal from 'react-bootstrap/Modal';
+import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
+import Tooltip from 'react-bootstrap/Tooltip';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { 
   faComment, 
@@ -22,7 +26,10 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { connect } from 'react-redux';
 import Tag from './Tag.js';
+import PostComment from './Comment.js';
 import sanitize from '../helpers/stringSanitizer.js';
+import CommentForm from './CommentForm.js';
+import ProfilePicture from './ProfilePicture.js';
 
 const mapStateToProps = state => ({
   ...state
@@ -33,13 +40,16 @@ class Post extends Component {
   constructor(props){
     super(props);
     this.state = {
-      userPictureUrl: request.resolveImageUrl(props.postData.author.profilePicture),
       tempLike: false,
       tempUnlike: false,
+      showComments: false,
+      showShareModal: false,
+      showConfirmModal: false,
+      confirmModalData: {},
       error: false,
       editing: false,
-      editText: '',
-      editTags: []
+      editTags: [],
+      postComments: []
     }
     this.renderPostDate = this.renderPostDate.bind(this);
     this.liked = this.liked.bind(this);
@@ -63,6 +73,21 @@ class Post extends Component {
     this.onTagPush = this.onTagPush.bind(this);
     this.saveChanges = this.saveChanges.bind(this);
     this.getProfilePageUrl = this.getProfilePageUrl.bind(this);
+    this.renderPostPhoto = this.renderPostPhoto.bind(this);
+    this.toggleComments = this.toggleComments.bind(this);
+    this.renderComments = this.renderComments.bind(this);
+    this.publishComment = this.publishComment.bind(this);
+    this.deleteComment = this.deleteComment.bind(this);
+    this.updateComment = this.updateComment.bind(this);
+    this.sharePost = this.sharePost.bind(this);
+    this.renderMiniPost = this.renderMiniPost.bind(this);
+    this.toggleShareModal = this.toggleShareModal.bind(this);
+    this.renderShareModal = this.renderShareModal.bind(this);
+    this.closeConfirmModal = this.closeConfirmModal.bind(this);
+    this.showConfirmModal = this.showConfirmModal.bind(this);
+    this.renderConfirmModal = this.renderConfirmModal.bind(this);
+    this.renderLikeds = this.renderLikeds.bind(this);
+    this.renderUnlikeds = this.renderUnlikeds.bind(this);
   }
 
   userIsAuthor(){
@@ -84,7 +109,7 @@ class Post extends Component {
    */
   liked(){
     return this.props.postData.likedBy
-    .filter(userLiked => userLiked === this.props.session.userId).length;
+    .filter(userLiked => userLiked._id === this.props.session.userId).length;
   }
 
   /**
@@ -92,7 +117,7 @@ class Post extends Component {
    */
   unliked(){
     return this.props.postData.unlikedBy
-    .filter(userUnliked => userUnliked === this.props.session.userId).length;
+    .filter(userUnliked => userUnliked._id === this.props.session.userId).length;
   }
 
   /**
@@ -158,6 +183,7 @@ class Post extends Component {
     let res = await request.deletePost(postId);
     if(res.success){
       //Chama a função do pai pra deletar o post do store:
+      this.setState({ showConfirmModal: false })
       this.props.deletePost(postId);
     }
     else{
@@ -186,6 +212,23 @@ class Post extends Component {
     })
   }
 
+  async sharePost(){
+    //Verifica se é pra compartilhar este post ou o original:
+    let postId = this.props.postData.sharedFrom ? 
+      this.props.postData.sharedFrom._id : this.props.postData._id;
+    let shareText = document.getElementById('edit-post-form-' + this.props.postData._id).value;
+    let shareTags = this.state.editTags;
+    let res = await request.sharePost(postId, shareText, shareTags);
+    if(res.success){
+      this.props.appendPost(res.data);
+    }
+    else{
+      console.log(res.error);
+      //TODO - Tratamento adequado de erro ao compartilhar o post
+    }
+    this.toggleShareModal();
+  }
+
   /**
    * Retorna a quantidade de likes do post.
    */
@@ -202,11 +245,11 @@ class Post extends Component {
     return ' ' + (this.props.postData.unlikedBy.length + tempUnlike);
   }
 
-  renderPostTags(){
-    if(this.props.postData.tags.length){
+  renderPostTags(postTags){
+    if(postTags.length){
       let tags = [];
-      this.props.postData.tags.forEach(tagContent => {
-      tags.push(<a href="#" key={tagContent}>#{ tagContent } </a>)
+      postTags.forEach(tagContent => {
+        tags.push(<a href="#" key={tagContent}>#{ tagContent } </a>)
       })
       return tags;
     }
@@ -277,6 +320,61 @@ class Post extends Component {
     }
   }
 
+  async publishComment(){
+    const postId = this.props.postData._id;
+    const commentFormId = 'comment-form-' + postId;
+    const commentText = document.getElementById(commentFormId).value;
+    let comment = {
+      author: this.props.session.userId,
+      text: commentText
+    }
+    let req = await request.publishComment(comment, postId);
+    if(req.success){
+      let comment = req.data;
+      let postComments = this.state.postComments;
+      postComments.push(comment);
+      this.setState({
+        postComments
+      })
+      document.getElementById(commentFormId).value = "";
+    }
+    else{
+      //TODO - Tratamento de erro ao publicar comentário
+    }
+  }
+
+  async deleteComment(commentId){
+    let res = await request.deleteComment(commentId);
+    if(res.success){
+      let postComments = this.state.postComments;
+      for(let c = 0; c < postComments.length; c++){
+        if(postComments[c]._id === commentId){
+          console.log('found')
+          postComments.splice(c, 1);
+          break;
+        }
+      }
+      this.setState({ postComments });
+      }
+    else{
+      console.log(res.error);
+      //TODO - Tratamento de erro ao deletar comentário
+    }
+    this.setState({ showConfirmModal: false })
+  }
+
+  updateComment(updatedComment, next){
+    let postComments = this.state.postComments;
+    for(let c = 0; c < postComments.length; c++){
+      if(postComments[c]._id === updatedComment._id){
+        postComments.splice(c, 1, updatedComment);
+        break;
+      }
+    }
+    this.setState({ postComments });
+    next();
+  }
+
   renderError(){
     return this.state.error ?
     <Alert variant="danger"> {this.state.error} </Alert>
@@ -284,14 +382,12 @@ class Post extends Component {
     null
   }
 
-  renderEditForm(){
-    return <React.Fragment>
-      { this.renderEditTags() }
-      <Form.Control type="text" placeholder="Tags" 
-      className="mb-2" onKeyPress={ this.onTagPush } 
-      id={ "edit-postform-tags-input" + this.props.postData._id }/>
-      <Form.Control as="textarea" rows="5" className="mb-2"
-      id={ 'edit-post-form-' + this.props.postData._id } />
+  getProfilePageUrl(){
+    return '/profile/' + this.props.postData.author.nickname;
+  }
+
+  renderEditForm(share = false){
+    const buttonsRow = <React.Fragment>
       <Row className="justify-content-end">
         <Col xs="auto">
           <Button variant="secondary" onClick={ this.uneditPost }>Cancel</Button>
@@ -300,49 +396,258 @@ class Post extends Component {
         </Col>
       </Row>
     </React.Fragment>
+
+    return <React.Fragment>
+      <h4>Edit post</h4>
+      { this.renderEditTags() }
+      <Form.Control type="text" placeholder="Tags" 
+      className="mb-2" onKeyPress={ this.onTagPush } 
+      id={ "edit-postform-tags-input" + this.props.postData._id }/>
+      <Form.Control as="textarea" rows={share ? "3" : "5"} className="mb-2"
+      id={ 'edit-post-form-' + this.props.postData._id } 
+      placeholder={share ? "Say something about it" : ""}/>
+      { 
+        this.renderMiniPost(this.props.postData.sharedFrom ? 
+        this.props.postData.sharedFrom : this.props.postData) 
+      }
+      { share ? null : buttonsRow }
+    </React.Fragment>
   }
 
   renderActions(){
     return this.userIsAuthor() ?
     <React.Fragment>
       <Dropdown.Item href="#" onClick={ this.editPost }>
-        <FontAwesomeIcon icon={faEdit} /> Edit
+        <FontAwesomeIcon icon={faEdit} className="mr-2" /> Edit
       </Dropdown.Item>
-      <Dropdown.Item href="#" onClick={ this.deletePost }>
-        <FontAwesomeIcon icon={faTrashAlt} /> Delete
+      <Dropdown.Item href="#" onClick={ () => this.showConfirmModal(
+        'Delete post',
+        'Are you sure you want to delete this post?',
+        'Delete',
+        this.deletePost
+      )}>
+        <FontAwesomeIcon icon={faTrashAlt} className="mr-2" /> Delete
       </Dropdown.Item>
     </React.Fragment>
     :
     <Dropdown.Item href="#" onclick="event.preventDefault()" onClick={ this.hidePost }>
-      <FontAwesomeIcon icon={faMinusSquare} /> Hide this
+      <FontAwesomeIcon icon={faMinusSquare} className="mr-2" /> Hide this
     </Dropdown.Item>
   }
 
-  getProfilePageUrl(){
-    return '/profile/' + this.props.postData.author.nickname;
+  renderPostPhoto(img){
+    return img ?
+    <Image src={request.resolveImageUrl(img)} fluid/>
+    : null;
+  }
+
+  renderComments(){
+    if(this.state.showComments){
+      let comments = [];
+      this.state.postComments.forEach(comment => {
+        comments.push(
+          <PostComment commentData={ comment } 
+          deleteComment={ () => this.showConfirmModal(
+            'Delete comment',
+            'Are you sure you want to delete this comment?',
+            'Delete',
+            () => this.deleteComment(comment._id)
+          )}
+          updateComment={this.updateComment}/>
+        );
+      })
+      return <React.Fragment>
+        <Container fluid>
+          { comments.length ? comments : <Alert variant="secondary">No comments yet</Alert> }
+          <CommentForm postId={this.props.postData._id} 
+          publishComment={this.publishComment} 
+          hideComments={this.toggleComments}/>
+        </Container>
+      </React.Fragment>
+    }
+    else{
+      return null;
+    }
+  }
+
+  async toggleComments(){
+    if(!this.state.postComments.length){
+      let req = await request.getPostComments(this.props.postData._id);
+      if(req.success){
+        this.setState({
+          postComments: req.data
+        });
+      }
+      else{
+        console.log(req.error)
+        //TODO - Exibir erro de carregamento dos comentários
+      }
+    }
+    this.setState({
+      showComments: !this.state.showComments
+    })
+  }
+
+  toggleShareModal(){
+    this.setState({
+      showShareModal: !this.state.showShareModal
+    })
+  }
+
+  renderMiniPost(miniPostData){
+    return <Media className="my-minipost">
+        <ProfilePicture nickname={miniPostData.author.nickname}
+          pictureId={miniPostData.author.profilePicture} 
+          size="small" />
+        <Media.Body>
+          { this.renderPostTags(miniPostData.tags) }
+          <p className="my-post-text">
+            { miniPostData.text }
+          </p>
+          { this.renderPostPhoto(miniPostData.img) }
+        </Media.Body>
+      </Media>
+  }
+
+  closeConfirmModal(){
+    this.setState({
+      showConfirmModal: false
+    })
+  }
+
+  showConfirmModal(title, message, action, funct){
+    this.setState({
+      showConfirmModal: true,
+      confirmModalData: {
+        title,
+        message,
+        action,
+        funct
+      }
+    })
+  }
+
+  renderLikeds(props){
+    let likes = [];
+    const likesQty = this.props.postData.likedBy.length;
+    for(let i = 0; i < 20; i++){
+      let user = this.props.postData.likedBy[i];
+      if(i < likesQty){
+        likes.push(
+          <div>{user.nickname}</div>
+        )
+      }
+    }
+    if(likesQty > 20){
+      likes.push(<div>{`...and ${likesQty-20} more`}</div>);
+    }
+    return <Tooltip {...props}>
+      { likes }
+    </Tooltip>
+  }
+
+  renderUnlikeds(props){
+    let unlikes = [];
+    const unlikesQty = this.props.postData.unlikedBy.length;
+    for(let i = 0; i < 20; i++){
+      let user = this.props.postData.unlikedBy[i];
+      if(i < unlikesQty){
+        unlikes.push(
+          <div>{user.nickname}</div>
+        )
+      }
+    }
+    if(unlikesQty > 20){
+      unlikes.push(<div>{`...and ${unlikesQty-20} more`}</div>);
+    }
+    return <Tooltip {...props}>
+      { unlikes }
+    </Tooltip>
+  }
+
+  renderConfirmModal(title, message, action, funct = this.closeConfirmModal){
+    return <React.Fragment>
+      <Modal show={this.state.showConfirmModal} onHide={this.closeConfirmModal}>
+        <Modal.Header closeButton>
+          <Modal.Title>{title}</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          { message }
+        </Modal.Body>
+        <Modal.Footer>
+          <Row className="justify-content-between">
+            <Col md={3} className="pl-sm-0 mb-3">
+              <Button variant="secondary" onClick={this.closeConfirmModal} block>
+                Cancel
+              </Button>
+            </Col>
+            <Col md={3} className="pr-sm-0">
+              <Button variant="primary" onClick={funct} block>
+                {action}
+              </Button>
+            </Col>
+          </Row>
+        </Modal.Footer>
+      </Modal>
+    </React.Fragment>
+  }
+
+  renderShareModal(){
+    return <React.Fragment>
+      <Modal show={this.state.showShareModal} onHide={this.toggleShareModal}>
+        <Modal.Header closeButton>
+          <Modal.Title>Share post</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          { this.renderEditForm(true) }
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={this.toggleShareModal}>
+            Cancel
+          </Button>
+          <Button variant="primary" onClick={this.sharePost}>
+            Share
+          </Button>
+        </Modal.Footer>
+      </Modal>
+    </React.Fragment>
   }
 
   render() {
     return (
-      <Container fluid className="mb-3 my-post">
+      <Container fluid className="mb-3 my-post" key={this.props.postData._id}>
         { this.renderError() }
         { this.state.editing ?
         this.renderEditForm()
         :
         <React.Fragment>
           <Media>
-            <div className="my-profile-picture-wrapper post mr-3">
-              <a className="my-profile-picture" href={"/profile/" + this.props.postData.author.nickname}
-              style={{backgroundImage: `url(${this.state.userPictureUrl})`}}></a>
-            </div>
+            <ProfilePicture nickname={this.props.postData.author.nickname}
+              pictureId={this.props.postData.author.profilePicture} size="medium" tabletDesktopOnly/>
             <Media.Body>
-              <Row className="justify-content-end mb-1">
-                <Col className="d-flex align-items-start justify-content-center flex-column">
-                  <a href={ this.getProfilePageUrl() } className="my-post-author-name">
-                    <strong>{ this.props.postData.author.nickname }</strong>
-                  </a>
-                  <div className="my-post-date">
-                    { this.renderPostDate() }
+              <Row className="justify-content-end mb-2">
+                <Col className="d-flex align-items-start flex-row">
+                  <ProfilePicture nickname={this.props.postData.author.nickname}
+                    pictureId={this.props.postData.author.profilePicture}
+                    size="medium" mobileOnly/>
+                  <div>
+                    <a href={ this.getProfilePageUrl() } className="my-post-author-name">
+                      <strong>{ this.props.postData.author.nickname }</strong>
+                    </a>
+                    { 
+                      this.props.postData.sharedFrom ? 
+                      <React.Fragment>
+                        {' '}shared from{' '} 
+                        <a href={"/profile/" + this.props.postData.author.nickname} 
+                        className="my-post-author-name">
+                          <strong>{ this.props.postData.sharedFrom.author.nickname }</strong>
+                        </a>
+                      </React.Fragment>
+                      : null 
+                    }
+                    <div className="my-post-date">
+                      { this.renderPostDate() }
+                    </div>
                   </div>
                 </Col>
                 <Col xs="auto">
@@ -359,37 +664,66 @@ class Post extends Component {
                   </Dropdown>
                 </Col>
               </Row>
-              <Row>
-                <Col>
-              { this.renderPostTags() }
-              <p className="my-post-text">
-                { this.props.postData.text }
-              </p>
+              <Row className="my-post-content">
+              <Col>
+                { this.renderPostTags(this.props.postData.tags) }
+                <p className="my-post-text">
+                  { this.props.postData.text }
+                </p>
+                { 
+                  this.props.postData.sharedFrom ? 
+                  this.renderMiniPost(this.props.postData.sharedFrom) : 
+                  this.renderPostPhoto(this.props.postData.img) 
+                }
               </Col>
               </Row>
+              { this.renderComments() }
             </Media.Body>
           </Media>
           <Row className="justify-content-end my-post-buttons">
             <Col xs="auto">
-              <Button onClick={ this.likeClick }
-              variant={this.liked() ? "dark" : "outline-dark"} >
-                <FontAwesomeIcon icon={faThumbsUp} />
-                { this.renderLikesQty() }
-              </Button>{' '}
-              <Button onClick={ this.unlikeClick }
-              variant={this.unliked() ? "dark" : "outline-dark"} >
-                <FontAwesomeIcon icon={faThumbsDown} />
-                { this.renderUnlikesQty() }
-              </Button>{' '}
-              <Button variant="outline-dark">
+              <OverlayTrigger
+              placement="right"
+              delay={{ show: 250, hide: 400 }}
+              overlay={this.renderLikeds}>
+                <Button onClick={ this.likeClick }
+                variant={this.liked() ? "dark" : "outline-dark"} >
+                  <FontAwesomeIcon icon={faThumbsUp} />
+                  { this.renderLikesQty() }
+                </Button>
+              </OverlayTrigger>
+              {' '}
+              <OverlayTrigger
+              placement="right"
+              delay={{ show: 250, hide: 400 }}
+              overlay={this.renderUnlikeds}>
+                <Button onClick={ this.unlikeClick }
+                variant={this.unliked() ? "dark" : "outline-dark"} >
+                  <FontAwesomeIcon icon={faThumbsDown} />
+                  { this.renderUnlikesQty() }
+                </Button>
+              </OverlayTrigger>
+              {' '}
+              <Button variant="outline-dark" onClick={ this.toggleComments }>
                 <FontAwesomeIcon icon={faComment} />
-                  { ' ' + '0' /* TODO comments */ }
+                  { ' ' + this.props.postData.commentsTotal }
               </Button>{' '}
-              <Button variant="outline-dark">
+              <Button variant="outline-dark" onClick={ this.toggleShareModal }>
                 <FontAwesomeIcon icon={faShare} />
               </Button>
             </Col>
           </Row>
+          {
+            this.renderShareModal()
+          }
+          {
+            this.renderConfirmModal(
+              this.state.confirmModalData.title,
+              this.state.confirmModalData.message,
+              this.state.confirmModalData.action,
+              this.state.confirmModalData.funct,
+            )
+          }
         </React.Fragment>
         }
       </Container>

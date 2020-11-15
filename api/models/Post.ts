@@ -15,7 +15,7 @@ export interface IPostInput {
   author: String,
   tags: Array<String>,
   date: Date,
-  text: String,
+  text: String
 }
 
 const PostSchema = new Schema({
@@ -36,7 +36,9 @@ const PostSchema = new Schema({
     type: String
   },
   img: {
-    type: String
+    type: Schema.Types.ObjectId,
+    ref: 'Image',
+    default: null
   },
   likedBy: {
     type: [Schema.Types.ObjectId],
@@ -47,6 +49,11 @@ const PostSchema = new Schema({
     type: [Schema.Types.ObjectId],
     ref: 'User',
     default: []
+  },
+  sharedFrom: {
+    type: Schema.Types.ObjectId,
+    ref: 'Post',
+    default: null
   }
 })
 

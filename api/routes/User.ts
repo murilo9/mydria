@@ -1,6 +1,8 @@
 import {Request, Response} from "express";
 import User from '../models/User';
 import validateUserForm from '../middleware/ValidateUserForm';
+import Notification, { NotificationTypes } from '../models/Notification';
+import {notificate} from './Notification';
 import Image from "../models/Image";
 const path = require('path');
 const fs = require('fs');
@@ -33,7 +35,7 @@ export default class UserRoutes {
     .get(async (req: Request, res: Response) => {
       console.log('POST em /user/'+req.params.nickname)
       const nickname = req.params.nickname;
-      const user = await User.findOne({ nickname }).populate('following').exec();
+      const user = await User.findOne({ nickname }).lean().populate('following').exec();
       if(user){
         delete user.password;
         res.status(200).send(user);
@@ -50,8 +52,6 @@ export default class UserRoutes {
       const requesterId = req.requesterId;
       const nickname = req.params.nickname;
       let user = await User.findOne({ nickname }).exec();
-      console.log(user._id)
-      console.log(requesterId)
       if(user._id.toString() === requesterId){
         let bio = req.body.bio;
         let country = req.body.country;
@@ -109,6 +109,8 @@ export default class UserRoutes {
         await requester.save();
         await userToFollow.save();
         res.status(200).send(requester.following);
+        //Envia a notificação pro usuário seguido:
+        await notificate(NotificationTypes.FOLLOW, userToFollow._id, requester._id, null);
       }
     })
 
@@ -164,8 +166,8 @@ export default class UserRoutes {
       console.log('GET em /image/' + req.params.id)
       const imgId = req.params.id;
       let image = await Image.findOne({_id: imgId}).exec();
-      let imageName = image._id +  image.extention;
       if(image){
+        let imageName = image._id +  image.extention;
         //VAI MUDAR NO AMBIENTE DE PRODUÇÃO:
         const imagePath = path.resolve(`${__dirname}/../../pictures/${imageName}`);
         console.log(imagePath)
@@ -174,6 +176,24 @@ export default class UserRoutes {
       else{
         res.status(404).send('Image id not found.');
       }
+    });
+
+    // POST em /images - Posta uma nova imagem
+
+    app.post('/images', verifyJWT, upload.single('file'),  async(req, res: Response) => {
+      console.log('POST em /posts')
+      /* 
+        O middleware de upload ja salvou a imagem e instanciou ela no banco 
+        então podemos coletar o id e a extensão de req.
+      */
+      const requesterId = req.requesterId;
+      const imgId = req.imgId;
+      const imgExtention = req.imgExtention;
+      console.log('imagem: ' + imgId + imgExtention)
+      res.status(200).send({ 
+        id: imgId,
+        ext: imgExtention
+      });
     });
 
     //POST em /profile-pic - Faz upload de uma nova foto de perfil
@@ -198,6 +218,29 @@ export default class UserRoutes {
       else{
         res.status(404).send('User id not found');
       }
-    })
+    });
+
+    //POST em /tmp - Faz upload de uma foto temporária nas pasta /tmp
+
+    app.post('/tmp', verifyJWT, upload.single('file'), async(req, res: Response) => {
+      console.log('POST em /tmp')
+      res.status(200).send({ 
+        name: req.requesterId,
+        ext: req.imgExtention
+      });
+      //TODO - tratamento de erros durante o upload
+    });
+
+    //GET em /tmp/:id?ext - Coleta a imagem salva no diretório tmp do usuário
+
+    app.get('/tmp/:id', async(req, res: Response) => {
+      console.log('GET em /tmp/'+req.params.id+'?ext='+req.query.ext)
+      const image = req.params.id;
+      const imgExtention = req.query.ext;
+      const imageName = image + imgExtention;
+      const imagePath = path.resolve(`${__dirname}/../../tmp/${imageName}`);
+      console.log(imagePath)
+      res.sendFile(imagePath);
+    });
   }
 }

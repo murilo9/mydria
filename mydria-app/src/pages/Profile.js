@@ -42,6 +42,7 @@ class ProfilePage extends MydriaPage {
     this.isFollowing = this.isFollowing.bind(this);
     this.appendPost = this.appendPost.bind(this);
     this.updateUserData = this.updateUserData.bind(this);
+    this.getDarkTheme = this.getDarkTheme.bind(this);
   }
 
   ownProfile(){
@@ -237,9 +238,9 @@ class ProfilePage extends MydriaPage {
     }
     //Caso contrário, renderiza a página normalmente:
     else{
-      return <Container fluid className="my-no-padding">
-      <Topbar logout={this.logout}/>
-      <Container className="my-page-container">
+      return <Container fluid className={"my-no-padding" + this.getDarkTheme()}>
+      <Topbar logout={this.logout} toggleDarkTheme={this.toggleDarkTheme}/>
+      <Container className={this.getPageClasses()}>
         <Row>
           <Col sm={4} lg={3}>
             <UserProfileData 
@@ -250,11 +251,13 @@ class ProfilePage extends MydriaPage {
             unfollowClick={this.unfollowClick} 
             updateUserData={this.updateUserData}/>
           </Col>
-          <Col xs={12} sm={8} lg={7}>
+          <Col xs={12} sm={8} lg={7} className="my-content-col pl-sm-0 h-100">
             { this.renderPostForm() }
             { this.renderPosts() }
           </Col>
-          <Col lg={2} className="my-ads d-none d-sm-flex">Ads</Col>
+          <Col lg={2} className="d-none d-lg-flex pr-0">
+            <div className="my-ads pl-2">Ads</div>
+          </Col>
         </Row>
       </Container>
     </Container>

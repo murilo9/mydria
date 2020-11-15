@@ -8,20 +8,35 @@ import UserRoutes from "./routes/User";
 import verifyJWT from './middleware/Auth'; 
 import LoginRoutes from "./routes/Login";
 import PostRoutes from "./routes/Post";
+import CommentRoutes from "./routes/Comment";
+import NotificationRoutes from "./routes/Notification";
 
 const multer = require('multer');
 const path = require('path');
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-
-      // error first callback
+    //Se for uma imagem temporária (fez upload da foto na criação de um post)
+    if(req.body.tmp){
+      cb(null, 'tmp/');
+    }
+    //Se for pra instanciar a imagem de fato
+    else{
       cb(null, 'pictures/');
+    }
   },
   filename: async function (req, file, cb) {
-      let imgExtention = path.extname(file.originalname);
-      req.imgExtention = imgExtention;
-      // error first callback
+    console.log('file is being uploaded')
+    let imgExtention = path.extname(file.originalname);
+    req.imgExtention = imgExtention;
+    //Se for uma imagem temporária (fez upload da foto na criação de um post)
+    if(req.body.tmp){
+      //O nome da imagem vai ser o id do requester
+      let imgId = req.requesterId;
+      cb(null, imgId + path.extname(file.originalname));
+    }
+    //Se for pra instanciar a imagem de fato
+    else{
       let image = new Image({ 
         date: new Date(), 
         extention: imgExtention, 
@@ -31,6 +46,7 @@ const storage = multer.diskStorage({
       let imgId = image._id.toString();
       req.imgId = imgId;
       cb(null, imgId + path.extname(file.originalname));
+    }
   }
 });
 
@@ -40,6 +56,8 @@ class App {
   public userRoutes: UserRoutes = new UserRoutes();
   public loginRoutes: LoginRoutes = new LoginRoutes();
   public postsRoutes: PostRoutes = new PostRoutes();
+  public commentRoutes: CommentRoutes = new CommentRoutes();
+  public notificationRules: NotificationRoutes = new NotificationRoutes();
 
   constructor() {
     this.app = express();
@@ -49,7 +67,10 @@ class App {
     //Carrega todos os grupos de rotas:
     this.userRoutes.routes(this.app, verifyJWT, upload);
     this.loginRoutes.routes(this.app, verifyJWT);
-    this.postsRoutes.routes(this.app, verifyJWT);
+    this.postsRoutes.routes(this.app, verifyJWT, upload);
+    this.commentRoutes.routes(this.app, verifyJWT);
+    this.notificationRules.routes(this.app, verifyJWT);
+    //inicializa o banco de dados:
     mongoose.connect('mongodb://localhost/mydria', {useNewUrlParser: true});
   }
 

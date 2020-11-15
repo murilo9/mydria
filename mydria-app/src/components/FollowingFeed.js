@@ -1,14 +1,54 @@
 import React, { Component } from 'react';
 import request from '../services/request.js';
+import { connect } from 'react-redux';
 
-import Row from 'react-bootstrap/esm/Row';
+import ListGroup from 'react-bootstrap/esm/ListGroup';
 import Col from 'react-bootstrap/esm/Col';
+import Row from 'react-bootstrap/esm/Row';
+import ProfilePicture from './ProfilePicture.js';
 
-export default class Post extends Component {
+const mapStateToProps = state => ({
+  ...state
+})
+
+class FollowingFeed extends Component {
   
+  constructor(props){
+    super(props);
+    this.renderFollowedUsers = this.renderFollowedUsers.bind(this);
+  }
+
+  renderFollowedUsers(){
+    let following = [];
+    this.props.user.following.forEach(followedUser => {
+      following.push(
+        <ListGroup.Item key={followedUser.nickName} className="pr-1 pr-md-2 pl-r pl-md-2">
+          <ProfilePicture nickname={followedUser.nickname}
+            pictureId={followedUser.profilePicture} 
+            size="small" />
+          <a href={"/profile/" + followedUser.nickname} className="my-post-author-name">
+            <strong>{followedUser.nickname}</strong>
+          </a>
+        </ListGroup.Item>
+      )
+    })
+    return following;
+  }
+
   render() {
     return (
-      <Col sm={3} className="my-ads d-none d-sm-flex">Following Feed</Col>
+      <div className="my-following-feed">
+        <h6 className="text-center mt-1">
+          { this.props.user.following.length ? 
+          'People you follow ' : "You're not following anybody yet " }
+        </h6>
+        <ListGroup variant="flush">
+          { this.renderFollowedUsers() }
+        </ListGroup>
+        <a href="/follows" className="see-all w-100 text-center mb-1">See all</a>
+      </div>
     )
   }
 }
+
+export default connect(mapStateToProps)(FollowingFeed);

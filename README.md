@@ -23,7 +23,8 @@ Em toda página, a primeira coisa que ela vai fazer é uma request no servidor p
   session: {
     active: Boolean,
     token: String,
-    userId: String
+    userId: String,
+    darkTheme: Boolean
   },
   user: {
     nickname: String,
