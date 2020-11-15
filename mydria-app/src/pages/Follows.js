@@ -131,7 +131,7 @@ class FollowsPage extends MydriaPage {
                 <div className="my-ads pl-2">Ads</div>
               </Col>
               <Col xs={12} sm={8} lg={7} className="my-content-col order-md-2 order-lg-1">
-                <h3 className="mb-3">Follows</h3>
+                <h4 className="mb-3">People you follow</h4>
                 <Accordion>
                   <Card>
                     <Card.Header className="followed-header d-flex 

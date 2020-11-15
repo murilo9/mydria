@@ -20,6 +20,8 @@ class FeedPage extends MydriaPage {
     super(props);
     this.state = {
       posts: [],
+      searchString: '',
+      searchResult: false,    //Indica se está sendo exibido o resultado de uma busca
       sessionExpired: false,  //Renderiza um objeto <Redirect> para voltar à página de login
       loadingPosts: true    //Renderiza um spinner enquanto posts estiverem sendo carregados
     }
@@ -35,11 +37,34 @@ class FeedPage extends MydriaPage {
    * Carrega alguns posts para exibir no feed do usuário.
    */
   async loadPageData(){
-    const posts = await request.loadSomePosts();
-    this.setState({
-      loadingPosts: false,
-      posts
-    })
+    let searchQuery = this.props.location.search;
+    if(searchQuery){
+      let params = (new URL(document.location)).searchParams;
+      let searchText = params.get("search");
+      let req = await request.search(searchQuery);
+      if(req.success){
+        this.setState({
+          searchString: searchText,
+          searchResult: true,
+          loadingPosts: false,
+          posts: req.data
+        })
+      }
+      else {
+        //TODO - Melhor tratamento de erro durante a request de busca
+        this.setState({
+          loadingPosts: false
+        })
+      }
+      
+    }
+    else {
+      const posts = await request.loadSomePosts();
+      this.setState({
+        loadingPosts: false,
+        posts
+      })
+    }
   }
 
   appendPost(post){
@@ -85,15 +110,20 @@ class FeedPage extends MydriaPage {
 
   renderPosts(){
     let posts = [];
-    this.state.posts.forEach(post => {
-      posts.push(
-      <Post postData={post} 
-      updatePost={this.updatePost} 
-      deletePost={this.deletePost}
-      appendPost={this.appendPost}
-      key={post._id} 
-      />)
-    })
+    if(this.state.posts.length){
+      this.state.posts.forEach(post => {
+        posts.push(
+        <Post postData={post} 
+        updatePost={this.updatePost} 
+        deletePost={this.deletePost}
+        appendPost={this.appendPost}
+        key={post._id} 
+        />)
+      })
+    }
+    else{
+      posts = <h6>No results found.</h6>
+    }
     return posts;
   }
 
@@ -117,7 +147,9 @@ class FeedPage extends MydriaPage {
                 <div className="my-ads pl-2">Ads</div>
               </Col>
               <Col xs={12} sm={8} lg={7} className="my-content-col order-md-2 order-lg-1 pt-1">
-                <PostForm appendPost={this.appendPost} />
+                { this.state.searchResult ? 
+                <h4 className="mb-3">Search results for '{this.state.searchString}':</h4>
+                : <PostForm appendPost={this.appendPost} />}
                 { this.renderPosts() }
               </Col>
               <Col sm={4} lg={3} className="d-none d-sm-block pr-0 pr-lg-3 h-100 order-md-1 order-lg-2">

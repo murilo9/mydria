@@ -88,7 +88,8 @@ class Topbar extends React.Component {
           )
         })
         notifications.push(
-          <NavDropdown.Item href='/notifications' className="d-flex align-center w-100 my-see-all">
+          <NavDropdown.Item href='/notifications' 
+          className="d-flex align-center w-100 text-primary my-see-all">
             <span>See all</span>
           </NavDropdown.Item>
         )
@@ -115,16 +116,17 @@ class Topbar extends React.Component {
               <Navbar.Brand href="/feed">Mydria</Navbar.Brand>
           }
           <Form inline className={this.state.showMobileSearch ?
-            "my-mobile-search" : "d-none d-sm-flex"}>
+            "my-mobile-search" : "d-none d-sm-flex"} action="/feed">
             {this.renderMobileSearchReturnButton()}
             <Form.Group controlId="formBasicInput" className="my-search-input">
               <Form.Control type="text"
                 name="search"
                 placeholder="Search"
+                onKeyDown={this.handleKeyDown}
               />
             </Form.Group>
             <Form.Group controlId="formBasicSearch" className="d-none d-sm-inline">
-              <Button variant="dark" >
+              <Button variant="dark" type="submit">
                 <FontAwesomeIcon icon={faSearch} className="my-profile-data-icon" />
               </Button>
             </Form.Group>
@@ -146,7 +148,7 @@ class Topbar extends React.Component {
             <NavDropdown title={this.props.user.nickname}
               alignRight id="basic-nav-dropdown">
               <NavDropdown.Item href="/notifications" className="d-sm-none">Notifications</NavDropdown.Item>
-              <NavDropdown.Item href="/follows" className="d-sm-none">People you follow</NavDropdown.Item>
+              <NavDropdown.Item href="/follows">People you follow</NavDropdown.Item>
               <NavDropdown.Item href={"/profile/" + this.props.user.nickname}>Profile</NavDropdown.Item>
               <NavDropdown.Item href="#action/3.2">Settings</NavDropdown.Item>
               <NavDropdown.Divider />

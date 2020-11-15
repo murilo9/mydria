@@ -35,6 +35,43 @@ export default class PostRoutes {
       verifyJWT(req, res, () => { next() })
     })
 
+    //GET em /posts?search=contains - Procura posts contendo algo
+
+    .get(async (req, res: Response) => {
+      console.log('GET em /posts')
+      const query = req.query.search;
+      const rgx = new RegExp(query, 'i');
+      let oneWord = false;
+      let authorId = null;
+      //Se for só uma palavra
+      if(query.split(' ').length === 1){
+        oneWord = true;
+        //Procura também por autores
+        let author = await User.findOne({nickname: {$regex: rgx}}).exec();
+        if(author){
+          authorId = author._id;
+        }
+      }
+      //Procura pelos posts:
+      let posts = [];
+      let orConditions = [];
+      orConditions.push({text: {$regex: rgx}})
+      if(oneWord){
+        orConditions.push({tags: {$regex: rgx}});
+        if(authorId){
+          orConditions.push({author: authorId});
+        }
+      }
+      console.log(orConditions)
+      let basePosts = await Post.find({ $or: orConditions}).populate('author').exec();
+      //Adiciona o total de comentários do post:
+      for(let i = 0; i < basePosts.length; i++){
+        let post = await buildPost(basePosts[i]._id);
+        posts.push(post);
+      }
+      res.status(200).send(posts);
+    })
+
     //POST em /posts - Cria um novo post
 
     .post(async (req, res: Response) => {

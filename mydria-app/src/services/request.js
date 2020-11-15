@@ -637,6 +637,31 @@ const loadPostData = async function(postId){
   return response;
 }
 
+const search = async function(query){
+  let response = {}
+  try {
+    const token = Cookies.get('token');
+    const res = await axios({
+      url: baseUrl + `/posts${query}`,
+      method: 'get',
+      headers: {
+        'x-access-token': token,
+      },
+    });
+    response = {
+      success: true,
+      data: res.data
+    }
+  }
+  catch (e) {
+    response = {
+      success: false,
+      error: e.response
+    }
+  }
+  return response;
+}
+
 const resolveImageUrl = function(imageId) {
   return imageId ? baseUrl + `/image/${imageId}` : '/assets/user.svg';
 }
@@ -670,5 +695,6 @@ export default {
   updateComment,
   sharePost,
   getNotifications,
-  loadPostData
+  loadPostData,
+  search
 }
