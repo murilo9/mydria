@@ -7,7 +7,7 @@
     "start": "node dist",
     "serve-build": "rm -rf dist; tsc",
     "deploy-build": "cp package.json ../package.json; cp .env.example ../.env.example; cp Procfile ../Procfile; cp tsconfig.json ../tsconfig.json",
-    "build": "tsc; mkdir ../tmp/; mkdir ../pictures/;"
+    "build": "rm - rf api; rm -rf mydria-app; tsc; mkdir ../tmp/; mkdir ../pictures/;"
   },
   "keywords": [],
   "author": "Murilo Henrique Matias",
