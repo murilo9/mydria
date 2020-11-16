@@ -1,7 +1,7 @@
 //require("dotenv-safe").config();
 import app from "./App";
 
-const port = 8888;
+const port = process.env.PORT || 8888;
  
 /* Inicia o servidor */
 

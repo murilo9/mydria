@@ -4,8 +4,10 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node dist",
-    "build": "rm -rf dist; tsc"
+    "start": "node index.js",
+    "serve": "node dist",
+    "build": "rm -rf dist; tsc",
+    "build-production": "rm -rf dist; tsc --outDir ..; mkdir ../tmp/; mkdir ../pictures/; cp package.json ../package.json; cp .env.example ../.env.example; cp Procfile ../Procfile"
   },
   "keywords": [],
   "author": "Murilo Henrique Matias",
@@ -23,5 +25,8 @@
     "mongoose": "^5.9.7",
     "multer": "^1.3.0",
     "typescript": "^3.8.3"
+  },
+  "engines": {
+    "node": "12.x"
   }
 }

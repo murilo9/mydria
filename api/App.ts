@@ -14,6 +14,8 @@ import NotificationRoutes from "./routes/Notification";
 const multer = require('multer');
 const path = require('path');
 
+const mongodbString = process.env.MONGODB_URI || 'mongodb://localhost/mydria';
+
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
     //Se for uma imagem temporária (fez upload da foto na criação de um post)
@@ -71,7 +73,7 @@ class App {
     this.commentRoutes.routes(this.app, verifyJWT);
     this.notificationRules.routes(this.app, verifyJWT);
     //inicializa o banco de dados:
-    mongoose.connect('mongodb://localhost/mydria', {useNewUrlParser: true});
+    mongoose.connect(mongodbString, {useNewUrlParser: true});
   }
 
   private config(): void{

@@ -11,6 +11,10 @@ export default class UserRoutes {
 
   public routes(app, verifyJWT, upload): void {
 
+    app.get('/test', (req, res: Response) => {
+      res.status(200).send('Mydria API works!!!');
+    })
+
     app.route('/users')
     .all((req: Request, res: Response, next) => {
       validateUserForm(req, res, () => { next() })
