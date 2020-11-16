@@ -1,9 +1,8 @@
-api/node_modules
+node_modules
 api/dist
 api/pictures
 api/tmp
 .env
 package-lock.json
-mydria-app/node_modules
 tests
 TODO
