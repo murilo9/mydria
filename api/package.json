@@ -4,10 +4,10 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node",
+    "start": "node index.js",
     "serve": "node dist",
     "build": "rm -rf dist; tsc",
-    "build-production": "rm -rf dist; tsc --outDir ..; mkdir ../tmp/; mkdir ../pictures/; cp package.json ../package.json"
+    "build-production": "rm -rf dist; tsc --outDir ..; mkdir ../tmp/; mkdir ../pictures/; cp package.json ../package.json; cp .env.example ../.env.example; cp Procfile ../Procfile"
   },
   "keywords": [],
   "author": "Murilo Henrique Matias",
