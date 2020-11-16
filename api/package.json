@@ -4,10 +4,11 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node dist",
+    "serve": "node dist",
     "serve-build": "rm -rf dist; tsc",
-    "deploy-build": "cp package.json ../package.json; cp .env.example ../.env.example; cp Procfile ../Procfile; cp tsconfig.json ../tsconfig.json",
-    "build": "rm - rf api; rm -rf mydria-app; tsc; mkdir ../tmp/; mkdir ../pictures/;"
+    "pre-deploy": "cp package.json ../package.json; cp .env.example ../.env.example; cp Procfile ../Procfile; cp tsconfig.json ../tsconfig.json",
+    "build": "cd api; tsc; mkdir dist/tmp/; mkdir dist/pictures/",
+    "start": "node api/dist"
   },
   "keywords": [],
   "author": "Murilo Henrique Matias",
