@@ -20,11 +20,11 @@ const storage = multer.diskStorage({
   destination: function (req, file, cb) {
     //Se for uma imagem temporária (fez upload da foto na criação de um post)
     if(req.body.tmp){
-      cb(null, 'tmp/');
+      cb(null, 'dist/tmp/');
     }
     //Se for pra instanciar a imagem de fato
     else{
-      cb(null, 'pictures/');
+      cb(null, 'dist/pictures/');
     }
   },
   filename: async function (req, file, cb) {
@@ -63,7 +63,7 @@ class App {
 
   constructor() {
     this.app = express();
-    this.app.use(express.static('pictures')); //Necessário para servir o pictures folder
+    this.app.use(express.static('dist/pictures')); //Necessário para servir o pictures folder
     this.config();
     const upload = multer({ storage });
     //Carrega todos os grupos de rotas:

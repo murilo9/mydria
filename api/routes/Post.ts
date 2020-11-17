@@ -84,7 +84,7 @@ export default class PostRoutes {
         author: requesterId,
         tags: req.body.tags
       }
-      if(!postData.text && !req.hasPhoto){
+      if(!postData.text && !postData.img){
         res.status(400).send('Your post must either have text or a picture');
       }
       else{
