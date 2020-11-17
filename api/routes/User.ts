@@ -173,7 +173,7 @@ export default class UserRoutes {
       if(image){
         let imageName = image._id +  image.extention;
         //VAI MUDAR NO AMBIENTE DE PRODUÇÃO:
-        const imagePath = path.resolve(`${__dirname}/../../pictures/${imageName}`);
+        const imagePath = path.resolve(`${__dirname}/../pictures/${imageName}`);
         console.log(imagePath)
         res.sendFile(imagePath);
       }
@@ -242,7 +242,7 @@ export default class UserRoutes {
       const image = req.params.id;
       const imgExtention = req.query.ext;
       const imageName = image + imgExtention;
-      const imagePath = path.resolve(`${__dirname}/../../tmp/${imageName}`);
+      const imagePath = path.resolve(`${__dirname}/../tmp/${imageName}`);
       console.log(imagePath)
       res.sendFile(imagePath);
     });
