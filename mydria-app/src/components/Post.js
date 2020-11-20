@@ -249,7 +249,9 @@ class Post extends Component {
     if(postTags.length){
       let tags = [];
       postTags.forEach(tagContent => {
-        tags.push(<a href="#" key={tagContent}>#{ tagContent } </a>)
+        tags.push(<a href={"/feed?search=" + tagContent} key={tagContent}>
+          #{ tagContent } 
+        </a>)
       })
       return tags;
     }
@@ -349,7 +351,6 @@ class Post extends Component {
       let postComments = this.state.postComments;
       for(let c = 0; c < postComments.length; c++){
         if(postComments[c]._id === commentId){
-          console.log('found')
           postComments.splice(c, 1);
           break;
         }

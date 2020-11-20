@@ -95,7 +95,6 @@ class FollowsPage extends MydriaPage {
 
   renderFollowedList(){
     let followed = [];
-    console.log(this.props.user.followedBy)
     this.props.user.followedBy.forEach(followingUser => {
       followed.push(
         <ListGroup.Item key={followingUser.nickName} className="pr-1 pr-md-2 pl-r pl-md-2">

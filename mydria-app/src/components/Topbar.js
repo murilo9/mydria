@@ -96,14 +96,16 @@ class Topbar extends React.Component {
         return notifications;
       }
       else{
-        return <span className="ml-3">No notifications to show.</span>
+        return <p className="my-notification-label text-center mb-0">
+          No notifications to show.
+        </p>
       }
     }
     else{
-      return <React.Fragment>
-        <Spinner animation="border" role="status" className="ml-2"></Spinner>
+      return <div className="my-notification-label d-flex justify-content-center align-middle">
+        <Spinner animation="border" role="status"></Spinner>
         <span className="ml-2">Loading...</span>
-      </React.Fragment>
+      </div>
     }
   }
 

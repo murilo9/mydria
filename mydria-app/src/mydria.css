@@ -31,9 +31,12 @@ body {
   background: white;
   border: 1px solid #ccc;
   border-radius: .25rem;
-  padding: 2rem 1rem;
   margin: 1rem;
   box-shadow: 2px 2px 4px #444;
+}
+
+.my-login-box .alert {
+  margin-bottom: none;
 }
 
 .my-login-background {
@@ -100,7 +103,7 @@ a.navbar-brand {
 }
 
 .my-page-container {
-  padding-top: 64px;
+  padding-top: 63px;
   height: 100vh;
   overflow-y: auto;
 }
@@ -518,4 +521,12 @@ input[type="file"]
   .my-profile-data, .my-navbar-container, .my-post-text {
     font-size: 10pt !important;
   }
+}
+
+.dropdown-menu {
+  box-shadow: 2px 2px 2px #777 0.5;
+}
+
+.color-transparent {
+  color: transparent !important;
 }
