@@ -202,8 +202,8 @@ export class UserProfileData extends Component {
   renderProfilePictureForm() {
     return this.state.showProfilePictureForm ?
       <React.Fragment>
-        <input type="file" id="file" name="file" />
-        <Row className="justify-content-between">
+        <input type="file" id="file" name="file" className="ml-3 mr-3" />
+        <Row className="justify-content-between pl-3 pr-3">
           <Col xs={6}>
             <Button variant="secondary" block onClick={this.toggleProfilePictureForm}>
               Cancel

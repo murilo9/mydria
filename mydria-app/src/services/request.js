@@ -1,7 +1,7 @@
 import axios from 'axios';
 import Cookies from 'js-cookie';
 
-const baseUrl = 'http://localhost:8888';
+const baseUrl = 'https://mydria-api.herokuapp.com';
 
 /**
  * Verifica se a sessão está ativa.

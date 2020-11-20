@@ -38,10 +38,10 @@ class FollowingFeed extends Component {
   render() {
     return (
       <div className="my-following-feed">
-        <h6 className="text-center mt-1">
+        <p className="text-center mt-2">
           { this.props.user.following.length ? 
           'People you follow ' : "You're not following anybody yet " }
-        </h6>
+        </p>
         <ListGroup variant="flush">
           { this.renderFollowedUsers() }
         </ListGroup>

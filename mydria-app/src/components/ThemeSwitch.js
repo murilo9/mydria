@@ -38,7 +38,7 @@ class ThemeSwitch extends React.Component {
 
   render(){
     return <React.Fragment>
-      <div className="my-theme-switch d-none d-md-flex row align-items-center ml-0 mr-3">
+      <div className="my-theme-switch d-none d-lg-flex row align-items-center ml-0 mr-3">
         <FontAwesomeIcon icon={faSun} className="my-sun-icon" />
         <Form.Check 
           type="switch"
@@ -50,7 +50,7 @@ class ThemeSwitch extends React.Component {
         />
         <FontAwesomeIcon icon={faMoon} className="my-moon-icon" />
       </div>
-      <div className="my-theme-switch-mobile d-xs-flex d-md-none align-items-center">
+      <div className="my-theme-switch-mobile d-xs-flex d-lg-none align-items-center">
         { this.renderMobileIcon() }
       </div>
     </React.Fragment>
