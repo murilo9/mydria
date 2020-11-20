@@ -249,7 +249,9 @@ class Post extends Component {
     if(postTags.length){
       let tags = [];
       postTags.forEach(tagContent => {
-        tags.push(<a href="#" key={tagContent}>#{ tagContent } </a>)
+        tags.push(<a href={"/feed?search=" + tagContent} key={tagContent}>
+          #{ tagContent } 
+        </a>)
       })
       return tags;
     }
