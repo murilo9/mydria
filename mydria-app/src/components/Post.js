@@ -349,7 +349,6 @@ class Post extends Component {
       let postComments = this.state.postComments;
       for(let c = 0; c < postComments.length; c++){
         if(postComments[c]._id === commentId){
-          console.log('found')
           postComments.splice(c, 1);
           break;
         }

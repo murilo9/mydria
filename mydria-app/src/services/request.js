@@ -132,7 +132,6 @@ const publishPost = async function (post, hasPicture) {
       formData.append("file", imageFile.files[0]);
       //Faz a request de upload da foto pro servidor
       try {
-        console.log('fazendo upload')
         const res = await axios({
           url: baseUrl + `/images`,
           method: 'post',
@@ -153,12 +152,9 @@ const publishPost = async function (post, hasPicture) {
           error: e.response
         }
       }
-      console.log('upload feito')
       //Coleta o id da imagem instanciada
       post.img = response.data.id;
     }
-    console.log('postando')
-    console.log(post)
     //Faz a requisição pra instanciar o post
     const res = await axios({
       url: baseUrl + '/posts',
