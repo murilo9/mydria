@@ -19,10 +19,10 @@ export default class LoginPage extends Component {
     this.state = {
       //Usado durante o render para redirecionar pra página de feed ou não:
       sessionActive: false,
-      //Mensagem de warning a ser exibida, se houver
-      warningMessage: '',
-      //Mensagem de success a ser exibida, se houver
-      successMessage: '',
+      //Mensagem a ser exibida, se houver
+      message: '',
+      //Tipo de mensagem a ser exibida, se houver
+      messageType: '',
       //Renderiza o form de signup ao invés do form de login
       showSignupForm: false
     }
@@ -62,7 +62,7 @@ export default class LoginPage extends Component {
     }
     //Em caso de erro, renderiza a mensagem do servidor:
     else{   
-      this.setState({ warningMessage: login.message });
+      this.setState({ message: login.message, messageType: "warning" });
     }
   }
 
@@ -80,11 +80,14 @@ export default class LoginPage extends Component {
     if(signup.success){
       this.showLogin();   //Exibe o form de login novamente
       //Exibe uma mensagem de conta criada com sucesso:
-      this.setState({ successMessage: "Account successfuly created. You may now login." });
+      this.setState({ 
+        message: "Account successfuly created. You may now login.", 
+        messageType: "success" 
+      });
     }
     //Em caso de erro, renderiza a mensagem do servidor:
     else{ 
-      this.setState({ warningMessage: signup.message });
+      this.setState({ message: signup.message, messageType: "warning" });
     }
   }
 
@@ -93,22 +96,15 @@ export default class LoginPage extends Component {
    * de acordo com o que está setado no state.
    */
   renderMessage() {
-    if(this.state.warningMessage){
+    if(this.state.message.length){
       return (
-        <Alert variant="danger">
-          {this.state.warningMessage}
-        </Alert>
-      )
-    }
-    else if(this.state.successMessage){
-      return (
-        <Alert variant="primary">
-          {this.state.successMessage}
+        <Alert variant={this.state.messageType} className="mb-0">
+          {this.state.message}
         </Alert>
       )
     }
     else{
-      return null;
+      return <Alert variant="link" className="mb-0 color-transparent">.</Alert>;
     }
   }
 
@@ -116,14 +112,14 @@ export default class LoginPage extends Component {
    * [comando] Faz exibir o form de Sign up.
    */
   showSignup() {
-    this.setState({ showSignupForm: true });
+    this.setState({ showSignupForm: true, message: '' });
   }
 
   /**
    * [comando] Faz exibir o form de Login.
    */
   showLogin() {
-    this.setState({ showSignupForm: false });
+    this.setState({ showSignupForm: false, message: '' });
   }
 
   renderForm() {
@@ -170,7 +166,7 @@ export default class LoginPage extends Component {
             <Col md="6" lg="7" className="my-login-phrase d-none d-lg-block">
               Get in touch with your interests, while sharing your thoughts with the world.
             </Col>
-            <Col md="6" lg="4" xl="3" className="my-login-box">
+            <Col md="6" lg="4" xl="3" className="my-login-box pt-4 pb-3">
               <Logo />
               { this.renderForm() }
               { this.renderFormFooter() }

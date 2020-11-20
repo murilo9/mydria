@@ -31,9 +31,12 @@ body {
   background: white;
   border: 1px solid #ccc;
   border-radius: .25rem;
-  padding: 2rem 1rem;
   margin: 1rem;
   box-shadow: 2px 2px 4px #444;
+}
+
+.my-login-box .alert {
+  margin-bottom: none;
 }
 
 .my-login-background {
@@ -522,4 +525,8 @@ input[type="file"]
 
 .dropdown-menu {
   box-shadow: 2px 2px 2px #777 0.5;
+}
+
+.color-transparent {
+  color: transparent !important;
 }
