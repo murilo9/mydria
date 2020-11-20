@@ -11,7 +11,7 @@ const ImageSchema = new Schema({
     default: new Date()
   },
   owner: {
-    type: [Schema.Types.ObjectId],
+    type: Schema.Types.ObjectId,
     ref: 'User',
     required: [true, 'User id missing for picture instance']
   },
