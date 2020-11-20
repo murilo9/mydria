@@ -1,26 +1,26 @@
 {
   "files": {
-    "main.css": "/static/css/main.7bc4fe83.chunk.css",
-    "main.js": "/static/js/main.ec56f093.chunk.js",
-    "main.js.map": "/static/js/main.ec56f093.chunk.js.map",
-    "runtime-main.js": "/static/js/runtime-main.fe71d981.js",
-    "runtime-main.js.map": "/static/js/runtime-main.fe71d981.js.map",
-    "static/css/2.437d98bc.chunk.css": "/static/css/2.437d98bc.chunk.css",
-    "static/js/2.f9d5ae78.chunk.js": "/static/js/2.f9d5ae78.chunk.js",
-    "static/js/2.f9d5ae78.chunk.js.map": "/static/js/2.f9d5ae78.chunk.js.map",
-    "index.html": "/index.html",
-    "precache-manifest.69bf511d6efd75d549721df27e72f662.js": "/precache-manifest.69bf511d6efd75d549721df27e72f662.js",
-    "service-worker.js": "/service-worker.js",
-    "static/css/2.437d98bc.chunk.css.map": "/static/css/2.437d98bc.chunk.css.map",
-    "static/css/main.7bc4fe83.chunk.css.map": "/static/css/main.7bc4fe83.chunk.css.map",
-    "static/js/2.f9d5ae78.chunk.js.LICENSE.txt": "/static/js/2.f9d5ae78.chunk.js.LICENSE.txt",
-    "static/media/mydria.css": "/static/media/login-background.78b63311.jpg"
+    "main.css": "/mydria/static/css/main.ef6d5366.chunk.css",
+    "main.js": "/mydria/static/js/main.39a8985a.chunk.js",
+    "main.js.map": "/mydria/static/js/main.39a8985a.chunk.js.map",
+    "runtime-main.js": "/mydria/static/js/runtime-main.5e98432a.js",
+    "runtime-main.js.map": "/mydria/static/js/runtime-main.5e98432a.js.map",
+    "static/css/2.437d98bc.chunk.css": "/mydria/static/css/2.437d98bc.chunk.css",
+    "static/js/2.f9d5ae78.chunk.js": "/mydria/static/js/2.f9d5ae78.chunk.js",
+    "static/js/2.f9d5ae78.chunk.js.map": "/mydria/static/js/2.f9d5ae78.chunk.js.map",
+    "index.html": "/mydria/index.html",
+    "precache-manifest.c1ca08a443f034bbb35978250ebb9605.js": "/mydria/precache-manifest.c1ca08a443f034bbb35978250ebb9605.js",
+    "service-worker.js": "/mydria/service-worker.js",
+    "static/css/2.437d98bc.chunk.css.map": "/mydria/static/css/2.437d98bc.chunk.css.map",
+    "static/css/main.ef6d5366.chunk.css.map": "/mydria/static/css/main.ef6d5366.chunk.css.map",
+    "static/js/2.f9d5ae78.chunk.js.LICENSE.txt": "/mydria/static/js/2.f9d5ae78.chunk.js.LICENSE.txt",
+    "static/media/mydria.css": "/mydria/static/media/login-background.78b63311.jpg"
   },
   "entrypoints": [
-    "static/js/runtime-main.fe71d981.js",
+    "static/js/runtime-main.5e98432a.js",
     "static/css/2.437d98bc.chunk.css",
     "static/js/2.f9d5ae78.chunk.js",
-    "static/css/main.7bc4fe83.chunk.css",
-    "static/js/main.ec56f093.chunk.js"
+    "static/css/main.ef6d5366.chunk.css",
+    "static/js/main.39a8985a.chunk.js"
   ]
 }
