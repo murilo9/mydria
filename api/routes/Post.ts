@@ -4,7 +4,6 @@ import Post, {IPost, IPostInput} from '../models/Post';
 import { NotificationTypes } from '../models/Notification';
 import {notificate} from './Notification';
 import Comment from '../models/Comment';
-import Image from '../models/Image';
 
 const buildPost = async function(postId) {
   let post = await Post.findOne({_id: postId}).lean().populate('author')
@@ -28,7 +27,7 @@ const buildPost = async function(postId) {
 
 export default class PostRoutes {
   
-  public routes(app, verifyJWT, upload): void {
+  public routes(app, verifyJWT): void {
 
     app.route('/posts')
     .all((req: Request, res: Response, next) => {
@@ -174,11 +173,6 @@ export default class PostRoutes {
 
       //Delete os comentários do post, se houver:
       await Comment.deleteMany({post: postId}).exec();
-
-      //Deleta a imagem do post, se houver:
-      if(post.img){
-        await Image.deleteOne({_id: post.img}).exec();
-      }
 
       //Deleta o post:
       await Post.deleteOne({_id: postId}).exec();

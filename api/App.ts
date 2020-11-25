@@ -3,7 +3,6 @@ import bodyParser = require("body-parser");
 import cors = require('cors');
 import * as mongoose from 'mongoose';
 
-import Image from "./models/Image";
 import UserRoutes from "./routes/User";
 import verifyJWT from './middleware/Auth'; 
 import LoginRoutes from "./routes/Login";
@@ -11,46 +10,7 @@ import PostRoutes from "./routes/Post";
 import CommentRoutes from "./routes/Comment";
 import NotificationRoutes from "./routes/Notification";
 
-const multer = require('multer');
-const path = require('path');
-
 const mongodbString = process.env.MONGODB_URI || 'mongodb://localhost/mydria';
-
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    //Se for uma imagem temporária (fez upload da foto na criação de um post)
-    if(req.body.tmp){
-      cb(null, 'dist/tmp/');
-    }
-    //Se for pra instanciar a imagem de fato
-    else{
-      cb(null, 'dist/pictures/');
-    }
-  },
-  filename: async function (req, file, cb) {
-    console.log('file is being uploaded')
-    let imgExtention = path.extname(file.originalname);
-    req.imgExtention = imgExtention;
-    //Se for uma imagem temporária (fez upload da foto na criação de um post)
-    if(req.body.tmp){
-      //O nome da imagem vai ser o id do requester
-      let imgId = req.requesterId;
-      cb(null, imgId + path.extname(file.originalname));
-    }
-    //Se for pra instanciar a imagem de fato
-    else{
-      let image = new Image({ 
-        date: new Date(), 
-        extention: imgExtention, 
-        owner: req.requesterId 
-      });
-      await image.save();
-      let imgId = image._id.toString();
-      req.imgId = imgId;
-      cb(null, imgId + path.extname(file.originalname));
-    }
-  }
-});
 
 class App {
   public app: express.Application;
@@ -65,11 +25,10 @@ class App {
     this.app = express();
     this.app.use(express.static('dist/pictures')); //Necessário para servir o pictures folder
     this.config();
-    const upload = multer({ storage });
     //Carrega todos os grupos de rotas:
-    this.userRoutes.routes(this.app, verifyJWT, upload);
+    this.userRoutes.routes(this.app, verifyJWT);
     this.loginRoutes.routes(this.app, verifyJWT);
-    this.postsRoutes.routes(this.app, verifyJWT, upload);
+    this.postsRoutes.routes(this.app, verifyJWT);
     this.commentRoutes.routes(this.app, verifyJWT);
     this.notificationRules.routes(this.app, verifyJWT);
     //inicializa o banco de dados:

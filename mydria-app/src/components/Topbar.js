@@ -21,22 +21,32 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 
 import request from '../services/request.js';
+import { getImgUrl } from '../services/firebase.js';
 
 class Topbar extends React.Component {
   constructor(props) {
     super(props);
     this.logout = this.logout.bind(this);
     this.state = {
-      userPictureUrl: request.resolveImageUrl(props.user.profilePicture),
       showMobileSearch: false,
       notifications: [],
-      notificationsLoaded: false
+      notificationsLoaded: false,
+      userPictureUrl: ''    //Carregado no componentDidMount()
     }
     this.toggleMobileSearch = this.toggleMobileSearch.bind(this);
     this.renderMobileSearchReturnButton = this.renderMobileSearchReturnButton.bind(this);
     this.toggleDarkTheme = this.toggleDarkTheme.bind(this);
     this.loadNotifications = this.loadNotifications.bind(this);
     this.renderNotifications = this.renderNotifications.bind(this);
+  }
+
+  async componentDidMount(){
+    let userPictureUrl = await getImgUrl(this.props.session.userId, 
+      this.props.user.profilePicture);
+    this.setState({
+      userPictureUrl
+    })
+    
   }
 
   logout() {
@@ -146,7 +156,7 @@ class Topbar extends React.Component {
               { this.renderNotifications() }
             </NavDropdown>
             <ProfilePicture nickname={this.props.user.nickname} noMargin
-              pictureId={this.props.user.profilePicture} size="tiny" tabletDesktopOnly/>
+              url={this.state.userPictureUrl} size="tiny" tabletDesktopOnly/>
             <NavDropdown title={this.props.user.nickname}
               alignRight id="basic-nav-dropdown">
               <NavDropdown.Item href="/notifications" className="d-sm-none">Notifications</NavDropdown.Item>

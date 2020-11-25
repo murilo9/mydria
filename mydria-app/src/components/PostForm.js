@@ -3,6 +3,7 @@ import request from '../services/request.js';
 import { connect } from 'react-redux';
 
 import sanitize from '../helpers/stringSanitizer.js';
+import { uploadImage, setTmpImage, getTmpUrl } from '../services/firebase.js';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faImage, faWindowClose, faTimes } from '@fortawesome/free-solid-svg-icons';
 
@@ -55,9 +56,9 @@ class PostForm extends Component {
       posting: true
     })
     //Constrói o objeto do post:
-    let post = this.buildPost();
+    let post = await this.buildPost();
     //Faz a requisição pro servidor:
-    let req = await request.publishPost(post, this.state.hasPhoto);
+    let req = await request.publishPost(post);
     if(req.success){
       this.props.appendPost(req.post);   //Insere o post recém-criado no feed
       this.setState({
@@ -81,14 +82,23 @@ class PostForm extends Component {
    * Acessa os inputs do form e retorna um objeto de post construído
    * pronto para ser enviado ao servidor.
    */
-  buildPost(){
+  async buildPost(){
     const text = document.getElementById('postText').value;
     const author = this.props.session.userId;
     const tags = this.state.tags;
+    const userId = this.props.session.userId;
+    let img = null;
+    //Se o post tiver foto, faz upload da foto pro servidor:
+    if(this.state.hasPhoto){
+      const fileInput = document.getElementById('post-file');
+      const file = fileInput.files[0];
+      img = await uploadImage(userId, file);
+    }
     return {
       text,
       author,
-      tags
+      tags,
+      img
     }
   }
 
@@ -104,20 +114,14 @@ class PostForm extends Component {
   }
 
   async handlePhotoPut(){
-    let req = await request.setTmpImage();
-    if(req.success){
-      let imgData = req.data;
-      let imgSrc = request.getTmpImageUrl(imgData.name, imgData.ext);
-      this.setState({
-        hasPhoto: true,
-        photoSrc: imgSrc
-      })
-    }
-    else{
-      this.setState({
-        error: req.error
-      })
-    }
+    let fileInput = document.getElementById('post-file');
+    let file = fileInput.files[0];
+    let ext = await setTmpImage(this.props.session.userId, file);
+    let imgSrc = await getTmpUrl(this.props.session.userId, ext);
+    this.setState({
+      hasPhoto: true,
+      photoSrc: imgSrc
+    })
   }
 
   removePhoto(){

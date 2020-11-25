@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import request from '../services/request.js';
+import { connect } from 'react-redux';
 
 import ListGroup from 'react-bootstrap/esm/ListGroup';
 import Col from 'react-bootstrap/esm/Col';
@@ -9,12 +10,12 @@ const mapStateToProps = state => ({
   ...state
 })
 
-export default class ProfilePicture extends Component {
+class ProfilePicture extends Component {
 
   /**
    * Props:
    *  nickname - Nickname de quem a foto vai ser exibida (usado pra gerar o link pro perfil)
-   *  pictureId - Id da picture que vai ser exibida
+   *  url - Id da picture que vai ser exibida
    *  size: String - tiny || small || medium || max
    *  noMargin: Boolean - Aplica ou remove a classe mr-3 do bootstrap
    *  mobileOnly: Boolean - Oculta a foto em tablet/desktop
@@ -44,10 +45,6 @@ export default class ProfilePicture extends Component {
     return classes;
   }
 
-  pictureUrl(){
-    return request.resolveImageUrl(this.props.pictureId);
-  }
-
   getHref(){
     return this.props.size === 'max' ? '#' : "/profile/" + this.props.nickname;
   }
@@ -64,14 +61,17 @@ export default class ProfilePicture extends Component {
       {
         this.props.size === 'max' ? 
         <a className={"my-profile-picture" + (this.props.square ? " square" : "")} 
-        style={{backgroundImage: `url(${this.pictureUrl()})`}}
+        style={{backgroundImage: `url(${this.props.url || process.env.PUBLIC_URL + '/assets/user.svg'})`}}
         href="" onClick={e => this.handleClick(e)}
         ></a>
         :
         <a className={"my-profile-picture" + (this.props.square ? " square" : "")} 
-        href={this.getHref()} style={{backgroundImage: `url(${this.pictureUrl()})`}}
+        href={this.getHref()} style={{backgroundImage: `url(${this.props.url || 
+          process.env.PUBLIC_URL + '/assets/user.svg'})`}}
         ></a>
       }
     </div>
   }
 }
+
+export default connect(mapStateToProps)(ProfilePicture);
