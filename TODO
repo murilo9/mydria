@@ -4,3 +4,5 @@
 Refatorações:
 
 - Simplificar a lógica de render dos miniposts
+- Separar o request service em vários arquivos
+- Inserir lazy load em todas as imagens (principalmente profilePicture)
