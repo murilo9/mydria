@@ -3,7 +3,8 @@ import {Schema, Document, model} from 'mongoose';
 export interface IUser extends Document {
   email: String,
   password: String,
-  nickname: String
+  nickname: String,
+  profilePicture: String
 }
 
 export interface IUserInput {
@@ -38,8 +39,7 @@ const UserSchema = new Schema({
     default: ''
   },
   profilePicture: {
-    type: Schema.Types.ObjectId,
-    ref: 'Image',
+    type: String,
     default: null
   },
   following: {

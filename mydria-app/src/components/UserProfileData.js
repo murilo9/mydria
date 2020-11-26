@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 
 import sanitize from '../helpers/stringSanitizer.js';
 import requestService from '../services/request.js';
+import { uploadImage, setTmpImage, getTmpUrl, getImgUrl } from '../services/firebase.js';
 
 import Card from 'react-bootstrap/Card';
 import Button from 'react-bootstrap/Button';
@@ -33,6 +34,8 @@ export class UserProfileData extends Component {
     this.state = {
       showEditForm: false,
       showProfilePictureForm: false,
+      profilePictureUrl: '',
+      tmpProfilePicture: null,
       showErrorMessage: false,
       showProfilePictureModal: false
     }
@@ -49,6 +52,15 @@ export class UserProfileData extends Component {
     this.openProfilePictureModal = this.openProfilePictureModal.bind(this);
     this.closeProfilePictureModal = this.closeProfilePictureModal.bind(this);
     this.renderProfilePictureModal = this.renderProfilePictureModal.bind(this);
+    this.handlePhotoPut = this.handlePhotoPut.bind(this);
+  }
+
+  async componentDidMount(){
+    const profilePictureUrl = await getImgUrl(this.props.userData._id, 
+      this.props.userData.profilePicture);
+    this.setState({
+      profilePictureUrl
+    })
   }
 
   ownProfile() {
@@ -83,6 +95,17 @@ export class UserProfileData extends Component {
         Please wait a few moments and try again.`
       })
     }
+  }
+
+  async handlePhotoPut(){
+    let fileInput = document.getElementById('profile-file');
+    let file = fileInput.files[0];
+    let ext = await setTmpImage(this.props.session.userId, file);
+    const name = 'tmp.' + ext;
+    const tmpProfilePictureUrl = await getTmpUrl(this.props.session.userId, ext);
+    this.setState({
+      tmpProfilePictureUrl
+    })
   }
 
   renderErrorMessage() {
@@ -160,7 +183,10 @@ export class UserProfileData extends Component {
   }
 
   async uploadProfilePicture() {
-    let res = await requestService.uploadProfilePicture();
+    const fileInput = document.getElementById('profile-file');
+    const file = fileInput.files[0];
+    let profilePicture = await uploadImage(this.props.session.userId, file);
+    let res = await requestService.updateUserData(this.props.user.nickname, {profilePicture});
     if(res.success){
       window.location.reload();
     }
@@ -202,7 +228,8 @@ export class UserProfileData extends Component {
   renderProfilePictureForm() {
     return this.state.showProfilePictureForm ?
       <React.Fragment>
-        <input type="file" id="file" name="file" className="ml-3 mr-3" />
+        <input type="file" id="profile-file" name="file" 
+        className="ml-3 mr-3" onChange={this.handlePhotoPut}/>
         <Row className="justify-content-between pl-3 pr-3">
           <Col xs={6}>
             <Button variant="secondary" block onClick={this.toggleProfilePictureForm}>
@@ -211,7 +238,7 @@ export class UserProfileData extends Component {
           </Col>
           <Col xs={6}>
             <Button variant="primary" block onClick={this.uploadProfilePicture}>
-              Upload
+              Save
             </Button>
           </Col>
         </Row>
@@ -273,7 +300,9 @@ export class UserProfileData extends Component {
       <Card className="mb-3 my-profile-data">
         <div className="my-profile-picture-wrapper">
           <ProfilePicture nickname={this.props.userData.nickname} noMargin
-            pictureId={this.props.userData.profilePicture} size="max" 
+            url={this.state.tmpProfilePictureUrl ?
+              this.state.tmpProfilePictureUrl :
+              this.state.profilePictureUrl} size="max" 
             handleClick={this.openProfilePictureModal}/>
           {this.renderProfilePictureForm()}
         </div>

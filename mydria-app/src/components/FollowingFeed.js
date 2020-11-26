@@ -22,10 +22,7 @@ class FollowingFeed extends Component {
     let following = [];
     this.props.user.following.forEach(followedUser => {
       following.push(
-        <ListGroup.Item key={followedUser.nickName} className="pr-1 pr-md-2 pl-r pl-md-2">
-          <ProfilePicture nickname={followedUser.nickname}
-            pictureId={followedUser.profilePicture} 
-            size="small" />
+        <ListGroup.Item key={followedUser.nickName} className="pr-1 pr-md-2 pl-1 pl-md-3">
           <a href={"/profile/" + followedUser.nickname} className="my-post-author-name">
             <strong>{followedUser.nickname}</strong>
           </a>
@@ -36,7 +33,7 @@ class FollowingFeed extends Component {
   }
 
   render() {
-    return (
+    return <React.Fragment>
       <div className="my-following-feed">
         <p className="text-center mt-2">
           { this.props.user.following.length ? 
@@ -47,7 +44,7 @@ class FollowingFeed extends Component {
         </ListGroup>
         <a href="/follows" className="see-all w-100 text-center mb-1">See all</a>
       </div>
-    )
+    </React.Fragment>
   }
 }
 

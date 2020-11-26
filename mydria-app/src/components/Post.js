@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import request from '../services/request.js';
+import { getImgUrl } from '../services/firebase.js';
 
 import Media from 'react-bootstrap/Media';
 import Container from 'react-bootstrap/Container';
@@ -49,7 +50,11 @@ class Post extends Component {
       error: false,
       editing: false,
       editTags: [],
-      postComments: []
+      postComments: [],
+      postPictureUrl: '',     //Carregado no componentDidMount()
+      authorPictureUrl: '',   //Carregado no componentDidMount()
+      minipostPictureUrl: '',   //Carregado no componentDidMount()
+      minipostAuthorPictureUrl: ''    //Carregado no componentDidMount()
     }
     this.renderPostDate = this.renderPostDate.bind(this);
     this.liked = this.liked.bind(this);
@@ -88,6 +93,43 @@ class Post extends Component {
     this.renderConfirmModal = this.renderConfirmModal.bind(this);
     this.renderLikeds = this.renderLikeds.bind(this);
     this.renderUnlikeds = this.renderUnlikeds.bind(this);
+  }
+
+  async componentDidMount(){
+    //Carrega a imagem do post, se houver:
+    if(this.props.postData.img){
+      const postPictureUrl = await getImgUrl(this.props.postData.author._id, 
+        this.props.postData.img);
+      this.setState({
+        postPictureUrl
+      })
+    }
+    //Se este post foi compartilhado:
+    if(this.props.postData.sharedFrom){
+    }
+    //Carrega a foto do autor do post:
+    const authorId = this.props.postData.author._id;
+    let authorPictureUrl = this.props.postData.author.profilePicture;
+    if(authorPictureUrl){
+      authorPictureUrl = await getImgUrl(authorId, authorPictureUrl);
+    }
+    this.setState({ authorPictureUrl });
+    //Se o post foi compartilhado:
+    if(this.props.postData.sharedFrom){
+      const minipostData = this.props.postData.sharedFrom;
+      //Carrega a imagem do minipost, se houver:
+      let minipostPictureUrl = minipostData.img;
+      if(minipostPictureUrl){
+        minipostPictureUrl = await getImgUrl(minipostData.author._id, minipostPictureUrl);
+        this.setState({ minipostPictureUrl });
+      }
+      //Carrega a imagem do autor do minipost:
+      let minipostAuthorPictureUrl = minipostData.author.profilePicture;
+      if(minipostAuthorPictureUrl){
+        minipostAuthorPictureUrl = await getImgUrl(minipostData.author._id, minipostAuthorPictureUrl);
+        this.setState({ minipostAuthorPictureUrl });
+      }
+    }
   }
 
   userIsAuthor(){
@@ -387,7 +429,7 @@ class Post extends Component {
     return '/profile/' + this.props.postData.author.nickname;
   }
 
-  renderEditForm(share = false){
+  renderEditForm(){
     const buttonsRow = <React.Fragment>
       <Row className="justify-content-end">
         <Col xs="auto">
@@ -404,14 +446,47 @@ class Post extends Component {
       <Form.Control type="text" placeholder="Tags" 
       className="mb-2" onKeyPress={ this.onTagPush } 
       id={ "edit-postform-tags-input" + this.props.postData._id }/>
-      <Form.Control as="textarea" rows={share ? "3" : "5"} className="mb-2"
-      id={ 'edit-post-form-' + this.props.postData._id } 
-      placeholder={share ? "Say something about it" : ""}/>
+      <Form.Control as="textarea" rows="5" className="mb-2"
+      id={ 'edit-post-form-' + this.props.postData._id }/>
       { 
-        this.renderMiniPost(this.props.postData.sharedFrom ? 
-        this.props.postData.sharedFrom : this.props.postData) 
+        this.renderMiniPost(
+          this.props.postData.nickname,
+          this.state.authorPictureUrl,
+          this.props.postData.text,
+          this.props.postData.tags,
+          this.state.postPictureUrl
+        ) 
       }
-      { share ? null : buttonsRow }
+      { buttonsRow }
+    </React.Fragment>
+  }
+
+  renderShareForm(){
+    return <React.Fragment>
+      { this.renderEditTags() }
+      <Form.Control type="text" placeholder="Tags" 
+      className="mb-2" onKeyPress={ this.onTagPush } 
+      id={ "edit-postform-tags-input" + this.props.postData._id }/>
+      <Form.Control as="textarea" rows="3" className="mb-2"
+      id={ 'edit-post-form-' + this.props.postData._id } 
+      placeholder="Say something about it"/>
+      { 
+        this.props.postData.sharedFrom ?
+        this.renderMiniPost(
+          this.props.postData.sharedFrom.author.nickname,
+          this.state.minipostAuthorPictureUrl,
+          this.props.postData.sharedFrom.text,
+          this.props.postData.sharedFrom.tags,
+          this.state.minipostPictureUrl
+        ) :
+        this.renderMiniPost(
+          this.props.postData.author.nickname,
+          this.state.authorPictureUrl,
+          this.props.postData.text,
+          this.props.postData.tags,
+          this.state.postPictureUrl
+        )
+      }
     </React.Fragment>
   }
 
@@ -436,9 +511,9 @@ class Post extends Component {
     </Dropdown.Item>
   }
 
-  renderPostPhoto(img){
-    return img ?
-    <Image src={request.resolveImageUrl(img)} fluid/>
+  renderPostPhoto(url){
+    return url ?
+    <Image src={url} fluid/>
     : null;
   }
 
@@ -495,17 +570,17 @@ class Post extends Component {
     })
   }
 
-  renderMiniPost(miniPostData){
+  renderMiniPost(nickname, authorPictureUrl, text, tags, pictureUrl){
     return <Media className="my-minipost">
-        <ProfilePicture nickname={miniPostData.author.nickname}
-          pictureId={miniPostData.author.profilePicture} 
+        <ProfilePicture nickname={nickname}
+          url={authorPictureUrl} 
           size="small" />
         <Media.Body>
-          { this.renderPostTags(miniPostData.tags) }
+          { this.renderPostTags(tags) }
           <p className="my-post-text">
-            { miniPostData.text }
+            { text }
           </p>
-          { this.renderPostPhoto(miniPostData.img) }
+          { this.renderPostPhoto(pictureUrl) }
         </Media.Body>
       </Media>
   }
@@ -600,7 +675,7 @@ class Post extends Component {
           <Modal.Title>Share post</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          { this.renderEditForm(true) }
+          { this.renderShareForm() }
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={this.toggleShareModal}>
@@ -624,7 +699,7 @@ class Post extends Component {
         <React.Fragment>
           <Media>
             <ProfilePicture nickname={this.props.postData.author.nickname}
-              pictureId={this.props.postData.author.profilePicture} size="medium" tabletDesktopOnly/>
+              url={this.state.authorPictureUrl} size="medium" tabletDesktopOnly/>
             <Media.Body>
               <Row className="justify-content-end mb-2">
                 <Col className="d-flex align-items-start flex-row">
@@ -673,8 +748,14 @@ class Post extends Component {
                 </p>
                 { 
                   this.props.postData.sharedFrom ? 
-                  this.renderMiniPost(this.props.postData.sharedFrom) : 
-                  this.renderPostPhoto(this.props.postData.img) 
+                  this.renderMiniPost(
+                    this.props.postData.sharedFrom.author.nickname,
+                    this.state.minipostAuthorPictureUrl,
+                    this.props.postData.sharedFrom.text,
+                    this.props.postData.sharedFrom.tags,
+                    this.state.minipostPictureUrl
+                  ) : 
+                  this.renderPostPhoto(this.state.postPictureUrl) 
                 }
               </Col>
               </Row>

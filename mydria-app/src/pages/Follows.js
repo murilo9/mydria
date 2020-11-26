@@ -80,10 +80,7 @@ class FollowsPage extends MydriaPage {
     let following = [];
     this.props.user.following.forEach(followedUser => {
       following.push(
-        <ListGroup.Item key={followedUser.nickName} className="pr-1 pr-md-2 pl-r pl-md-2">
-          <ProfilePicture nickname={followedUser.nickname}
-            pictureId={followedUser.profilePicture} 
-            size="small" />
+        <ListGroup.Item key={followedUser.nickName} className="pr-1 pr-md-2 pl-1 pl-md-2">
           <a href={"/profile/" + followedUser.nickname} className="my-post-author-name">
             <strong>{followedUser.nickname}</strong>
           </a>
@@ -97,10 +94,7 @@ class FollowsPage extends MydriaPage {
     let followed = [];
     this.props.user.followedBy.forEach(followingUser => {
       followed.push(
-        <ListGroup.Item key={followingUser.nickName} className="pr-1 pr-md-2 pl-r pl-md-2">
-          <ProfilePicture nickname={followingUser.nickname}
-            pictureId={followingUser.profilePicture} 
-            size="small" />
+        <ListGroup.Item key={followingUser.nickName} className="pr-1 pr-md-2 pl-1 pl-md-2">
           <a href={"/profile/" + followingUser.nickname} className="my-post-author-name">
             <strong>{followingUser.nickname}</strong>
           </a>

@@ -16,7 +16,7 @@ const store = createStore(mydriaApp);
 
 ReactDOM.render(
   <Provider store={store}>
-    <BrowserRouter>
+    <BrowserRouter basename={process.env.PUBLIC_URL}>
       <Switch>
 
       {/* Todas as páginas existentes são inseridas aqui */}

@@ -1,2 +1,8 @@
-- Arrumar bug da page de follows que não exibe a lista no accordion
 - Dar um jeito de organizar a data dos posts (exibição, e fazer eles virem ordenados)
+- Fazer a URL da imagens virem prontas pra poder renderizar nas listas
+
+Refatorações:
+
+- Simplificar a lógica de render dos miniposts
+- Separar o request service em vários arquivos
+- Inserir lazy load em todas as imagens (principalmente profilePicture)

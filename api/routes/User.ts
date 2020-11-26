@@ -3,13 +3,12 @@ import User from '../models/User';
 import validateUserForm from '../middleware/ValidateUserForm';
 import Notification, { NotificationTypes } from '../models/Notification';
 import {notificate} from './Notification';
-import Image from "../models/Image";
 const path = require('path');
 const fs = require('fs');
 
 export default class UserRoutes {
 
-  public routes(app, verifyJWT, upload): void {
+  public routes(app, verifyJWT): void {
 
     app.get('/test', (req, res: Response) => {
       res.status(200).send('Mydria API works!!!');
@@ -60,9 +59,15 @@ export default class UserRoutes {
         let bio = req.body.bio;
         let country = req.body.country;
         let city = req.body.city;
-        user.bio = bio;
-        user.country = country;
-        user.city = city;
+        let profilePicture = req.body.profilePicture;
+        if(bio)
+          user.bio = bio;
+        if(country)
+          user.country = country;
+        if(city)
+          user.city = city;
+        if(profilePicture)
+          user.profilePicture = profilePicture;
         await user.save();
         res.status(200).send(user);
       }
@@ -163,88 +168,5 @@ export default class UserRoutes {
         res.status(202).send('You are currently not following this person');
       }
     })
-
-    //GET em /image/:id - Retorna uma imagem registrada no banco de dados
-
-    app.get('/image/:id', async(req, res: Response) => {
-      console.log('GET em /image/' + req.params.id)
-      const imgId = req.params.id;
-      let image = await Image.findOne({_id: imgId}).exec();
-      if(image){
-        let imageName = image._id +  image.extention;
-        //VAI MUDAR NO AMBIENTE DE PRODUÇÃO:
-        const imagePath = path.resolve(`${__dirname}/../pictures/${imageName}`);
-        console.log(imagePath)
-        res.sendFile(imagePath);
-      }
-      else{
-        res.status(404).send('Image id not found.');
-      }
-    });
-
-    // POST em /images - Posta uma nova imagem
-
-    app.post('/images', verifyJWT, upload.single('file'),  async(req, res: Response) => {
-      console.log('POST em /posts')
-      /* 
-        O middleware de upload ja salvou a imagem e instanciou ela no banco 
-        então podemos coletar o id e a extensão de req.
-      */
-      const requesterId = req.requesterId;
-      const imgId = req.imgId;
-      const imgExtention = req.imgExtention;
-      console.log('imagem: ' + imgId + imgExtention)
-      res.status(200).send({ 
-        id: imgId,
-        ext: imgExtention
-      });
-    });
-
-    //POST em /profile-pic - Faz upload de uma nova foto de perfil
-
-    app.post('/profile-pic', verifyJWT, upload.single('file'), async (req, res: Response) => {
-      console.log('POST em /profile-pic')
-      /* 
-        O middleware de upload ja salvou a imagem e instanciou ela no banco 
-        então podemos coletar o id e a extensão de req.
-      */
-      const requesterId = req.requesterId;
-      const imgId = req.imgId;
-      const imgExtention = req.imgExtention;
-      console.log('imagem: ' + imgId + imgExtention)
-      //Atualiza o atributo profilePicture do usuário:
-      const user = await User.findOne({_id: requesterId}).exec();
-      if(user){
-        user.profilePicture = imgId;
-        await user.save();
-        res.status(200).send();
-      }
-      else{
-        res.status(404).send('User id not found');
-      }
-    });
-
-    //POST em /tmp - Faz upload de uma foto temporária nas pasta /tmp
-
-    app.post('/tmp', verifyJWT, upload.single('file'), async(req, res: Response) => {
-      console.log('POST em /tmp')
-      res.status(200).send({ 
-        name: req.requesterId,
-        ext: req.imgExtention
-      });
-      //TODO - tratamento de erros durante o upload
-    });
-
-    //GET em /tmp/:id?ext - Coleta a imagem salva no diretório tmp do usuário
-
-    app.get('/tmp/:id', async(req, res: Response) => {
-      console.log('GET em /tmp/'+req.params.id+'?ext='+req.query.ext)
-      const image = req.params.id;
-      const imgExtention = req.query.ext;
-      const imageName = image + imgExtention;
-      const imagePath = path.resolve(`${__dirname}/../tmp/${imageName}`);
-      console.log(imagePath)
-      res.sendFile(imagePath);
-    });
   }
 }
