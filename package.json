@@ -5,10 +5,10 @@
   "main": "index.js",
   "scripts": {
     "serve": "node dist",
-    "serve-build": "rm -rf dist; tsc",
+    "serve-build": "rm -rf dist; tsc; mkdir dist/pictures/; mkdir dist/tmp/",
     "pre-deploy": "cp package.json ../package.json; cp .env.example ../.env.example; cp Procfile ../Procfile; cp tsconfig.json ../tsconfig.json",
-    "build": "cd api; tsc; mkdir dist/tmp/; mkdir dist/pictures/",
-    "start": "node api/dist"
+    "build": "cd api; tsc",
+    "start": "cd api; node dist"
   },
   "keywords": [],
   "author": "Murilo Henrique Matias",
