@@ -121,7 +121,6 @@ class Post extends Component {
       let minipostPictureUrl = minipostData.img;
       if(minipostPictureUrl){
         minipostPictureUrl = await getImgUrl(minipostData.author._id, minipostPictureUrl);
-        console.log(minipostPictureUrl)
         this.setState({ minipostPictureUrl });
       }
       //Carrega a imagem do autor do minipost:

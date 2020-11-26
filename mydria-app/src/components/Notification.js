@@ -1,6 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import {  mapStateToProps } from '../pages/base';
+import { getImgUrl } from '../services/firebase.js';
 
 import NavDropdown from 'react-bootstrap/NavDropdown';
 import ProfilePicture from './ProfilePicture.js';
@@ -13,10 +14,20 @@ class Notification extends React.Component {
     super(props);
     this.getLabel = this.getLabel.bind(this);
     this.state = {
+      profilePictureUrl: '',
       months: [
         'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
       ]
     }
+  }
+
+  async componentDidMount(){
+    let fromId = this.props.data.from._id;
+    let fromPictueName = this.props.data.from.profilePicture;
+    let profilePictureUrl = await getImgUrl(fromId, fromPictueName);
+    this.setState({
+      profilePictureUrl
+    })
   }
 
   getLabel(){
@@ -74,7 +85,7 @@ class Notification extends React.Component {
     className="my-notification d-flex align-center w-100">
       <ProfilePicture 
         nickname={this.props.data.from.nickname} 
-        pictureId={this.props.data.from.profilePicture}
+        url={this.state.profilePictureUrl}
         size="tiny"
       />
       <div className="d-flex flex-column">
