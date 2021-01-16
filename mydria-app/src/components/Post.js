@@ -610,16 +610,18 @@ class Post extends Component {
       let user = this.props.postData.likedBy[i];
       if(i < likesQty){
         likes.push(
-          <div>{user.nickname}</div>
+          <div key={user.nickname}>{user.nickname}</div>
         )
       }
     }
     if(likesQty > 20){
       likes.push(<div>{`...and ${likesQty-20} more`}</div>);
     }
-    return <Tooltip {...props}>
-      { likes }
-    </Tooltip>
+    return (
+      <Tooltip {...props}>
+        { likes.length ? likes : 'No likes yet' }
+      </Tooltip>
+    )
   }
 
   renderUnlikeds(props){
@@ -636,9 +638,11 @@ class Post extends Component {
     if(unlikesQty > 20){
       unlikes.push(<div>{`...and ${unlikesQty-20} more`}</div>);
     }
-    return <Tooltip {...props}>
-      { unlikes }
-    </Tooltip>
+    return (
+      <Tooltip {...props}>
+        { unlikes.length ? unlikes : 'No unlikes yet' }
+      </Tooltip>
+    )
   }
 
   renderConfirmModal(title, message, action, funct = this.closeConfirmModal){
@@ -765,7 +769,7 @@ class Post extends Component {
           <Row className="justify-content-end my-post-buttons">
             <Col xs="auto">
               <OverlayTrigger
-              placement="right"
+              placement="bottom"
               delay={{ show: 250, hide: 400 }}
               overlay={this.renderLikeds}>
                 <Button onClick={ this.likeClick }
@@ -776,7 +780,7 @@ class Post extends Component {
               </OverlayTrigger>
               {' '}
               <OverlayTrigger
-              placement="right"
+              placement="bottom"
               delay={{ show: 250, hide: 400 }}
               overlay={this.renderUnlikeds}>
                 <Button onClick={ this.unlikeClick }
