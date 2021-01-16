@@ -77,7 +77,7 @@ class Notification extends React.Component {
   getHref(){
     return this.props.data.type === 'FOLLOW' ? 
     `/profile/${this.props.data.from.nickname}` 
-    : `/post/${this.props.data.post._id}`;
+    : `/post/${this.props.data._id}`;
   }
 
   render(){
