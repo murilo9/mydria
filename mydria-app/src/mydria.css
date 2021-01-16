@@ -437,11 +437,12 @@ input[type="file"]
 
 .my-dark-theme {
   background: #000;
+  color: #eee;
 }
 
 .my-dark-theme .my-following-feed, .my-dark-theme .my-post, 
 .my-dark-theme .form-control, .my-dark-theme .my-ads,
-.my-dark-theme .card {
+.my-dark-theme .card, .my-dark-theme .list-group-item {
   background: #111;
   color: #ddd;
   border: none;
