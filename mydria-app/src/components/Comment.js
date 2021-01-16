@@ -11,6 +11,7 @@ import { connect } from 'react-redux';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEllipsisH, faMinusSquare, faEdit, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
 import ProfilePicture from './ProfilePicture.js';
+import { getImgUrl } from '../services/firebase.js';
 
 const mapStateToProps = state => ({
   ...state
@@ -21,7 +22,8 @@ class PostComment extends Component {
   constructor(props){
     super(props);
     this.state = {
-      editing: false
+      editing: false,
+      authorPictureUrl: ''  // Carregado no componentDidMount
     }
     this.getProfilePageUrl = this.getProfilePageUrl.bind(this);
     this.isAuthor = this.isAuthor.bind(this);
@@ -30,6 +32,14 @@ class PostComment extends Component {
     this.saveChanges = this.saveChanges.bind(this);
     this.renderEditForm = this.renderEditForm.bind(this);
     this.getId = this.getId.bind(this);
+  }
+
+  async componentDidMount(){
+    // Carrega a foto do autor do comentário
+    const authorId = this.props.commentData.author._id;
+    const authorPictureId = this.props.commentData.author.profilePicture;
+    const authorPictureUrl = await getImgUrl(authorId, authorPictureId);
+    this.setState({ authorPictureUrl });
   }
 
 
@@ -125,7 +135,7 @@ class PostComment extends Component {
       :
       <Media>
         <ProfilePicture nickname={this.props.commentData.author.nickname}
-          pictureId={this.props.commentData.author.profilePicture} 
+          url={this.state.authorPictureUrl} 
           size="small" />
         <Media.Body>
           <Row className="justify-content-end mb-2">
