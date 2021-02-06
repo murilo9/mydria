@@ -14,6 +14,11 @@ Crie um arquivo *.ENV* na pasta *api* com o conteúdo *SECRET=SENHA*.
 Rode o comando **npm run start** na pasta *api* para iniciar a API. Você deve rodar o comando **npm run build** nela antes caso não tenha feito o build nenhuma vez.
 Rode o comando **npm run start** na pasta *mydria-app* para iniciar a aplicação React, que será servida em *localhost:8080*.
 
+## Processo de Deploy
+
+- Para fazer deploy da aaplicação React, é necessário rodar **npm run build** para gerar
+o build na pasta *build*, e depois **firebase deploy** com o usuário correto do firebase logado.
+
 ## Front-end
 
 Em toda página, a primeira coisa que ela vai fazer é uma request no servidor pra verificar se a sessão continua ativa, enquanto exibe um status de carregando. Se a sessão estiver ativa, faz outra request pra carregar os dados do usuário, e depois os dados da página em questão. Se a sessão tiver expirado, realiza logout.
